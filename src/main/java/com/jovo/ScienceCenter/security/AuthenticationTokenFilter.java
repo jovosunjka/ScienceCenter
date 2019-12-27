@@ -4,6 +4,7 @@ import com.jovo.ScienceCenter.service.UserDetailsServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +22,9 @@ import java.io.IOException;
 public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
 
 	private final Logger logger = LogManager.getLogger(this.getClass());
+	
+	@Value("${token.header}")
+	private String tokenHeader;
 
 	@Autowired
 	private TokenUtils tokenUtils;
@@ -31,7 +35,7 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		String authToken = httpRequest.getHeader("X-Auth-Token");
+		String authToken = httpRequest.getHeader(tokenHeader);
 		String username = tokenUtils.getUsernameFromToken(authToken);
 
 		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
