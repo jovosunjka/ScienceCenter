@@ -1,31 +1,31 @@
 package com.jovo.ScienceCenter.dto;
 
+import java.util.List;
+
 public class ScienceCenterDTO {
-    private String name;
-    private String baseUrl;
+    // private String name;
+    private List<PaymentAccountDTO> paymentAccounts;
 
     public ScienceCenterDTO() {
 
     }
 
-    public ScienceCenterDTO(String name, String baseUrl) {
-        this.name = name;
-        this.baseUrl = baseUrl;
+    public ScienceCenterDTO(/*String name,*/ List<PaymentAccountDTO> paymentAccounts) {
+        //this.name = name;
+        this.paymentAccounts = paymentAccounts;
     }
 
-    public String getName() {
-        return name;
-    }
+    /*public String getName() { return name; }
 
     public void setName(String name) {
         this.name = name;
+    }*/
+
+    public List<PaymentAccountDTO> getPaymentAccounts() {
+        return paymentAccounts;
     }
 
-    public String getBaseUrl() {
-        return baseUrl;
-    }
-
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
+    public void setPaymentAccounts(List<PaymentAccountDTO> paymentAccounts) {
+        this.paymentAccounts = paymentAccounts;
     }
 }

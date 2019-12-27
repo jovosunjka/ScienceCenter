@@ -1,7 +1,5 @@
-package com.jovo.ScienceCenter.config;
+package com.jovo.ScienceCenter.security;
 
-import com.jovo.ScienceCenter.security.AuthenticationTokenFilter;
-import com.jovo.ScienceCenter.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,15 +14,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.jovo.ScienceCenter.service.UserDetailsServiceImpl;
+
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true) // ovo smo ubacili da bismo u controllerima mogli
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // ovo smo ubacili da bismo u controllerima mogli
 													//koristiti anotaciju @PreAuthorize
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private UserDetailsServiceImpl userDetailsService;
-
+	
 	@Autowired
 	public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
 		authenticationManagerBuilder.userDetailsService(this.userDetailsService).passwordEncoder(passwordEncoder());
@@ -34,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
+	
 	@Bean
 	@Override
 	public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -48,14 +48,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return authenticationTokenFilter;
 	}
 
-
+	
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.anonymous().disable()
+		httpSecurity
+				//.anonymous().disable()
 				.cors()
 				.and()
-				.csrf()
-				.disable()
+				.csrf().disable()
 				.exceptionHandling()
 				.and()
 				.sessionManagement()

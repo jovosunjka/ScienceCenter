@@ -3,10 +3,6 @@ package com.jovo.ScienceCenter.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -14,15 +10,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
 @Component
 public class TokenUtils {
 
-	@Value("myXAuthSecret")
+	@Value("${token.secret}")
 	private String secret;
 
-	//@Value("60")
-	@Value("18000") //in seconds (5 hours)
-	private Long expiration;
+	@Value("${token.expiration}")
+	private Long expiration; //in seconds
 	
 	public String getUsernameFromToken(String token) {
 		String username = null;

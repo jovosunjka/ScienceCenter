@@ -1,9 +1,10 @@
 package com.jovo.ScienceCenter.service;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,69 +12,57 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.jovo.ScienceCenter.model.Role;
+import com.jovo.ScienceCenter.model.User;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Primary // Intellij pronalazi vise implementacija za UserDetailService,
 // zato koristimo ovu anotaciju, da bi ova implementacija imala prednost u odnosu na druge,
 // i da bi @Autowired znao koju implementaciju da izabere
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-
-    // @Autowired
-    // private UserRepository userRepository;
-
+	
+	private final Logger logger = LogManager.getLogger(this.getClass());
+	
+    @Autowired
+    private UserService userService;
 
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        /*User user = userRepository.findByUsername(username);
+        User user = userService.getUser(username);
 
         if(user == null) {
             String message = String.format("No user found with username '%s' in database.", username);
             logger.error(message);
             throw new UsernameNotFoundException(message);
         }
-
-        if(user.getUserStatus() != UserStatus.ACTIVATED) {
-            String message = String.format("No user found with username '%s' in database.", username);
-            logger.error(message);
-            throw new UsernameNotFoundException(message);
-        }
-
-        List<GrantedAuthority> garantedAuthorities = null;
-        if(user.getUserType() == UserType.PASSENGER) {
-            Passenger passenger = (Passenger) user;
-            if(passenger.getPassengerType() != PassengerType.OTHER) {
-                if (passenger.getExpirationDate() == null) {
-                    resetPassengerType(passenger, false);
-                }
-                else if(LocalDate.now().isAfter(passenger.getExpirationDate())) {
-                    resetPassengerType(passenger, true);
-                }
-            }
-
-            garantedAuthorities = AuthorityUtils.createAuthorityList(user.getUserType().toString(),
-                    passenger.getPassengerType().toString());
-        }
-        else {
-            garantedAuthorities = AuthorityUtils.createAuthorityList(user.getUserType().toString());
-        }
-
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), garantedAuthorities);*/
-        List<GrantedAuthority> garantedAuthorities = AuthorityUtils.createAuthorityList("pera's authority");
-        return new org.springframework.security.core.userdetails.User("pera", "pera", garantedAuthorities);
+       
+        Collection<? extends GrantedAuthority> garantedAuthorities = mapRolesToAuthorities(user.getRoles());
+        
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), garantedAuthorities);
     }
 
-    /*
-    private void resetPassengerType(Passenger passenger, boolean cancelExpirationDate) {
-        // isteklo vazenje potvrde o specifinosti korisnika,
-        // dok ne dostavi novu, setujemo da bude obican passenger
-        passenger.setPassengerType(PassengerType.OTHER);
-        passenger.setExpirationDate(null);
-        if(cancelExpirationDate) passenger.setVerifiedBy(null);
+    public Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<Role> roles) {
+        Set<GrantedAuthority> garantedAuthorities = new HashSet<GrantedAuthority>();
 
-        passengerService.save(passenger);
+        roles.stream()
+                .forEach(role -> {
+                    Set<GrantedAuthority> simpleGrantedAuthorities = role.getPermissions().stream()
+                    .map(per -> new SimpleGrantedAuthority(per.getName()))
+                    .collect(Collectors.toSet());
+                    simpleGrantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+                    garantedAuthorities.addAll(simpleGrantedAuthorities);
+                });
+
+        return garantedAuthorities;
     }
-    */
 }
