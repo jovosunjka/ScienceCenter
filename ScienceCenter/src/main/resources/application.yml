@@ -1,0 +1,101 @@
+backend.url: https://localhost:${server.port}/${server.servlet.context-path}
+frontend.url: https://localhost:4200
+
+registration.confirmation.url: https://localhost:4200/confirm-registration
+
+token:
+  header: X-Auth-Token
+  secret: myXAuthSecret
+  expiration: 1800000
+
+
+payment-microservice:
+  urls:
+    frontend:
+      choose-payment: https://localhost:4201/choose-payment #https://localhost:8762/payment-microservice/payment/choose-type
+    backend:
+      form-fields-for-payment-types: https://localhost:8762/payment-microservice/payment/form-fields-for-payment-types
+      registration:
+        single: https://localhost:8762/payment-microservice/users/registration
+        all: https://localhost:8762/payment-microservice/users/registration-all
+      pay: https://localhost:8762/payment-microservice/payment/pay
+      transactions: https://localhost:8762/payment-microservice/payment/transactions
+      login: https://localhost:8762/payment-microservice/users/login
+#ovo je zapravo proxy server url, pa ce biti redeirektovano na payment-microservice (https://localhost:8083/payment-microservice)
+#payment-concentrator.url=https://localhost:8083/payment-microservice
+
+server:
+  servlet.context-path: /${spring.application.name}
+  port: 8081
+  ssl:
+    key-store: classpath:stores/keystore.p12 # https://www.baeldung.com/properties-with-spring#7-properties-from-command-line-arguments
+    key-store-password: pass789
+    key-store-type: PKCS12
+    key-alias: science_center_1
+  # trust-store: classpath:stores/truststore.p12
+  # trust-store-password: pass147
+  # trust-store-type: PKCS12
+    protocol: TLS
+    enabled: true
+    enabled-protocols: TLSv1.2
+    ciphers: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+    # Za definisanje ovoga, treba prethodno iskoristi kod u PkiApplication klasi, koja izlistava sve podrzane
+    # chipers u Javi instaliranoj na nasem racunaru
+    # Kod je pronadjen na: https://stackoverflow.com/questions/48934210/java-ssl-error-cannot-support-tls-ecdhe-rsa-with-aes-256-gcm-sha384
+    client-auth: want
+    # for two way authentication, use value: need
+
+
+
+
+
+
+#Spring DataSource
+spring:
+  application.name: science_center_1
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:myDb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    #korisno ako je konekcija dugo u idle stanju
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    #Bez ovoga nece da izvrsi insert naredbe iz data.sql fajla koji se nalazi u /main/resources
+    initialization-mode: always
+    #JPA-Hibernate - prikazuje SQL upite
+    jpa:
+      show-sql: true
+      hibernate:
+        #kreira tabele na osnovu anotacija @Entity svaki put kad se pokrene aplikacija
+        ddl-auto: create #create-drop
+        #bira najbolje konvencije imenovanja za tabele i polja u bazi
+        naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    #optimizacija za h2 upite
+    properties.hibernate.dialect: org.hibernate.dialect.H2Dialect
+    #konekcija na bazu je jdbc:h2:mem:myDb
+  h2.console:
+    #Ukljucivanje konzole
+    enabled: true
+    #Putanja na kojoj ce konzola biti dostupna
+    #dodaje se na localhost:${port} ili na localhost:${port}/${server.servlet.context-path}
+    path: /h2-console
+  #ZA MAIL
+  #---------
+  mail:
+    host: smtp.gmail.com
+    username: upisi pravu email adresu
+    password: upisi pravi password
+    port: 587
+    properties.mail.smtp.starttls.enable: true
+
+
+
+camunda:
+      bpm:
+        admin-user:
+                  id: demo
+                  password: demo
+                  firstName: Demo
+        filter.create: All tasks
+        webapp.index-redirect-enabled: false
