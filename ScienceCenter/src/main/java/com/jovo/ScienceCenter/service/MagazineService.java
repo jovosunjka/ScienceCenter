@@ -31,9 +31,9 @@ public interface MagazineService {
 
     void savePaymentTypesForMagazine(String magazineName, List<PaymentTypeDTO> paymentTypes);
 
-    void submitUserTask(String taskId, Map<String, Object> formFieldsMap);
+    void submitUserTask(String taskId, Map<String, Object> formFieldsMap) throws Exception;
 
-    void submitFirstUserTask(String processInstanceId, Map<String, Object> formFieldsMap);
+    void submitFirstUserTask(String processInstanceId, Map<String, Object> formFieldsMap) throws Exception;
 
     void activateMagazine(String name);
 
