@@ -1,0 +1,17 @@
+<div >
+    <select multiple class="form-control" id="id_select_editors"  [(ngModel)]="selectedEditors" name="selected-editors" 
+          (change)="onChangeEditors($event)">
+        <ng-template ngFor let-editor let-i="index" [ngForOf]="editors">
+            <option  [ngValue]="editor.id">
+                {{i+1}}. &nbsp; {{editor.username}}, &nbsp; {{editor.firstName}} {{editor.lastName}}
+                &nbsp;&nbsp;(scientificAreas={{editor.scientificAreas}})
+            </option>
+        </ng-template>
+    </select>
+    Selected editors:
+    <div class="scrollbar-selected-editors scrollbar-primary">
+      <p id="id_selected_editors">
+        {{selectedEditorsStr}}
+     </p>
+    </div>
+</div>

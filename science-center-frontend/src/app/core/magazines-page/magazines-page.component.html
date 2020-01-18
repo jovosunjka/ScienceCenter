@@ -1,0 +1,52 @@
+<h3>MAGAZINES PAGE</h3>
+
+<div *ngIf="showCreateMagazineButton()">
+    <a class="btn btn-success btn-lg" [routerLinkActive]="['active']" href="#" [routerLink]="['/create-magazine']">Create Magazine</a>
+    <hr/>
+</div>
+
+<h4 *ngIf="!magazines || magazines.length===0"> &nbsp;&nbsp;There are currently no magazines.</h4>
+<div class="table-responsive" *ngIf="magazines && magazines.length > 0">
+  <table class="table table-hover table-bordered">
+    <tr class="table-primary">
+        <th>#</th>
+        <th>Name</th>
+        <th>ISSN</th>
+        <th>Scientific Areas</th>
+        <th>Main Editor</th>
+        <th>Editors</th>
+        <th>Reviewers</th>
+        <th>Membership Fee</th>
+        <th>Currency</th>
+    </tr>
+    <tr *ngFor="let magazine of magazines; let i = index" class="table-info">
+      <td>
+          {{i+1}}.
+      </td>
+      <td>
+        {{magazine.name}}
+      </td>
+      <td>
+        {{magazine.issn}}
+      </td>
+      <td>
+        {{magazine.scientificAreas}}
+      </td>
+      <td>
+        {{magazine.mainEditor}}
+      </td>
+      <td>
+        {{magazine.editors}}
+      </td>
+      <td>
+        {{magazine.reviewers}}
+      </td>
+      <td>
+        {{magazine.membershipFee}}
+      </td>
+      <td>
+        {{magazine.currency}}
+      </td>
+    </tr>
+  </table>
+</div>

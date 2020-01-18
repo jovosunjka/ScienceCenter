@@ -1,0 +1,25 @@
+
+<section id="tabs">
+    <div class="row">
+        <div class="col-xl-12 ">
+            <nav>
+                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-add-editors-tab" data-toggle="tab" href="#nav-add-editors" role="tab" aria-controls="nav-add-editors" aria-selected="true">ADD EDITORS</a>
+                    <a class="nav-item nav-link" id="nav-add-reviewers-tab" data-toggle="tab" href="#nav-add-reviewers" role="tab" aria-controls="nav-add-reviewers" aria-selected="false">ADD REVIEWERS</a>
+                </div>
+            </nav>
+            <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-add-editors" role="tabpanel" aria-labelledby="nav-add-editors-tab">
+                    <app-add-editors> </app-add-editors>
+                </div>
+                <div class="tab-pane fade" id="nav-add-reviewers" role="tabpanel" aria-labelledby="nav-add-reviewers-tab">
+                    <app-add-reviewers> </app-add-reviewers>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr/>
+
+<button class="btn btn-primary btn-block" (click)="next()">Next</button>

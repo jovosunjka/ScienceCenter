@@ -1,0 +1,44 @@
+
+<h3>REGISTRATION</h3>
+<div class="wrapper">
+  <div class="container">
+    <form class="form-register" (ngSubmit)="registrationSubmit()">
+      <ng-template ngFor let-field [ngForOf]="formFields">
+          <label for="{{field.id}}">{{field.label}}</label>
+      
+          <input type="text" class="form-control" id="{{field.id}}" [(ngModel)]="field.value" name="{{field.id}}"
+                *ngIf="field.type.name == 'string' && field.id != 'scientificAreas' && field.id != 'password' && field.id != 'repeatedPassword'" />
+          <input type="password" class="form-control" id="{{field.id}}" [(ngModel)]="field.value" name="{{field.id}}"
+                *ngIf="field.type.name == 'string' && (field.id == 'password' || field.id == 'repeatedPassword')" />
+          <div *ngIf="field.type.name == 'string' && field.id == 'scientificAreas'">
+            <select multiple class="form-control" id="{{field.id}}"  [(ngModel)]="field.value" name="{{field.id}}" 
+                  (change)="onChangeScientificAera($event)">
+                <ng-template ngFor let-sArea [ngForOf]="scientificAreas">
+                    <option  [ngValue]="sArea.id">{{sArea.name}}</option>
+                </ng-template>
+            </select>
+            Selected scientific areas:
+            <div class="scrollbar-selected-scientific-areas scrollbar-primary">
+              <p id="id_selected_scientific_areas">
+                {{selectedScientificAreasStr}}
+             </p>
+            </div>
+          </div>
+          <div *ngIf="field.type.name == 'boolean'">
+            &nbsp;
+            <input type="checkbox" id="{{field.id}}" [(ngModel)]="field.value" name="{{field.id}}" />
+          </div>
+          <input type="number" class="form-control" id="{{field.id}}" [(ngModel)]="field.value" *ngIf="field.type.name == 'long'"
+              name="{{field.id}}" />
+          <select  class="form-control" id="{{field.id}}" *ngIf="field.type.name == 'enum'" [(ngModel)]="field.value" name="{{field.id}}">
+            <option *ngFor="let val of field.type.values" [ngValue]="val">
+              {{val}}
+            </option>
+          </select>
+      </ng-template>
+        
+      <br/>
+      <button class="btn btn-primary btn-block" type="submit">Register</button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<section id="tabs">
+    <div class="row">
+        <div class="col-xl-12 ">
+            <nav>
+                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-magazines-page-tab" data-toggle="tab" href="#nav-magazines-page" role="tab" aria-controls="nav-magazines-page" aria-selected="true">MAGAZINES</a>
+                    <a class="nav-item nav-link" id="nav-create-magazine-tab" data-toggle="tab" href="#nav-create-magazine" role="tab" aria-controls="nav-create-magazine" aria-selected="false">CREATE MAGAZINE</a>
+                    <a class="nav-item nav-link" id="nav-magazines-with-invalid-data-tab" data-toggle="tab" href="#nav-magazines-with-invalid-data" role="tab" aria-controls="nav-magazines-with-invalid-data" aria-selected="false">MAGAZINES WITH INVALID DATA</a>
+                </div>
+            </nav>
+            <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-magazines-page" role="tabpanel" aria-labelledby="nav-magazines-page-tab">
+                    <app-magazines-page> </app-magazines-page>
+                </div>
+                <div class="tab-pane fade" id="nav-create-magazine" role="tabpanel" aria-labelledby="nav-create-magazine-tab">
+                    <app-create-magazine> </app-create-magazine>
+                </div>
+                <div class="tab-pane fade" id="nav-magazines-with-invalid-data" role="tabpanel" aria-labelledby="nav-magazines-with-invalid-data-tab">
+                    <app-magazines-with-invalid-data> </app-magazines-with-invalid-data>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

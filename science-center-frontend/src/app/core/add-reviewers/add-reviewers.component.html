@@ -1,0 +1,18 @@
+<div>
+    <h4>Select at least two reviewers!</h4>
+    <select multiple class="form-control" id="id_select_reviewers"  [(ngModel)]="selectedReviewers" name="selected-reviewers" 
+          (change)="onChangeReviewers($event)">
+        <ng-template ngFor let-reviewer let-i="index" [ngForOf]="reviewers">
+            <option  [ngValue]="reviewer.id">
+                {{i+1}}. &nbsp; {{reviewer.username}}, &nbsp; {{reviewer.firstName}} {{reviewer.lastName}}
+                &nbsp;&nbsp;(scientificAreas={{reviewer.scientificAreas}})
+            </option>
+        </ng-template>
+    </select>
+    Selected reviewers:
+    <div class="scrollbar-selected-reviewers scrollbar-primary">
+      <p id="id_selected_reviewers">
+        {{selectedReviewersStr}}
+     </p>
+    </div>
+</div>

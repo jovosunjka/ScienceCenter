@@ -1,0 +1,51 @@
+<button type="button" class="btn btn-primary"  (click)="getPendingMagazines()">Refresh</button>
+<h4 *ngIf="!pendingMagazines || pendingMagazines.length===0"> &nbsp;&nbsp;There are currently no pending magazines.</h4>
+<div class="table-responsive" *ngIf="pendingMagazines && pendingMagazines.length > 0">
+  <table class="table table-hover table-bordered">
+    <tr class="table-primary">
+        <th>#</th>
+        <th>Name</th>
+        <th>ISSN</th>
+        <th>Scientific Areas</th>
+        <th>Main Editor</th>
+        <th>Editors</th>
+        <th>Reviewers</th>
+        <th>Membership Fee</th>
+        <th>Currency</th>
+        <th></th>
+    </tr>
+    <tr *ngFor="let magazine of pendingMagazines; let i = index" class="table-info">
+    <td>
+        {{i+1}}.
+    </td>
+      <td>
+        {{magazine.name}}
+      </td>
+      <td>
+        {{magazine.issn}}
+      </td>
+      <td>
+        {{magazine.scientificAreas}}
+      </td>
+      <td>
+        {{magazine.mainEditor}}
+      </td>
+      <td>
+        {{magazine.editors}}
+      </td>
+      <td>
+        {{magazine.reviewers}}
+      </td>
+      <td>
+        {{magazine.membershipFee}}
+      </td>
+      <td>
+        {{magazine.currency}}
+      </td>
+      <td>
+        <button type="button" class="btn btn-success"  (click)="checkData(magazine.taskId, true)">Valid Data</button>
+        <button type="button" class="btn btn-danger"  (click)="checkData(magazine.taskId, false)">Invalid Data</button>
+      </td>
+    </tr>
+  </table>
+</div>
