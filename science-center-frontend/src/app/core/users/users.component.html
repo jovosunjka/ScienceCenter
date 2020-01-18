@@ -1,0 +1,60 @@
+<button type="button" class="btn btn-primary"  (click)="getAllUsers()">Refresh</button>
+<h4 *ngIf="!users || users.length===0"> &nbsp;&nbsp;There are currently no users.</h4>
+<div class="table-responsive" *ngIf="users && users.length > 0">
+  <table class="table table-hover table-bordered">
+    <tr class="table-primary">
+        <th>#</th>
+        <th>Username</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>City</th>
+        <th>Country</th>
+        <th>Scientific Areas</th>
+        <th>Roles</th>
+        <th>Reviewer</th>
+        <th>User Status</th>
+      <th></th>
+    </tr>
+    <tr *ngFor="let user of users; let i = index" class="table-info">
+        <td>
+            {{i+1}}.
+        </td>
+      <td>
+        {{user.username}}
+      </td>
+      <td>
+        {{user.firstName}}
+      </td>
+      <td>
+        {{user.lastName}}
+      </td>
+      <td>
+        {{user.email}}
+      </td>
+      <td>
+        {{user.city}}
+      </td>
+      <td>
+        {{user.country}}
+      </td>
+      <td>
+        {{user.scientificAreas}}
+      </td>
+      <td>
+        {{user.roles | rolesToString}}
+      </td>
+      <td align="center" valign="middle">
+        <input type="checkbox" [checked]="user.reviewer" disabled/>
+      </td>
+      <td>
+        {{user.userStatus}}
+      </td>
+      <td>
+        <button type="button" class="btn btn-danger" aria-label="Delete" (click)="delete(user.id)"> Delete</button>
+        <button type="button" class="btn btn-primary"  (click)="activateOrDeactivate(user)">{{user.userStatus == "ACTIVATED" ? "Deactivate" : "Activate" }}</button>
+        <button type="button" class="btn btn-warning" aria-label="Edit Roles" (click)="editRoles(user.id)"> Edit Roles</button>
+      </td>
+    </tr>
+  </table>
+</div>

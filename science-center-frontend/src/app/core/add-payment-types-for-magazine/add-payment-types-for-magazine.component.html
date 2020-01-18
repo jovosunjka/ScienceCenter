@@ -1,0 +1,14 @@
+
+<form class="form-register" (ngSubmit)="finish()">
+    <div class="scrollbar-payment-types scrollbar-primary">
+        <div *ngFor="let formFieldsForPaymentType of formFieldsForPaymentTypes">
+            <h4>{{formFieldsForPaymentType.paymentType}}</h4>
+            <ng-template ngFor let-field [ngForOf]="formFieldsForPaymentType.formFields">
+                <label for="id_{{field.id}}">{{field.id}}</label>
+                <input type="text" class="form-control" id="id_{{field.id}}" [(ngModel)]="field.value" name="{{field.id}}"/>
+                <hr/>
+            </ng-template>
+        </div>
+    </div>
+    <button class="btn btn-primary btn-block" type="submit">Finish Creating Magazine</button>
+</form>

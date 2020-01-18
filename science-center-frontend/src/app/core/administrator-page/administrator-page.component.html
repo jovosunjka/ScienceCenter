@@ -1,0 +1,24 @@
+<section id="tabs">
+    <div class="row">
+        <div class="col-xl-12 ">
+            <nav>
+                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-requests-for-reviewer-tab" data-toggle="tab" href="#nav-requests-for-reviewer" role="tab" aria-controls="nav-requests-for-reviewer" aria-selected="true">REQUESTS FOR REVIEWER</a>
+                    <a class="nav-item nav-link" id="nav-check-data-for-pending-magazines-tab" data-toggle="tab" href="#nav-check-data-for-pending-magazines" role="tab" aria-controls="nav-check-data-for-pending-magazines" aria-selected="false">CHECK PENDING MAGAZINES</a>
+                    <a class="nav-item nav-link" id="nav-users-tab" data-toggle="tab" href="#nav-users" role="tab" aria-controls="nav-users" aria-selected="false">USERS</a>
+                </div>
+            </nav>
+            <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-requests-for-reviewer" role="tabpanel" aria-labelledby="nav-requests-for-reviewer-tab">
+                    <app-requests-for-reviewer> </app-requests-for-reviewer>
+                </div>
+                <div class="tab-pane fade" id="nav-check-data-for-pending-magazines" role="tabpanel" aria-labelledby="nav-check-data-for-pending-magazines-tab">
+                    <app-check-data-for-pending-magazines> </app-check-data-for-pending-magazines>
+                </div>
+                <div class="tab-pane fade" id="nav-users" role="tabpanel" aria-labelledby="nav-users-tab">
+                    <app-users> </app-users>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

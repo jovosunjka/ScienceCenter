@@ -1,0 +1,10 @@
+<div class="container">
+  <h3>{{title}}</h3> 
+  <a *ngIf="authenticationService.isLoggedIn()" class="btn btn-secondary btn-lg" [routerLinkActive]="['active']" href="#"
+      [routerLink]="['/login']" (click)="authenticationService.logout()">
+    <span class="glyphicon glyphicon-log-out"></span> Log out
+  </a>
+  <router-outlet>
+    <!-- Here, pages (components) will be replaced based on the current route -->
+  </router-outlet>
+</div>

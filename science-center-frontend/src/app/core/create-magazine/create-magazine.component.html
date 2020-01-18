@@ -1,0 +1,73 @@
+
+<h3>CREATE MAGAZINE</h3>
+<div class="wrapper">
+    <div class="container">
+      <form class="form-register" (ngSubmit)="createMagazineSubmit()">
+        <!--<label for="id_register_username" class="sr-only">Username</label>
+        <input type="text" id="id_register_username" class="form-control" name="username" [(ngModel)] = "passengerDTO.username"
+        placeholder="Username" required autofocus>
+      
+        <label for="inputPassword1" class="sr-only">Password</label>
+        <input type="password" id="inputPassword1" class="form-control" name="password1" [(ngModel)]="passengerDTO.password1"
+         placeholder="Password" required>
+      
+        <label for="inputPassword2" class="sr-only">Confirm Password</label>
+        <input type="password" id="inputPassword2" class="form-control" name="password2" [(ngModel)]="passengerDTO.password2"
+        placeholder="Confirm your Password" required>
+      
+        <label for="firstName" class="sr-only">First Name</label>
+        <input type="text" id="firstName" class="form-control" name="firstName" [(ngModel)]="passengerDTO.firstName"
+          placeholder="First Name" required>
+      
+        <label for="lastName" class="sr-only">Last Name</label>
+        <input type="text" id="lastName" class="form-control" name="lastName" [(ngModel)]="passengerDTO.lastName"
+        placeholder="Last Name" required>
+      
+        <label for="email" class="sr-only">Email</label>
+        <input type="email" id="email" class="form-control" name="email" [(ngModel)]="passengerDTO.email"
+        placeholder="email" required>
+      
+        <label for="address" class="sr-only">Address</label>
+        <input type="text" id="address" class="form-control" name="address" [(ngModel)]="passengerDTO.address"
+        placeholder="address" required>-->
+  
+        <ng-template ngFor let-field [ngForOf]="formFields">
+            <label for="{{field.id}}">{{field.label}}</label>
+        
+            <input type="text" class="form-control" id="{{field.id}}" [(ngModel)]="field.value" name="{{field.id}}"
+                  *ngIf="field.type.name == 'string' && field.id != 'scientificAreas' && field.id != 'password'
+                         && field.id != 'repeatedPassword' && field.id != 'membershipFee'" />
+            <input type="password" class="form-control" id="{{field.id}}" [(ngModel)]="field.value" name="{{field.id}}"
+                  *ngIf="field.type.name == 'string' && (field.id == 'password' || field.id == 'repeatedPassword')" />
+            <div *ngIf="field.type.name == 'string' && field.id == 'scientificAreas'">
+              <select multiple class="form-control" id="{{field.id}}"  [(ngModel)]="field.value" name="{{field.id}}" 
+                    (change)="onChangeScientificAera($event)">
+                  <ng-template ngFor let-sArea [ngForOf]="scientificAreas">
+                      <option  [ngValue]="sArea.id">{{sArea.name}}</option>
+                  </ng-template>
+              </select>
+              Selected scientific areas:
+              <div class="scrollbar-selected-scientific-areas scrollbar-primary">
+                <p id="id_selected_scientific_areas">
+                  {{selectedScientificAreasStr}}
+               </p>
+              </div>
+            </div>
+            <div *ngIf="field.type.name == 'boolean'">
+              &nbsp;
+              <input type="checkbox" id="{{field.id}}" [(ngModel)]="field.value" name="{{field.id}}" />
+            </div>
+            <input type="number" class="form-control" id="{{field.id}}" [(ngModel)]="field.value" *ngIf="field.id == 'membershipFee' || field.type.name == 'long'"
+                name="{{field.id}}" />
+            <select  class="form-control" id="{{field.id}}" *ngIf="field.type.name == 'enum'" [(ngModel)]="field.value" name="{{field.id}}">
+              <option *ngFor="let val of field.type.values" [ngValue]="val">
+                {{val}}
+              </option>
+            </select>
+        </ng-template>
+          
+        <br/>
+        <button class="btn btn-primary btn-block" type="submit">Next</button>
+      </form>
+    </div>
+  </div>

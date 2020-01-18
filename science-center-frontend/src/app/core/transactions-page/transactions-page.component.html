@@ -1,0 +1,21 @@
+<h4>Transactions</h4>
+<table border="2">
+    <tr>
+        <th>Merchant Order Id</th>
+        <th>Amount</th>
+        <th>Currency</th>
+        <th>Merchant Timestamp</th>
+        <th>Timestamp</th>
+        <th>Payment Type</th>
+        <th>Status</th>
+    </tr>>
+    <tr  *ngFor="let transaction of transactions">
+        <td>{{transaction.merchantOrderId}}</td> 
+        <td>{{transaction.amount}}</td>
+        <td>{{transaction.currency}}</td> 
+        <td>{{transaction.merchantTimestamp}}</td>
+        <td>{{transaction.timestamp}}</td> 
+        <td>{{transaction.paymentType}}</td>
+        <td>{{transaction.status}}</td>
+    </tr>
+</table>

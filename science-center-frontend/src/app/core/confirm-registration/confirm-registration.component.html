@@ -1,0 +1,8 @@
+
+<h3>Confirmation of registration</h3>
+<p>
+    {{confirmationStatus}}
+</p>
+
+<a *ngIf="confirmationStatus === 'confirmation successful'" class="nav-item nav-link btn btn-outline-primary"
+ [routerLinkActive]="['active']" href="#" [routerLink]="['/login']">Login</a>

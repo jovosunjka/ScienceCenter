@@ -1,0 +1,5 @@
+@import '../../../../node_modules/@swimlane/ngx-datatable/themes/dark.css';
+
+input[type=checkbox] {
+    transform: scale(2.0);
+}
