@@ -97,24 +97,41 @@ public class MagazineServiceImpl implements MagazineService {
 
 
     @Override
-    public void submitUserTask(String taskId, Map<String, Object> formFieldsMap) {
+    public void submitUserTask(String taskId, Map<String, Object> formFieldsMap) throws Exception {
         //ProcessInstance pi = runtimeService.startProcessInstanceByKey("UserRegistrationProcess");
 
         //List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
         //Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-        if (taskService.createTaskQuery().taskId(taskId).count() == 0) {
+        //if (taskService.createTaskQuery().taskId(taskId).count() == 0) {
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        if (task == null) {
             throw new NotFoundException("Task (id=".concat(taskId).concat(") doesn't exist!"));
+        }
+
+        UserData loggedUser = userService.getLoggedUser();
+
+        if (!task.getAssignee().equals(loggedUser.getCamundaUserId())) {
+            throw new RuntimeException("The task(taskId=".concat(taskId).concat( " is assigned to ")
+                    .concat(task.getAssignee()).concat(", not ").concat(loggedUser.getCamundaUserId()).concat("!"));
         }
 
         formService.submitTaskForm(taskId, formFieldsMap);
     }
 
     @Override
-    public void submitFirstUserTask(String processInstanceId, Map<String, Object> formFieldsMap) {
+    public void submitFirstUserTask(String processInstanceId, Map<String, Object> formFieldsMap) throws Exception {
         Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
         if(task == null) {
             throw new NotFoundException("UserTask for process with id=".concat(processInstanceId).concat(" not found!"));
         }
+
+        UserData loggedUser = userService.getLoggedUser();
+
+        if (!task.getAssignee().equals(loggedUser.getCamundaUserId())) {
+            throw new RuntimeException("The task (processInstanceId=".concat(processInstanceId).concat(") is assigned to ")
+                    .concat(task.getAssignee()).concat(", not ").concat(loggedUser.getCamundaUserId()).concat("!"));
+        }
+
         formService.submitTaskForm(task.getId(), formFieldsMap);
     }
 

@@ -36,9 +36,9 @@ public interface UserService {
 
     FormFieldsDto getRegistrationFormFields();
 
-    void submitUserTask(String taskId, Map<String, Object> formFieldsMap);
+    void submitUserTask(String taskId, Map<String, Object> formFieldsMap) throws Exception;
 
-    void submitFirstUserTask(String processInstanceId, Map<String, Object> formFieldsMap);
+    void submitFirstUserTask(String processInstanceId, Map<String, Object> formFieldsMap) throws Exception;
 
     void checkConfirmationAndActivateUser(String confirmationToken, boolean reviewer);
 
