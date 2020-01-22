@@ -71,7 +71,7 @@ public class MagazineServiceImpl implements MagazineService {
 
 
 
-    //@EventListener(ApplicationReadyEvent.class)
+    @EventListener(ApplicationReadyEvent.class)
     private void loginAllMagazines() {
         List<Magazine> magazines = getAllActivatedMagazines();
         HttpHeaders headers = new HttpHeaders();

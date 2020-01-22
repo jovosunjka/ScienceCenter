@@ -3,6 +3,7 @@ import { GenericService } from '../services/generic/generic.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-magazines-with-invalid-data',
   templateUrl: './magazines-with-invalid-data.component.html',
@@ -10,7 +11,6 @@ import { Router } from '@angular/router';
 })
 export class MagazinesWithInvalidDataComponent implements OnInit {
 
-  
   private magazines: any[];
 
   private relativeUrlForAllActivatedMagazines = '/magazines/magazines-with-invalid-data';
@@ -38,5 +38,4 @@ export class MagazinesWithInvalidDataComponent implements OnInit {
   editMagazine(processInstanceId: string) {
     this.router.navigate(['/create-magazine/'.concat(processInstanceId)]);
   }
-
 }

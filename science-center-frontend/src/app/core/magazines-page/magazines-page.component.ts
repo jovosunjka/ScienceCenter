@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { GenericService } from '../services/generic/generic.service';
 import { ToastrService } from 'ngx-toastr';
 import { Magazine } from 'src/app/shared/model/magazine';
 import { ForwardingMessageService } from '../services/forwarding-message/forwarding-message.service';
+import { RedirectUrlDto } from 'src/app/shared/model/redirect-url-dto';
 
 @Component({
   selector: 'app-magazines-page',
@@ -13,9 +14,11 @@ export class MagazinesPageComponent implements OnInit {
 
   private magazines: Magazine[];
 
+  private relativeUrlForPayment = '/payment/pay';
   private relativeUrlForAllActivatedMagazines = '/magazines/all-activated';
 
-  constructor(private genericService: GenericService, private toastr: ToastrService,  private forwardingMessageService: ForwardingMessageService) {
+  constructor(private genericService: GenericService, private toastr: ToastrService,
+              private forwardingMessageService: ForwardingMessageService, private ngZone: NgZone) {
     this.magazines = [];
    }
 
@@ -47,5 +50,22 @@ export class MagazinesPageComponent implements OnInit {
   showCreateMagazineButton() {
     return window.location.href.endsWith('magazines-page');
   }
+
+  pay(magazineId) {
+    this.genericService.get<RedirectUrlDto>(this.relativeUrlForPayment + '/' + magazineId).subscribe(
+      (redirectUrlDto: RedirectUrlDto) => {
+        this.ngZone.runOutsideAngular(() => {
+          window.location.href = redirectUrlDto.redirectUrl;
+        });
+
+        this.toastr.success('Redirection to KP!');
+      },
+      (err) => {
+        this.toastr.error('Problem with payment!');
+        alert(JSON.stringify(err));
+      }
+    );
+  }
+
 
 }

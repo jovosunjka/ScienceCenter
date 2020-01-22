@@ -32,7 +32,11 @@ public class MagazineController {
         Map<String, Object> formFieldsMap = new HashMap<String, Object>();
         idValueDTOList.stream()
                 .forEach(field -> formFieldsMap.put(field.getId(), field.getValue()));
-        magazineService.submitUserTask(taskId, formFieldsMap);
+        try {
+            magazineService.submitUserTask(taskId, formFieldsMap);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
 
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -65,7 +69,11 @@ public class MagazineController {
         Map<String, Object> formFieldsMap = new HashMap<String, Object>();
         formFieldsMap.put("editors", addEditorsAndReviewerDTO.getEditors());
         formFieldsMap.put("reviewers", addEditorsAndReviewerDTO.getReviewers());
-        magazineService.submitFirstUserTask(processInstanceId, formFieldsMap);
+        try {
+            magazineService.submitFirstUserTask(processInstanceId, formFieldsMap);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -74,7 +82,11 @@ public class MagazineController {
                                                 @RequestBody AddPaymentTypesDTO addPaymentTypesDTO) {
         Map<String, Object> formFieldsMap = new HashMap<String, Object>();
         formFieldsMap.put("paymentTypes", addPaymentTypesDTO.getPaymentTypes());
-        magazineService.submitFirstUserTask(processInstanceId, formFieldsMap);
+        try {
+            magazineService.submitFirstUserTask(processInstanceId, formFieldsMap);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -89,7 +101,11 @@ public class MagazineController {
                                                 @RequestBody Boolean validData) {
         Map<String, Object> formFieldsMap = new HashMap<String, Object>();
         formFieldsMap.put("validData", validData);
-        magazineService.submitUserTask(taskId, formFieldsMap);
+        try {
+            magazineService.submitUserTask(taskId, formFieldsMap);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 
