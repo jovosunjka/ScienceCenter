@@ -18,6 +18,7 @@
         <th>Reviewers</th>
         <th>Membership Fee</th>
         <th>Currency</th>
+        <th></th>
     </tr>
     <tr *ngFor="let magazine of magazines; let i = index" class="table-info">
       <td>
@@ -46,6 +47,9 @@
       </td>
       <td>
         {{magazine.currency}}
+      </td>
+      <td>
+        <button class="btn btn-danger" (click)="pay(magazine.id)">Pay</button>
       </td>
     </tr>
   </table>

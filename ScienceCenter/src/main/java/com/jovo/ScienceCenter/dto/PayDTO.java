@@ -13,16 +13,26 @@ public class PayDTO {
     private String callbackUrl;
 
 
-    public PayDTO(Long merchantOrderId, double amount, Currency currency, String redirectUrl, String callbackUrl) {
-        this.merchantOrderId = merchantOrderId;
-        this.amount = amount;
-        this.currency = currency;
-        this.timestamp = LocalDateTime.now();
-        this.redirectUrl = redirectUrl;
-        this.callbackUrl = callbackUrl;
+    public PayDTO() {
+    	
     }
+    
+    
 
-    public Long getMerchantOrderId() {
+    public PayDTO(Long merchantOrderId, double amount, Currency currency, String redirectUrl,
+                  String callbackUrl) {
+		super();
+		this.merchantOrderId = merchantOrderId;
+		this.amount = amount;
+		this.currency = currency;
+		this.timestamp = LocalDateTime.now();
+		this.redirectUrl = redirectUrl;
+		this.callbackUrl = callbackUrl;
+	}
+
+
+
+	public Long getMerchantOrderId() {
         return merchantOrderId;
     }
 

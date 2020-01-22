@@ -79,7 +79,11 @@ public class UserController {
         Map<String, Object> formFieldsMap = new HashMap<String, Object>();
         idValueDTOList.stream()
                 .forEach(field -> formFieldsMap.put(field.getId(), field.getValue()));
-        userService.submitUserTask(taskId, formFieldsMap);
+        try {
+            userService.submitUserTask(taskId, formFieldsMap);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
 
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -94,7 +98,11 @@ public class UserController {
     public ResponseEntity confirmRegistration(@RequestParam("processInstanceId") String processInstanceId,
                                               @RequestBody ConfirmRegistrationDTO confirmRegistrationDTO) {
         Map<String, Object> formFieldsMap = Collections.singletonMap("token", confirmRegistrationDTO.getToken());
-        userService.submitFirstUserTask(processInstanceId, formFieldsMap);
+        try {
+            userService.submitFirstUserTask(processInstanceId, formFieldsMap);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -134,7 +142,11 @@ public class UserController {
         Map<String, Object> formFieldsMap = new HashMap<String, Object>();
         formFieldsMap.put("confirmId", confirmReviewerStatusDTO.getConfirmId());
         formFieldsMap.put("confirmed", confirmReviewerStatusDTO.isConfirmed());
-        userService.submitUserTask(taskId, formFieldsMap);
+        try {
+            userService.submitUserTask(taskId, formFieldsMap);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 

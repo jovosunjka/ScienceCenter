@@ -13,7 +13,7 @@ export class AuthorPageComponent implements OnInit {
   magazineId: number;
   magazines: Dto[];
   private relativeUrlForPayment = '/payment/pay';
-  private relativeUrlForAllMagazines = '/magazines/all';
+  private relativeUrlForAllMagazines = '/magazines/all-activated';
 
   constructor(private genericService: GenericService, private ngZone: NgZone, private toastr: ToastrService) {
     this.magazines = [];
