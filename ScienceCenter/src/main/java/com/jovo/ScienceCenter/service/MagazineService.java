@@ -42,4 +42,6 @@ public interface MagazineService {
     List<PendingMagazineDTO> getPendingMagazinesForChecking();
 
     List<FixMagazineDTO> getMagazinesWithInvalidData() throws Exception;
+
+    Magazine loginMagazine(Magazine magazine);
 }
