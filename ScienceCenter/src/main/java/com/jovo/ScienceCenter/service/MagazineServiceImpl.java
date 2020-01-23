@@ -71,30 +71,35 @@ public class MagazineServiceImpl implements MagazineService {
 
 
 
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     private void loginAllMagazines() {
         List<Magazine> magazines = getAllActivatedMagazines();
+
+        magazines.stream()
+                .forEach(magazine -> loginMagazine(magazine));
+    }
+
+    @Override
+    public Magazine loginMagazine(Magazine magazine) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        magazines.stream()
-                .forEach(magazine -> {
-                    LoginUserDTO userDTO = new LoginUserDTO(magazine.getUsername(), magazine.getPassword());
+        LoginUserDTO userDTO = new LoginUserDTO(magazine.getUsername(), magazine.getPassword());
 
-                    HttpEntity<LoginUserDTO> httpEntity = new HttpEntity<LoginUserDTO>(userDTO, headers);
-                    ResponseEntity<TokenDTO> tokenDTOResponseEntity = restTemplate.exchange(pmLoginBackendUrl, HttpMethod.PUT, httpEntity, TokenDTO.class);
-                    if (tokenDTOResponseEntity.getStatusCode() == HttpStatus.OK) {
-                        String token = tokenDTOResponseEntity.getBody().getToken();
-                        magazine.setMerchantId(token);
-                        magazineRepository.save(magazine);
-                        System.out.println(magazine.getName() + " login - success");
-                    }
-                    else {
-                        System.out.println(magazine.getName() + " login - fail");
-                    }
-                });
+        HttpEntity<LoginUserDTO> httpEntity = new HttpEntity<LoginUserDTO>(userDTO, headers);
+        ResponseEntity<TokenDTO> tokenDTOResponseEntity = restTemplate.exchange(pmLoginBackendUrl, HttpMethod.PUT, httpEntity, TokenDTO.class);
+        if (tokenDTOResponseEntity.getStatusCode() == HttpStatus.OK) {
+            String token = tokenDTOResponseEntity.getBody().getToken();
+            magazine.setMerchantId(token);
+            magazine = magazineRepository.save(magazine);
+            System.out.println(magazine.getName() + " login - success");
+            return magazine;
+        }
+        else {
+            System.out.println(magazine.getName() + " login - fail");
+            return null;
+        }
     }
-
 
     @Override
     public void submitUserTask(String taskId, Map<String, Object> formFieldsMap) throws Exception {

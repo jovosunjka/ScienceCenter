@@ -68,7 +68,8 @@ public class PaymentServiceImpl implements PaymentService {
                 redirectUrl, callbackUrl);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set(tokenHeader, magazine.getMerchantId());
+        //headers.set(tokenHeader, magazine.getMerchantId());
+        headers.set("magazineName", magazine.getName());
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<PayDTO> httpEntity = new HttpEntity<PayDTO>(payDTO, headers);
 

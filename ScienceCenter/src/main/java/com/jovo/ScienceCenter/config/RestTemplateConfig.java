@@ -4,6 +4,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,9 @@ public class RestTemplateConfig {
     // @Value("${server.ssl.trust-store-password}")
     // private char[] trustStorePassword;
 
+    @Autowired
+    private RestTemplateInterceptor restTemplateInterceptor;
+
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) throws Exception {
@@ -46,9 +50,13 @@ public class RestTemplateConfig {
 
         HttpClient client = HttpClients.custom().setSSLContext(sslContext).build();
 
-        return builder
+        RestTemplate restTemplate = builder
                 .requestFactory(() -> new HttpComponentsClientHttpRequestFactory(client))
                 .build();
+
+        restTemplate.getInterceptors().add(restTemplateInterceptor);
+
+        return restTemplate;
     }
 
 }
