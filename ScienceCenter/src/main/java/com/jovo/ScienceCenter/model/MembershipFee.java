@@ -40,6 +40,10 @@ public class MembershipFee {
     private boolean expired;
 
 
+    public MembershipFee() {
+
+    }
+
     public MembershipFee(Long magazineId, Long payerId, double price,
                          Currency currency, LocalDateTime timestamp, int duration) {
         this.magazineId = magazineId;

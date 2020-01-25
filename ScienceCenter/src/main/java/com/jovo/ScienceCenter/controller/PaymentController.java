@@ -28,7 +28,7 @@ public class PaymentController {
         return new ResponseEntity<RedirectUrlDTO>(new RedirectUrlDTO(redirectUrl), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/transaction-completed", method = RequestMethod.PUT)
+    @RequestMapping(value = "/transaction-completed", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity transactionCompleted(@RequestBody TransactionCompletedDTO transactionCompletedDTO) {
         paymentService.transactionCompleted(transactionCompletedDTO.getMerchantOrderId(), transactionCompletedDTO.getStatus());
         return new ResponseEntity(HttpStatus.OK);

@@ -63,7 +63,7 @@ public class PaymentServiceImpl implements PaymentService {
         MembershipFee membershipFee = magazineService.makeMembershipFee(loggedUserData.getId(), magazineId,
                 magazine.getMembershipFee(), magazine.getCurrency());
         String redirectUrl = this.frontendUrl + "/transactions-page";
-        String callbackUrl = this.backendUrl + "/transaction-completed";
+        String callbackUrl = this.backendUrl + "/payment/transaction-completed";
         PayDTO payDTO = new PayDTO(membershipFee.getId(), membershipFee.getPrice(), membershipFee.getCurrency(),
                 redirectUrl, callbackUrl);
 

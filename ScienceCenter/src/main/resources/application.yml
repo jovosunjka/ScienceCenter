@@ -1,4 +1,4 @@
-backend.url: https://localhost:${server.port}/${server.servlet.context-path}
+backend.url: https://localhost:${server.port}${server.servlet.context-path}
 frontend.url: https://localhost:4200
 
 registration.confirmation.url: https://localhost:4200/confirm-registration
