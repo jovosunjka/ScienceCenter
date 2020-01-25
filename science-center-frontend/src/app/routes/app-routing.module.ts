@@ -45,7 +45,7 @@ const routes: Routes = [
       path: 'transactions-page',
       component: TransactionsPageComponent,
       data: {
-        expectedRoles: ['AUTHOR']
+        expectedRoles: ['USER']
       },
       canActivate: [CanActivateUserGuard]
   },

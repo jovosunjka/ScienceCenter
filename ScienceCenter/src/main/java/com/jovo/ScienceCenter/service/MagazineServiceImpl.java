@@ -376,7 +376,7 @@ public class MagazineServiceImpl implements MagazineService {
     public void savePaymentTypesForMagazine(String magazineName, List<PaymentTypeDTO> paymentTypes) {
         Magazine magazine = getMagazine(magazineName);
 
-        /*RegistrationPaymentConcentratorDTO registrationPaymentConcentratorDTO = new RegistrationPaymentConcentratorDTO(
+        RegistrationPaymentConcentratorDTO registrationPaymentConcentratorDTO = new RegistrationPaymentConcentratorDTO(
                                                                                     magazineName, magazine.getUsername(),
                                                                                      magazine.getPassword(), magazine.getPassword(),
                                                                                         paymentTypes);
@@ -391,6 +391,6 @@ public class MagazineServiceImpl implements MagazineService {
         if (responseEntity.getStatusCode() != HttpStatus.CREATED) {
             System.out.println("PaymentConcentrator registration error!");
             throw new RuntimeException("PaymentConcentrator registration error!");
-        }*/
+        }
     }
 }
