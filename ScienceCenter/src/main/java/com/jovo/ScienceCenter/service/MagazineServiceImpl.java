@@ -212,7 +212,6 @@ public class MagazineServiceImpl implements MagazineService {
     }
 
     private String generatePassword() {
-        PasswordGenerator gen = new PasswordGenerator();
         CharacterData lowerCaseChars = EnglishCharacterData.LowerCase;
         CharacterRule lowerCaseRule = new CharacterRule(lowerCaseChars);
         lowerCaseRule.setNumberOfCharacters(2);
@@ -355,9 +354,11 @@ public class MagazineServiceImpl implements MagazineService {
     public FormFieldsDto getCreateMagazineFormFields(String processInstanceId) throws Exception {
         if (processInstanceId == null) {
             UserData loggedUser = userService.getLoggedUser();
-            ProcessInstance pi = runtimeService.startProcessInstanceByKey("CreateNewMagazineProcess");
+            Map<String, Object> variablesMap = new HashMap<String, Object>();
+            variablesMap.put("processInitiator", loggedUser.getCamundaUserId());
+            // iz nekog razloga camunda engine ne dodeli ulogovanog korisnika varijabli processInitiator
+            ProcessInstance pi = runtimeService.startProcessInstanceByKey("CreateNewMagazineProcess", variablesMap);
             processInstanceId = pi.getId();
-            runtimeService.setVariable(processInstanceId, "processInitiator", loggedUser.getCamundaUserId());
         }
 
 

@@ -1,16 +1,22 @@
 package com.jovo.ScienceCenter.dto;
 
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import java.util.List;
+
 public class FormFieldsForPaymentTypeDTO {
     private String paymentType;
-    private String formFields;
+    private List<FormFieldDTO> formFields;
 
 
     public FormFieldsForPaymentTypeDTO() {
 
     }
 
-    public FormFieldsForPaymentTypeDTO(String paymentType, String formFields) {
+    public FormFieldsForPaymentTypeDTO(String paymentType, List<FormFieldDTO> formFields) {
         this.paymentType = paymentType;
         this.formFields = formFields;
     }
@@ -24,11 +30,11 @@ public class FormFieldsForPaymentTypeDTO {
         this.paymentType = paymentType;
     }
 
-    public String getFormFields() {
+    public List<FormFieldDTO> getFormFields() {
         return formFields;
     }
 
-    public void setFormFields(String formFields) {
+    public void setFormFields(List<FormFieldDTO> formFields) {
         this.formFields = formFields;
     }
 }

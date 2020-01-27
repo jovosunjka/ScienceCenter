@@ -4,8 +4,16 @@
         <div *ngFor="let formFieldsForPaymentType of formFieldsForPaymentTypes">
             <h4>{{formFieldsForPaymentType.paymentType}}</h4>
             <ng-template ngFor let-field [ngForOf]="formFieldsForPaymentType.formFields">
-                <label for="id_{{field.id}}">{{field.id}}</label>
-                <input type="text" class="form-control" id="id_{{field.id}}" [(ngModel)]="field.value" name="{{field.id}}"/>
+                <label for="id_{{field.name}}">
+                    {{field.name}}
+                    <ng-template [ngIf]="field.optional"> (optional) </ng-template>
+                </label>
+                <input *ngIf="field.type === 'string'" type="text" class="form-control" id="id_{{field.name}}" [(ngModel)]="field.value"
+                    name="{{field.name}}"/>
+                <input *ngIf="field.type === 'boolean'" type="checkbox" class="form-control" id="id_{{field.name}}" [(ngModel)]="field.value"
+                    name="{{field.name}}"/>
+                <input *ngIf="field.type === 'long'" type="number" class="form-control" id="id_{{field.name}}" [(ngModel)]="field.value"
+                    name="{{field.name}}"/>
                 <hr/>
             </ng-template>
         </div>

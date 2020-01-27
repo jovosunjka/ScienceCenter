@@ -93,6 +93,11 @@ public class UserServiceImpl implements UserService {
 
 	}
 
+	@Override
+	public void setAuthenticatedUserIdInCamunda(String userId) {
+		identityService.setAuthenticatedUserId(userId);
+	}
+
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@Override
 	public void save(UserData userData) throws Exception {
@@ -216,7 +221,11 @@ public class UserServiceImpl implements UserService {
 		//createCamundaUser("zika", "zika", "Zika", "Zika", "zika@camunda.org");
 		//createCamundaUser("mika", "mika", "Mika", "Mika", "mika@camunda.org");
 		//List<org.camunda.bpm.engine.identity.User> users = identityService.createUserQuery().list();
-		ProcessInstance pi = runtimeService.startProcessInstanceByKey("UserRegistrationProcess");
+
+		Map<String, Object> variablesMap = new HashMap<String, Object>();
+		variablesMap.put("processInitiator", "guest");
+		// iz nekog razloga camunda engine ne dodeli ulogovanog korisnika varijabli processInitiator
+		ProcessInstance pi = runtimeService.startProcessInstanceByKey("UserRegistrationProcess", variablesMap);
 
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).list().get(0);
 
