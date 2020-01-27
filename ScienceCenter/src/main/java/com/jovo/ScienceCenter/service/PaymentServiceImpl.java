@@ -79,7 +79,7 @@ public class PaymentServiceImpl implements PaymentService {
         membershipFee.setKpTransactionId(transactionId);
         membershipFeeService.save(membershipFee);
 
-        return pmChoosePaymentFrontendUrl + "/" + transactionId;
+        return pmChoosePaymentFrontendUrl + "/" + transactionId + "?token=" + magazine.getMerchantId();
     }
 
     @Override
@@ -115,7 +115,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<FormFieldsForPaymentTypeDTO> getFormFieldsForPaymentTypes() {
-        /*ResponseEntity<FormFieldsForPaymentTypesDTO> responseEntity = restTemplate.getForEntity(pmFormFieldsForPaymentTypesBackendUrl,FormFieldsForPaymentTypesDTO.class);
+        ResponseEntity<FormFieldsForPaymentTypesDTO> responseEntity = restTemplate.getForEntity(pmFormFieldsForPaymentTypesBackendUrl,FormFieldsForPaymentTypesDTO.class);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             return responseEntity.getBody().getTypes();
@@ -123,11 +123,12 @@ public class PaymentServiceImpl implements PaymentService {
         else {
             System.out.println("PaymentConcentratorgetFormFieldsForPaymentTypes error!");
             throw new RuntimeException("PaymentConcentrator getFormFieldsForPaymentTypes error!");
-        }*/
-        List<FormFieldsForPaymentTypeDTO> formFieldsForPaymentTypeDTOs = new ArrayList<FormFieldsForPaymentTypeDTO>();
-        formFieldsForPaymentTypeDTOs.add(new FormFieldsForPaymentTypeDTO("card-payment", "account number"));
-        formFieldsForPaymentTypeDTOs.add(new FormFieldsForPaymentTypeDTO("paypal", "paypal account"));
-        formFieldsForPaymentTypeDTOs.add(new FormFieldsForPaymentTypeDTO("bitcoin", "bitcoin account"));
-        return formFieldsForPaymentTypeDTOs;
+        }
+
+//        List<FormFieldsForPaymentTypeDTO> formFieldsForPaymentTypeDTOs = new ArrayList<FormFieldsForPaymentTypeDTO>();
+//        formFieldsForPaymentTypeDTOs.add(new FormFieldsForPaymentTypeDTO("card-payment", "account number"));
+//        formFieldsForPaymentTypeDTOs.add(new FormFieldsForPaymentTypeDTO("paypal", "paypal account"));
+//        formFieldsForPaymentTypeDTOs.add(new FormFieldsForPaymentTypeDTO("bitcoin", "bitcoin account"));
+//        return formFieldsForPaymentTypeDTOs;
     }
 }

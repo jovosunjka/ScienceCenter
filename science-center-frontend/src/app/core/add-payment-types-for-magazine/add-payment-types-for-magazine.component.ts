@@ -42,13 +42,17 @@ export class AddPaymentTypesForMagazineComponent implements OnInit {
         (formFieldsForPaymentTypes: any[]) => {
             this.formFieldsForPaymentTypes = formFieldsForPaymentTypes;
             this.formFieldsForPaymentTypes.forEach(
-              fffpt => {
-                const tokens = fffpt.formFields.split(',');
-                fffpt.formFields = [];
-                tokens.forEach(token =>
-                  fffpt.formFields.push( {id: token, value: ''} )
-                );
-              }
+              paymentType => paymentType.formFields.forEach(field => {
+                if (field.type === 'string') {
+                  field.value = '';
+                } else if (field.type === 'boolean') {
+                  field.value = false;
+                } else if (field.type === 'long') {
+                  field.value = 0;
+                } else {
+                  field.value = null;
+                }
+              })
             );
             this.toastr.success('Form fields for payment types loaded!');
         },
@@ -60,7 +64,7 @@ export class AddPaymentTypesForMagazineComponent implements OnInit {
     let paymentTypes = '';
     let numOfFilledFields;
     let haveLeastOnePaymentType = false;
-    const messages = []
+    const messages = [];
     this.formFieldsForPaymentTypes.forEach(fffptp => {
         paymentTypes += '|' + fffptp.paymentType + ';';
         let fields = '';
@@ -69,7 +73,9 @@ export class AddPaymentTypesForMagazineComponent implements OnInit {
             // if (field.value) {
               field.value = field.value.trim();
               if (field.value !== '') {
-                fields +=  ',' + field.id + ':' + field.value;
+                fields +=  ',' + field.name + ':' + field.value;
+                numOfFilledFields++;
+              } else if (field.optional) {
                 numOfFilledFields++;
               }
             // }
@@ -90,11 +96,11 @@ export class AddPaymentTypesForMagazineComponent implements OnInit {
       return;
     } else {
       if (messages.length > 0) {
-        messages.forEach(m => this.toastr.error(m))
+        messages.forEach(m => this.toastr.error(m));
         return;
       }
     }
-    
+
     paymentTypes = paymentTypes.substring(1);
 
     this.genericService.put<any>(this.relativeUrlForAddEditroaAndReviewers.concat('?processInstanceId=')

@@ -23,3 +23,7 @@
 h4 {
     border-bottom: 1px solid green;
 }
+
+input[type=checkbox] {
+    transform: scale(2.0);
+}

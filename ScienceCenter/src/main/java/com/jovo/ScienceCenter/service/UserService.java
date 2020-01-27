@@ -14,7 +14,9 @@ import java.util.Map;
 public interface UserService {
 
 	UserData getLoggedUser() throws Exception;
-	
+
+    void setAuthenticatedUserIdInCamunda(String userId);
+
     void save(UserData user) throws Exception;
 
     UserData getUserDataByUsername(String username);

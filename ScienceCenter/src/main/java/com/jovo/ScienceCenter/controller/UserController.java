@@ -55,6 +55,7 @@ public class UserController {
         	UsernamePasswordAuthenticationToken userInfo = new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getPassword());
             Authentication authentication = authenticationManager.authenticate(userInfo);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            userService.setAuthenticatedUserIdInCamunda(userDTO.getUsername());
 
             // Reload user details so we can generate token
             //authentication.getDetails()

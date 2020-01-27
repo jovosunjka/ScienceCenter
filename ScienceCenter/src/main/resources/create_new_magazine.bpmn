@@ -137,7 +137,7 @@
       <bpmn:incoming>SequenceFlow_1knaqpp</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1e6nz9a</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Task_0kpo9oy" name="AddPaymentTypes">
+    <bpmn:userTask id="Task_0kpo9oy" name="AddPaymentTypes" camunda:assignee="${processInitiator}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="paymentTypes" label="Payment Types" type="string" />
@@ -199,8 +199,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1uu5gzb_di" bpmnElement="SequenceFlow_1uu5gzb">
         <di:waypoint x="1330" y="480" />
-        <di:waypoint x="1330" y="620" />
-        <di:waypoint x="1240" y="620" />
+        <di:waypoint x="1330" y="590" />
+        <di:waypoint x="1240" y="590" />
         <di:waypoint x="1240" y="790" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0hwhx6k_di" bpmnElement="SequenceFlow_0hwhx6k">
