@@ -5,6 +5,8 @@ import com.jovo.ScienceCenter.dto.EditorOrReviewerDTO;
 import com.jovo.ScienceCenter.dto.FormFieldsDto;
 import com.jovo.ScienceCenter.dto.RequestForReviewerDTO;
 import com.jovo.ScienceCenter.dto.UserDTO;
+import com.jovo.ScienceCenter.exception.NotFoundException;
+import com.jovo.ScienceCenter.exception.TaskNotAssignedToYouException;
 import com.jovo.ScienceCenter.model.UserData;
 
 import java.util.List;
@@ -38,9 +40,11 @@ public interface UserService {
 
     FormFieldsDto getRegistrationFormFields();
 
-    void submitUserTask(String taskId, Map<String, Object> formFieldsMap) throws Exception;
+    void submitUserTask(String camundaUserId, String taskId, Map<String, Object> formFieldsMap)
+            throws NotFoundException, TaskNotAssignedToYouException;
 
-    void submitFirstUserTask(String processInstanceId, Map<String, Object> formFieldsMap) throws Exception;
+    void submitFirstUserTask(String camundaUserId, String processInstanceId, Map<String, Object> formFieldsMap)
+            throws NotFoundException, TaskNotAssignedToYouException;
 
     void checkConfirmationAndActivateUser(String confirmationToken, boolean reviewer);
 

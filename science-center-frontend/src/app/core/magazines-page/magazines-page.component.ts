@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Magazine } from 'src/app/shared/model/magazine';
 import { ForwardingMessageService } from '../services/forwarding-message/forwarding-message.service';
 import { RedirectUrlDto } from 'src/app/shared/model/redirect-url-dto';
+import { AuthenticationService } from '../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-magazines-page',
@@ -11,18 +12,21 @@ import { RedirectUrlDto } from 'src/app/shared/model/redirect-url-dto';
   styleUrls: ['./magazines-page.component.css']
 })
 export class MagazinesPageComponent implements OnInit {
+  reader: boolean;
 
   private magazines: Magazine[];
 
   private relativeUrlForPayment = '/payment/pay';
   private relativeUrlForAllActivatedMagazines = '/magazines/all-activated';
 
-  constructor(private genericService: GenericService, private toastr: ToastrService,
+  constructor(private genericService: GenericService, private toastr: ToastrService, private authenticationService: AuthenticationService,
               private forwardingMessageService: ForwardingMessageService, private ngZone: NgZone) {
-    this.magazines = [];
+        this.reader = false;
+        this.magazines = [];
    }
 
   ngOnInit() {
+    this.reader = this.isReader();
     this.getAllActivatedMagazines();
 
     this.forwardingMessageService.activateMagazineEvent.subscribe(
@@ -67,5 +71,9 @@ export class MagazinesPageComponent implements OnInit {
     );
   }
 
+  isReader() {
+    const roles: any = this.authenticationService.getCurrentUser().roles;
+    return roles.includes('READER');
+  }
 
 }

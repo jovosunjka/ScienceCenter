@@ -29,6 +29,13 @@ public class MembershipFeeServiceImpl implements MembershipFeeService {
     }
 
     @Override
+    public MembershipFee getActivatedMembershipFee(Long magazineId) {
+        return membershipFeeRepository.findByMagazineIdAndPaidAndValidUntilGreaterThan(magazineId, true,
+                LocalDateTime.now())
+                .orElse(null);
+    }
+
+    @Override
     public List<MembershipFee> getMembershipFees(Long payerId) {
         return membershipFeeRepository.findByPayerId(payerId);
     }

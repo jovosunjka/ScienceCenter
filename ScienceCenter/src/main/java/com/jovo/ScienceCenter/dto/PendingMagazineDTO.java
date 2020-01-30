@@ -6,7 +6,7 @@ public class PendingMagazineDTO extends MagazineDTO {
     private String taskId;
 
     public PendingMagazineDTO(Magazine magazine) {
-        super(magazine);
+        super(magazine, "Unknowon");
         this.taskId = null;
     }
 

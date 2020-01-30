@@ -3,6 +3,7 @@ package com.jovo.ScienceCenter.service;
 import com.jovo.ScienceCenter.dto.*;
 import com.jovo.ScienceCenter.exception.AlreadyExistsException;
 import com.jovo.ScienceCenter.exception.NotFoundException;
+import com.jovo.ScienceCenter.exception.TaskNotAssignedToYouException;
 import com.jovo.ScienceCenter.model.*;
 import com.jovo.ScienceCenter.model.Currency;
 import com.jovo.ScienceCenter.repository.MagazineRepository;
@@ -20,16 +21,12 @@ import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,7 +63,8 @@ public class MagazineServiceImpl implements MagazineService {
     @Autowired
     private FormService formService;
 
-    private static  PasswordGenerator passwordGenerator = new PasswordGenerator();
+    private static final  PasswordGenerator passwordGenerator = new PasswordGenerator();
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm:ss");
 
 
 
@@ -102,7 +100,8 @@ public class MagazineServiceImpl implements MagazineService {
     }
 
     @Override
-    public void submitUserTask(String taskId, Map<String, Object> formFieldsMap) throws Exception {
+    public void submitUserTask(String camundaUserId, String taskId, Map<String, Object> formFieldsMap)
+            throws NotFoundException, TaskNotAssignedToYouException {
         //ProcessInstance pi = runtimeService.startProcessInstanceByKey("UserRegistrationProcess");
 
         //List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
@@ -113,28 +112,25 @@ public class MagazineServiceImpl implements MagazineService {
             throw new NotFoundException("Task (id=".concat(taskId).concat(") doesn't exist!"));
         }
 
-        UserData loggedUser = userService.getLoggedUser();
-
-        if (!task.getAssignee().equals(loggedUser.getCamundaUserId())) {
-            throw new RuntimeException("The task(taskId=".concat(taskId).concat( " is assigned to ")
-                    .concat(task.getAssignee()).concat(", not ").concat(loggedUser.getCamundaUserId()).concat("!"));
+        if (!task.getAssignee().equals(camundaUserId)) {
+            throw new TaskNotAssignedToYouException("The task(taskId=".concat(taskId).concat( " is assigned to ")
+                    .concat(task.getAssignee()).concat(", not ").concat(camundaUserId).concat("!"));
         }
 
         formService.submitTaskForm(taskId, formFieldsMap);
     }
 
     @Override
-    public void submitFirstUserTask(String processInstanceId, Map<String, Object> formFieldsMap) throws Exception {
+    public void submitFirstUserTask(String camundaUserId, String processInstanceId, Map<String, Object> formFieldsMap)
+            throws NotFoundException, TaskNotAssignedToYouException {
         Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
         if(task == null) {
             throw new NotFoundException("UserTask for process with id=".concat(processInstanceId).concat(" not found!"));
         }
 
-        UserData loggedUser = userService.getLoggedUser();
-
-        if (!task.getAssignee().equals(loggedUser.getCamundaUserId())) {
-            throw new RuntimeException("The task (processInstanceId=".concat(processInstanceId).concat(") is assigned to ")
-                    .concat(task.getAssignee()).concat(", not ").concat(loggedUser.getCamundaUserId()).concat("!"));
+        if (!task.getAssignee().equals(camundaUserId)) {
+            throw new TaskNotAssignedToYouException("The task (processInstanceId=".concat(processInstanceId).concat(") is assigned to ")
+                    .concat(task.getAssignee()).concat(", not ").concat(camundaUserId).concat("!"));
         }
 
         formService.submitTaskForm(task.getId(), formFieldsMap);
@@ -178,10 +174,8 @@ public class MagazineServiceImpl implements MagazineService {
     }
 
     @Override
-    public List<FixMagazineDTO> getMagazinesWithInvalidData() throws Exception {
-        UserData userData = userService.getLoggedUser();
-
-        List<Task> tasks = taskService.createTaskQuery().taskName("EnterNewMagazineData").taskAssignee(userData.getCamundaUserId()).list();
+    public List<FixMagazineDTO> getMagazinesWithInvalidData(String camundaUserId) {
+        List<Task> tasks = taskService.createTaskQuery().taskName("EnterNewMagazineData").taskAssignee(camundaUserId).list();
         return tasks.stream()
                 .filter(task -> {
                     String checkedMagazineName = (String) runtimeService.getVariable(task.getExecutionId(), "checkedMagazineName");
@@ -205,8 +199,25 @@ public class MagazineServiceImpl implements MagazineService {
     }
 
     @Override
+    public List<MagazineDTO> getAllActivatedMagazinesWithPaidStatus() {
+        List<Magazine> magazines = magazineRepository.findByMagazineStatus(Status.ACTIVATED);
+        return magazines.stream()
+                .map(m -> {
+                    String paidUpTo = null;
+
+                    MembershipFee membershipFee = membershipFeeService.getActivatedMembershipFee(m.getId());
+                    if (membershipFee != null) {
+                        paidUpTo = "Paid up to " + membershipFee.getValidUntil().format(DATE_TIME_FORMATTER);
+                    }
+
+                    return new MagazineDTO(m, paidUpTo);
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public MembershipFee makeMembershipFee(Long authorId, Long magazineId, double price , Currency currency) {
-        MembershipFee membershipFee = new MembershipFee(magazineId, authorId, price, currency, LocalDateTime.now(), 1);
+        MembershipFee membershipFee = new MembershipFee(magazineId, authorId, price, currency);
         membershipFeeService.save(membershipFee);
         return  membershipFee;
     }
@@ -351,11 +362,10 @@ public class MagazineServiceImpl implements MagazineService {
     }
 
     @Override
-    public FormFieldsDto getCreateMagazineFormFields(String processInstanceId) throws Exception {
+    public FormFieldsDto getCreateMagazineFormFields(String camundaUserId, String processInstanceId) throws NotFoundException, TaskNotAssignedToYouException {
         if (processInstanceId == null) {
-            UserData loggedUser = userService.getLoggedUser();
             Map<String, Object> variablesMap = new HashMap<String, Object>();
-            variablesMap.put("processInitiator", loggedUser.getCamundaUserId());
+            variablesMap.put("processInitiator", camundaUserId);
             // iz nekog razloga camunda engine ne dodeli ulogovanog korisnika varijabli processInitiator
             ProcessInstance pi = runtimeService.startProcessInstanceByKey("CreateNewMagazineProcess", variablesMap);
             processInstanceId = pi.getId();
@@ -363,6 +373,15 @@ public class MagazineServiceImpl implements MagazineService {
 
 
         Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).list().get(0);
+
+        if(task == null) {
+            throw new NotFoundException("UserTask for process with id=".concat(processInstanceId).concat(" not found!"));
+        }
+
+        if (!task.getAssignee().equals(camundaUserId)) {
+            throw new TaskNotAssignedToYouException("The task (processInstanceId=".concat(processInstanceId).concat(") is assigned to ")
+                    .concat(task.getAssignee()).concat(", not ").concat(camundaUserId).concat("!"));
+        }
 
         TaskFormData tfd = formService.getTaskFormData(task.getId());
         List<FormField> properties = tfd.getFormFields();

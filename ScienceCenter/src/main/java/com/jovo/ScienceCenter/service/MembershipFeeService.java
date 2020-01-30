@@ -13,4 +13,6 @@ public interface MembershipFeeService {
    MembershipFee getMembershipFee(Long id);
 
    List<MembershipFee> getMembershipFees(Long payerId);
+
+   MembershipFee getActivatedMembershipFee(Long magazineId);
 }

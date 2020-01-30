@@ -4,6 +4,7 @@ package com.jovo.ScienceCenter.service;
 import com.jovo.ScienceCenter.dto.*;
 import com.jovo.ScienceCenter.exception.AlreadyExistsException;
 import com.jovo.ScienceCenter.exception.NotFoundException;
+import com.jovo.ScienceCenter.exception.TaskNotAssignedToYouException;
 import com.jovo.ScienceCenter.model.*;
 import com.jovo.ScienceCenter.repository.UserDataRepository;
 import com.jovo.ScienceCenter.util.StringUtil;
@@ -239,7 +240,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void submitUserTask(String taskId, Map<String, Object> formFieldsMap) throws Exception {
+	public void submitUserTask(String camundaUserId, String taskId, Map<String, Object> formFieldsMap)
+			throws NotFoundException, TaskNotAssignedToYouException {
 		//ProcessInstance pi = runtimeService.startProcessInstanceByKey("UserRegistrationProcess");
 
 		//List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
@@ -249,28 +251,25 @@ public class UserServiceImpl implements UserService {
 			throw new NotFoundException("Task (id=".concat(taskId).concat(") doesn't exist!"));
 		}
 
-		UserData loggedUser = getLoggedUser();
-
-		if (!task.getAssignee().equals(loggedUser.getCamundaUserId())) {
-			throw new RuntimeException("The task (taskId=".concat(taskId).concat(") is assigned to ").concat(task.getAssignee()).concat(", not ")
-					.concat(loggedUser.getCamundaUserId()).concat("!"));
+		if (!task.getAssignee().equals(camundaUserId)) {
+			throw new TaskNotAssignedToYouException("The task (taskId=".concat(taskId).concat(") is assigned to ").concat(task.getAssignee()).concat(", not ")
+					.concat(camundaUserId).concat("!"));
 		}
 
 		formService.submitTaskForm(taskId, formFieldsMap);
 	}
 
 	@Override
-	public void submitFirstUserTask(String processInstanceId, Map<String, Object> formFieldsMap) throws Exception {
+	public void submitFirstUserTask(String camundaUserId, String processInstanceId, Map<String, Object> formFieldsMap)
+			throws NotFoundException, TaskNotAssignedToYouException {
 		Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
 		if(task == null) {
 			throw new NotFoundException("UserTask for process with id=".concat(processInstanceId).concat(" not found!"));
 		}
 
-		UserData loggedUser = getLoggedUser();
-
-		if (!task.getAssignee().equals(loggedUser.getCamundaUserId())) {
-			throw new RuntimeException("The task(processInstanceId=".concat(processInstanceId).concat(") is assigned to ")
-					.concat(task.getAssignee()).concat(", not ").concat(loggedUser.getCamundaUserId()).concat("!"));
+		if (!task.getAssignee().equals(camundaUserId)) {
+			throw new TaskNotAssignedToYouException("The task(processInstanceId=".concat(processInstanceId).concat(") is assigned to ")
+					.concat(task.getAssignee()).concat(", not ").concat(camundaUserId).concat("!"));
 		}
 
 		formService.submitTaskForm(task.getId(), formFieldsMap);

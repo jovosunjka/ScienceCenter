@@ -1,4 +1,7 @@
 <h4 *ngIf="!magazines || magazines.length===0"> &nbsp;&nbsp;There are currently no magazines with invalid data.</h4>
+
+<button type="button" class="btn btn-primary"  (click)="getMagazinesWithInvalidData()">Refresh</button>
+
 <div class="table-responsive" *ngIf="magazines && magazines.length > 0">
   <table class="table table-hover table-bordered">
     <tr class="table-primary">
