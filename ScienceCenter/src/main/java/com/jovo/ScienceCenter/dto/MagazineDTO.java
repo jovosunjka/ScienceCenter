@@ -19,13 +19,14 @@ public class MagazineDTO {
     private String mainEditor;
     private String editors;
     private String reviewers;
+    private String paidUpTo;
 
     public MagazineDTO() {
 
     }
 
     public MagazineDTO(long id, String name, String issn, double membershipFee, Currency currency, String scientificAreas,
-                       String mainEditor, String editors, String reviewers) {
+                       String mainEditor, String editors, String reviewers, String paidUpTo) {
         this.id = id;
         this.name = name;
         this.issn = issn;
@@ -35,9 +36,10 @@ public class MagazineDTO {
         this.mainEditor = mainEditor;
         this.editors = editors;
         this.reviewers = reviewers;
+        this.paidUpTo = paidUpTo;
     }
 
-    public MagazineDTO(Magazine magazine) {
+    public MagazineDTO(Magazine magazine, String paidUpTo) {
         this.id = magazine.getId();
         this.name = magazine.getName();
         this.issn = magazine.getIssn();
@@ -56,6 +58,7 @@ public class MagazineDTO {
                 .map(UserData::getCamundaUserId).collect(Collectors.toList());
         String reviewersStr = String.join(", ", reviewerUsernames);
         this.reviewers = reviewersStr;
+        this.paidUpTo = paidUpTo;
     }
 
     public long getId() {
@@ -130,4 +133,7 @@ public class MagazineDTO {
         this.reviewers = reviewers;
     }
 
+    public String getPaidUpTo() { return paidUpTo; }
+
+    public void setPaidUpTo(String paidUpTo) { this.paidUpTo = paidUpTo; }
 }

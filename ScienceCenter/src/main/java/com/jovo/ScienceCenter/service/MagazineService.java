@@ -1,9 +1,8 @@
 package com.jovo.ScienceCenter.service;
 
-import com.jovo.ScienceCenter.dto.FixMagazineDTO;
-import com.jovo.ScienceCenter.dto.FormFieldsDto;
-import com.jovo.ScienceCenter.dto.PaymentTypeDTO;
-import com.jovo.ScienceCenter.dto.PendingMagazineDTO;
+import com.jovo.ScienceCenter.dto.*;
+import com.jovo.ScienceCenter.exception.NotFoundException;
+import com.jovo.ScienceCenter.exception.TaskNotAssignedToYouException;
 import com.jovo.ScienceCenter.model.Currency;
 import com.jovo.ScienceCenter.model.Magazine;
 import com.jovo.ScienceCenter.model.MembershipFee;
@@ -27,13 +26,16 @@ public interface MagazineService {
 
     void saveEditorsAndReviewersInMagazine(String magazineName, List<Long> editorIds, List<Long> reviewerIds);
 
-    FormFieldsDto getCreateMagazineFormFields(String processInstanceId) throws Exception;
+    FormFieldsDto getCreateMagazineFormFields(String camundaUserId, String processInstanceId)
+            throws NotFoundException, TaskNotAssignedToYouException;
 
     void savePaymentTypesForMagazine(String magazineName, List<PaymentTypeDTO> paymentTypes);
 
-    void submitUserTask(String taskId, Map<String, Object> formFieldsMap) throws Exception;
+    void submitUserTask(String camundaUserId, String taskId, Map<String, Object> formFieldsMap)
+            throws NotFoundException, TaskNotAssignedToYouException;
 
-    void submitFirstUserTask(String processInstanceId, Map<String, Object> formFieldsMap) throws Exception;
+    void submitFirstUserTask(String camundaUserId, String processInstanceId, Map<String, Object> formFieldsMap)
+            throws NotFoundException, TaskNotAssignedToYouException;
 
     void activateMagazine(String name);
 
@@ -41,7 +43,9 @@ public interface MagazineService {
 
     List<PendingMagazineDTO> getPendingMagazinesForChecking();
 
-    List<FixMagazineDTO> getMagazinesWithInvalidData() throws Exception;
+    List<FixMagazineDTO> getMagazinesWithInvalidData(String camundaUserId);
 
     Magazine loginMagazine(Magazine magazine);
+
+    List<MagazineDTO> getAllActivatedMagazinesWithPaidStatus();
 }

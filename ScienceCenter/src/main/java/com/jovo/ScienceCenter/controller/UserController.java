@@ -1,6 +1,8 @@
 package com.jovo.ScienceCenter.controller;
 
 import com.jovo.ScienceCenter.dto.*;
+import com.jovo.ScienceCenter.exception.NotFoundException;
+import com.jovo.ScienceCenter.exception.TaskNotAssignedToYouException;
 import com.jovo.ScienceCenter.model.Magazine;
 import com.jovo.ScienceCenter.model.UserData;
 import com.jovo.ScienceCenter.security.TokenUtils;
@@ -74,6 +76,12 @@ public class UserController {
     @RequestMapping(value ="/user-task-submit", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity registerationSubmit(@RequestParam("taskId") String taskId,
                                               @RequestBody List<IdValueDTO> idValueDTOList) {
+        UserData loggedUser = null;
+        try {
+            loggedUser = userService.getLoggedUser();
+        } catch (Exception e) {
+            new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
 
 //        Map<String, Object> formFieldsMap = idValueDTOList.stream()
 //                                             .collect(Collectors.toMap(IdValueDTO::getId, IdValueDTO::getValue));
@@ -81,9 +89,9 @@ public class UserController {
         idValueDTOList.stream()
                 .forEach(field -> formFieldsMap.put(field.getId(), field.getValue()));
         try {
-            userService.submitUserTask(taskId, formFieldsMap);
-        } catch (Exception e) {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            userService.submitUserTask(loggedUser.getCamundaUserId(), taskId, formFieldsMap);
+        } catch (NotFoundException | TaskNotAssignedToYouException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity(HttpStatus.OK);
@@ -98,11 +106,18 @@ public class UserController {
     @RequestMapping(value="/confirm-registration", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity confirmRegistration(@RequestParam("processInstanceId") String processInstanceId,
                                               @RequestBody ConfirmRegistrationDTO confirmRegistrationDTO) {
+        UserData loggedUser = null;
+        try {
+            loggedUser = userService.getLoggedUser();
+        } catch (Exception e) {
+            new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
         Map<String, Object> formFieldsMap = Collections.singletonMap("token", confirmRegistrationDTO.getToken());
         try {
-            userService.submitFirstUserTask(processInstanceId, formFieldsMap);
-        } catch (Exception e) {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            userService.submitFirstUserTask(loggedUser.getCamundaUserId(), processInstanceId, formFieldsMap);
+        } catch (NotFoundException | TaskNotAssignedToYouException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -140,13 +155,20 @@ public class UserController {
 
     @RequestMapping(value = "/confirm-reviewer-status", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity confirmReviewerStatus(@RequestParam("taskId") String taskId, @RequestBody ConfirmReviewerStatusDTO confirmReviewerStatusDTO) {
+        UserData loggedUser = null;
+        try {
+            loggedUser = userService.getLoggedUser();
+        } catch (Exception e) {
+            new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
         Map<String, Object> formFieldsMap = new HashMap<String, Object>();
         formFieldsMap.put("confirmId", confirmReviewerStatusDTO.getConfirmId());
         formFieldsMap.put("confirmed", confirmReviewerStatusDTO.isConfirmed());
         try {
-            userService.submitUserTask(taskId, formFieldsMap);
-        } catch (Exception e) {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            userService.submitUserTask(loggedUser.getCamundaUserId(), taskId, formFieldsMap);
+        } catch (NotFoundException | TaskNotAssignedToYouException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity(HttpStatus.OK);
     }

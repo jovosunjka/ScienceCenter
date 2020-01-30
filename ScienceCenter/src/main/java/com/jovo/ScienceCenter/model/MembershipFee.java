@@ -33,27 +33,22 @@ public class MembershipFee {
     @Column(name = "paid", unique = false, nullable = false)
     private boolean paid;
 
-    @Column(name = "duration", unique = false, nullable = false)
-    private int duration; // months
-
-    @Column(name = "expired", unique = false,nullable = false)
-    private boolean expired;
+    @Column(name = "valid_until", unique = false, nullable = false)
+    private LocalDateTime validUntil;
 
 
     public MembershipFee() {
 
     }
 
-    public MembershipFee(Long magazineId, Long payerId, double price,
-                         Currency currency, LocalDateTime timestamp, int duration) {
+    public MembershipFee(Long magazineId, Long payerId, double price, Currency currency) {
         this.magazineId = magazineId;
         this.payerId = payerId;
         this.price = price;
         this.currency = currency;
-        this.timestamp = timestamp;
+        this.timestamp = LocalDateTime.now();
         this.paid = false;
-        this.duration = duration;
-        this.expired = false;
+        this.validUntil = this.timestamp.plusDays(30);
     }
 
 
@@ -121,19 +116,7 @@ public class MembershipFee {
         this.timestamp = timestamp;
     }
 
-    public int getDuration() {
-        return duration;
-    }
+    public LocalDateTime getValidUntil() { return validUntil; }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public boolean isExpired() {
-        return expired;
-    }
-
-    public void setExpired(boolean expired) {
-        this.expired = expired;
-    }
+    public void setValidUntil(LocalDateTime validUntil) { this.validUntil = validUntil; }
 }

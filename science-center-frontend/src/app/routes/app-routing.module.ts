@@ -78,7 +78,7 @@ const routes: Routes = [
       path: 'add-editors-and-reviewers',
       component: AddEditorsAndReviewersComponent,
       data: {
-        expectedRoles: ['EDITOR']
+        expectedRoles: ['EDITOR', 'READER']
       },
       canActivate: [CanActivateUserGuard]
   },
