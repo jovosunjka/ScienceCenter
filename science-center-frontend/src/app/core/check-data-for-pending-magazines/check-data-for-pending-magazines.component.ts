@@ -10,7 +10,6 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class CheckDataForPendingMagazinesComponent implements OnInit {
 
-  
   private relativeUrlForAllPendingMagazines = '/magazines/all-pending';
   private relativeUrlForCheckData = '/magazines/check-data';
 

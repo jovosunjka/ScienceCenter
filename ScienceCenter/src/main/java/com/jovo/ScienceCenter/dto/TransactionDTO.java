@@ -1,10 +1,8 @@
 package com.jovo.ScienceCenter.dto;
 
 import com.jovo.ScienceCenter.model.Currency;
-import com.jovo.ScienceCenter.model.Transaction;
 import com.jovo.ScienceCenter.model.TransactionStatus;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 public class TransactionDTO {
@@ -21,15 +19,6 @@ public class TransactionDTO {
 
     }
 
-    public TransactionDTO(Transaction transaction) {
-        this.merchantOrderId = transaction.getMerchantOrderId();
-        this.amount = transaction.getAmount();
-        this.currency = transaction.getCurrency();
-        this.merchantTimestamp = transaction.getMerchantTimestamp();
-        this.timestamp = transaction.getTimestamp();
-        this.paymentType = transaction.getPaymentType();
-        this.status = transaction.getStatus();
-    }
 
     public Long getMerchantOrderId() {
         return merchantOrderId;
