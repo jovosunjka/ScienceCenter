@@ -105,6 +105,9 @@ public class PaymentServiceImpl implements PaymentService {
                     sb.append(mf.getId());
                 });
 
+        if (sb.toString().equals("")) {
+            return new ArrayList<TransactionDTO>();
+        }
         String transactionIds = sb.substring(1);
         ResponseEntity<TransactionDTOs> responseEntity = restTemplate.getForEntity(pmPayBackendTransactionsUrl
                                                             + "?transactionIds=" + transactionIds, TransactionDTOs.class);
@@ -125,7 +128,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void transactionCompleted(long merchantOrderId, String status) {
         MembershipFee membershipFee = membershipFeeService.getMembershipFee(merchantOrderId);
-        boolean paid = status.equals("success");
+        boolean paid = status.equalsIgnoreCase("success");
         membershipFee.setPaid(paid);
         membershipFeeService.save(membershipFee);
     }
