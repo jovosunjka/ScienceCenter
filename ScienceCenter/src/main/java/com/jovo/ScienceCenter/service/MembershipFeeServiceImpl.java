@@ -1,5 +1,6 @@
 package com.jovo.ScienceCenter.service;
 
+import com.jovo.ScienceCenter.exception.NotFoundException;
 import com.jovo.ScienceCenter.model.Currency;
 import com.jovo.ScienceCenter.model.Magazine;
 import com.jovo.ScienceCenter.model.MembershipFee;
@@ -29,14 +30,16 @@ public class MembershipFeeServiceImpl implements MembershipFeeService {
     }
 
     @Override
-    public MembershipFee getActivatedMembershipFee(Long magazineId) {
-        return membershipFeeRepository.findByMagazineIdAndPaidAndValidUntilGreaterThan(magazineId, true,
-                LocalDateTime.now())
-                .orElse(null);
+    public MembershipFee getActivatedMembershipFeeByMagazineIdAndPayerId(Long magazineId, Long payerId) {
+        return membershipFeeRepository.findByMagazineIdAndPayerIdAndPaidAndValidUntilGreaterThan(magazineId, payerId,
+                true, LocalDateTime.now())
+                .orElseThrow(() -> new NotFoundException("MembershipFee (magazineId=" + magazineId + ", payerId=" + payerId
+                        + ", paid=true) not found!"));
     }
 
     @Override
     public List<MembershipFee> getMembershipFees(Long payerId) {
         return membershipFeeRepository.findByPayerId(payerId);
     }
+    
 }

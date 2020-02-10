@@ -1,6 +1,7 @@
 package com.jovo.ScienceCenter.service;
 
 import com.jovo.ScienceCenter.dto.*;
+import com.jovo.ScienceCenter.exception.NotFoundException;
 import com.jovo.ScienceCenter.exception.PaymentConcentratorException;
 import com.jovo.ScienceCenter.exception.RequestTimeoutException;
 import com.jovo.ScienceCenter.model.*;
@@ -53,7 +54,8 @@ public class PaymentServiceImpl implements PaymentService {
 
 
     @Override
-    public String pay(Long payerId, Long magazineId) throws RequestTimeoutException, PaymentConcentratorException {
+    public String pay(Long payerId, Long magazineId) throws NotFoundException, RequestTimeoutException,
+                                                        PaymentConcentratorException {
         Magazine magazine = magazineService.getMagazine(magazineId);
         MembershipFee membershipFee = magazineService.makeMembershipFee(payerId, magazineId,
                 magazine.getMembershipFee(), magazine.getCurrency());

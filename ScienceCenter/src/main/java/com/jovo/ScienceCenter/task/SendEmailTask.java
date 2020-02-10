@@ -1,9 +1,14 @@
 package com.jovo.ScienceCenter.task;
 
 
+import com.jovo.ScienceCenter.service.UserService;
+import com.jovo.ScienceCenter.util.Email;
 import com.jovo.ScienceCenter.websockets.dto.WebSocketMessageDTO;
 import com.jovo.ScienceCenter.websockets.messaging.Producer;
+import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,6 +34,15 @@ public class SendEmailTask implements JavaDelegate {
     @Autowired
     private Producer producer;
 
+    @Autowired
+    private RuntimeService runtimeService;
+
+    @Autowired
+    private UserService userService;
+
+    private Expression emailForSendingExpression; // u nekim slucajevima ovo ce biti instancirano u realtime-u
+                                                    // (parallel multi instance)
+
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
@@ -36,17 +51,20 @@ public class SendEmailTask implements JavaDelegate {
         try {
             System.out.println("SendEmailTask_START");
 
+            Email emailData = (Email) runtimeService.getVariable(delegateExecution.getProcessInstanceId(), "currentEmail");
 
-            String username = (String) delegateExecution.getVariable("username");
-            // String emailOfUser = "sunjkajovo@gmail.com";
-            // String emailOfUser = "marko_srb@hotmail.rs";
-            String emailOfUser = (String) delegateExecution.getVariable("email");
-            String token = (String) delegateExecution.getVariable("token");
-            String linkUrl = confirmationUrl.concat("?token=").concat(token);
-            System.out.println("LINK:  ".concat(linkUrl));
+            // https://docs.camunda.org/manual/latest/user-guide/process-engine/delegation-code/#field-injection
+            String emailOfUser;
+            if (emailData.getAddress() == null) {
+                emailOfUser = (String) emailForSendingExpression.getValue(delegateExecution);
+            }
+            else {
+                emailOfUser = emailData.getAddress();
+            }
 
             // TODO nakon kontrolne tacke, odkomentarisi ovo
-            // sendEmail(username, emailOfUser, linkUrl);
+            // sendEmail(emailOfUser, emailData.getSubject(), emailData.getMessage());
+            printEmail(emailOfUser, emailData.getSubject(), emailData.getMessage());
 
             System.out.println("SendEmailTask_END");
         } catch (Exception e) {
@@ -61,27 +79,25 @@ public class SendEmailTask implements JavaDelegate {
         producer.sendMessage(message);
     }
 
-    private void sendEmail(String username, String emailOfUser, String linkUrl) throws MessagingException, UnsupportedEncodingException {
+    private void printEmail(String emailOfUser, String subject, String message) {
+        System.out.println("****************MAIL****************");
+        System.out.println("====================================");
+        System.out.println("EmailOfUser: " + emailOfUser);
+        System.out.println("Subject: " + subject);
+        System.out.println("HtmlMessage:");
+        System.out.println(message);
+    }
+
+    private void sendEmail(String emailOfUser, String subject, String htmlMessage) throws MessagingException, UnsupportedEncodingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
-        // String htmlMsg = "Dear " + user.getFirstName() + ", <br/><br/>";
-        String htmlMsg = "";
-        htmlMsg += "<h3> Welcome to Science Centre </h3> <br/><br/>";
-        htmlMsg += "Below are your login and activation details for your new account: <br/><br/>";
-        htmlMsg += "&nbsp; Email: &nbsp; <b> "+ emailOfUser +" </b> <br/>";
-        htmlMsg += "&nbsp; Username: &nbsp; <b> " + username + " </b> <br/>";
-        // htmlMsg += "&nbsp; Password: &nbsp; <b> " + user.getPassword() + " </b> <br/><br/>";
-        htmlMsg += "To activate your account, please click on the following link (if the link is disabled, Copy and Paste the URL into your Browser): <br/>";
-        // htmlMsg += "<a href='http://isaapp.herokuapp.com/myapp/#/users/activate?id_for_activation=" + idForActivation + "'> http://isaapp.herokuapp.com/myapp/#/users/activate?id_for_activation=" + idForActivation + " </a> <br/><br/>";
-        htmlMsg += "<a href='" + linkUrl + "'>" + linkUrl + " </a> <br/><br/>";
-        htmlMsg += "Kind Regards, <br/>";
-        htmlMsg += "Science Centre";
-        mimeMessage.setContent(htmlMsg, "text/html");
+        mimeMessage.setContent(htmlMessage, "text/html");
 
 
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "utf-8");
         helper.setTo(emailOfUser);
-        helper.setSubject("Science Centre Activation Account Support");
+        helper.setSubject(subject);
+        //helper.setSubject("Science Centre Activation Account Support");
         // helper.setFrom(env.getProperty(emailOfSender, passwordOfSender));
 
         javaMailSender.send(mimeMessage);

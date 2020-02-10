@@ -27,8 +27,8 @@ export class CreateMagazineComponent implements OnInit {
    }
 
   ngOnInit() {
-    if (this.route.snapshot.params['processInstanceId']) {
-      this.processInstanceId = this.route.snapshot.params['processInstanceId'];
+    if (this.route.snapshot.params.processInstanceId) {
+      this.processInstanceId = this.route.snapshot.params.processInstanceId;
       this.relativeUrlForFormFields += '/' + this.processInstanceId;
     }
 
@@ -62,7 +62,7 @@ export class CreateMagazineComponent implements OnInit {
     this.genericService.post(this.relativeUrlForUserTaskSubmit.concat('?taskId=').concat(this.taskId), idValueDTOs).subscribe(
         () => this.toastr.success('The form was successfully submitted!'),
         err => alert(JSON.stringify(err))
-      );
+    );
   }
 
   isString(x: any): x is string {
@@ -98,7 +98,6 @@ export class CreateMagazineComponent implements OnInit {
                         this.refreshSelectedScientificAreas();
                       }
                     }
-                
                   }
                 );
             },

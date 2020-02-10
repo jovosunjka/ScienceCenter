@@ -25,10 +25,10 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Service
 public class MagazineServiceImpl implements MagazineService {
@@ -190,7 +190,8 @@ public class MagazineServiceImpl implements MagazineService {
 
     @Override
     public Magazine getMagazine(Long id) {
-        return magazineRepository.findById(id).orElse(null);
+        return magazineRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Magazine (id=" + id + ") not found!"));
     }
 
     @Override
@@ -199,15 +200,25 @@ public class MagazineServiceImpl implements MagazineService {
     }
 
     @Override
-    public List<MagazineDTO> getAllActivatedMagazinesWithPaidStatus() {
+    public List<MagazineWithoutPaidStatusDTO> getAllActivatedMagazinesByEditor(UserData editor) {
+        return magazineRepository.findAllActivatedMagazinesByEditor(editor).stream()
+                .map(m -> new MagazineWithoutPaidStatusDTO(m))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MagazineDTO> getActivatedMagazinesWithPaidStatus(Long payerId) {
         List<Magazine> magazines = magazineRepository.findByMagazineStatus(Status.ACTIVATED);
         return magazines.stream()
                 .map(m -> {
-                    String paidUpTo = null;
+                    String paidUpTo;
 
-                    MembershipFee membershipFee = membershipFeeService.getActivatedMembershipFee(m.getId());
-                    if (membershipFee != null) {
+                    try {
+                        MembershipFee membershipFee =
+                                membershipFeeService.getActivatedMembershipFeeByMagazineIdAndPayerId(m.getId(), payerId);
                         paidUpTo = "Paid up to " + membershipFee.getValidUntil().format(DATE_TIME_FORMATTER);
+                    } catch (Exception e) {
+                        paidUpTo = null;
                     }
 
                     return new MagazineDTO(m, paidUpTo);
@@ -305,7 +316,8 @@ public class MagazineServiceImpl implements MagazineService {
         if (oldDataMgazine == null) {
             String username = "magazine_" + magazineRepository.findAll().size();
             String password = generatePassword();
-            Magazine magazine = new Magazine(name, issn, username, password, membershipFee, currency, scientificAreas, mainEditor);
+            Magazine magazine = new Magazine(name, issn, username, password, membershipFee, currency, scientificAreas,
+                                                mainEditor, payerType);
             magazineRepository.save(magazine);
         }
         else {

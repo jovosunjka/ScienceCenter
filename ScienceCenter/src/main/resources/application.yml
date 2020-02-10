@@ -1,3 +1,6 @@
+
+scientific-papers: classpath:scientific_papers
+
 backend.url: https://localhost:${server.port}${server.servlet.context-path}
 frontend.url: https://localhost:4200
 
@@ -99,3 +102,9 @@ camunda:
                   firstName: Demo
         filter.create: All tasks
         webapp.index-redirect-enabled: false
+
+
+spring.servlet.multipart.max-file-size: 100MB
+spring.servlet.multipart.max-request-size: 100MB
+# multipart.maxFileSize: 20Kb
+# multipart.maxRequestSize: 1Mb

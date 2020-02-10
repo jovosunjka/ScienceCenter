@@ -43,7 +43,6 @@ public class ActivateMagazineTask implements JavaDelegate {
             //e.printStackTrace();
             message = new WebSocketMessageDTO(true, "activate-magazine", e.getMessage());
             producer.sendMessage(message);
-            throw new SaveNewMagazineFailedException("Save new magazine failed");
         }
 
         message = new WebSocketMessageDTO(false, "activate-magazine",

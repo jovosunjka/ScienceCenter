@@ -1,0 +1,20 @@
+<section id="tabs">
+    <div class="row">
+        <div class="col-xl-12 ">
+            <nav>
+                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-magazines-page-tab" data-toggle="tab" href="#nav-magazines-page" role="tab" aria-controls="nav-magazines-page" aria-selected="true">MAGAZINES</a>
+                    <a class="nav-item nav-link" id="nav-repair-scientific-papers-tab" data-toggle="tab" href="#nav-repair-scientific-papers" role="tab" aria-controls="nav-repair-scientific-papers" aria-selected="false">REPAIR SCIENTIFIC PAPERS</a>
+                </div>
+            </nav>
+            <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-magazines-page" role="tabpanel" aria-labelledby="nav-magazines-page-tab">
+                    <app-magazines-page> </app-magazines-page>
+                </div>
+                <div class="tab-pane fade" id="nav-repair-scientific-papers" role="tabpanel" aria-labelledby="nav-repair-scientific-papers-tab">
+                    <app-repair-scientific-papers> </app-repair-scientific-papers>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

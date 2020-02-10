@@ -4,4 +4,5 @@ export interface EditorOrReviewer {
     firstName: string;
     lastName: string;
     scientificAreas: string;
+    mainEditor?: boolean;
 }

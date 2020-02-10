@@ -8,5 +8,5 @@ export interface Magazine {
     mainEditor: string;
     editors: string;
     reviewers: string;
-    paidUpTo: string;
+    paidUpTo?: string;
 }

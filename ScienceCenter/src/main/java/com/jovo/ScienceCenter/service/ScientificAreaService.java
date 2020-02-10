@@ -9,4 +9,6 @@ public interface ScientificAreaService {
     List<ScientificArea> getAllScientificAreas();
 
     List<ScientificArea> getScientificAreasByIds(List<Long> ids);
+
+    ScientificArea getScientificArea(Long id);
 }

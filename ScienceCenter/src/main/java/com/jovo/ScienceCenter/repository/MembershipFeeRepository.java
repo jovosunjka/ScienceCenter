@@ -11,6 +11,6 @@ public interface MembershipFeeRepository extends JpaRepository<MembershipFee, Lo
 
     List<MembershipFee> findByPayerId(Long payerId);
 
-    Optional<MembershipFee> findByMagazineIdAndPaidAndValidUntilGreaterThan(Long magazineId,
+    Optional<MembershipFee> findByMagazineIdAndPayerIdAndPaidAndValidUntilGreaterThan(Long magazineId, Long payerId,
                                                                             boolean paid, LocalDateTime validUntil);
 }

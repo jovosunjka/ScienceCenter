@@ -59,7 +59,7 @@ export class LoginPageComponent implements OnInit {
       } else if (roles.includes('EDITOR')) {
         this.router.navigate(['/editor-page']);
       } else if (roles.includes('USER')) {
-        this.router.navigate(['/magazines-page']);
+        this.router.navigate(['/user-page']);
       } else if (roles.includes('AUTHOR')) {
         this.router.navigate(['/author-page']);
       } else {

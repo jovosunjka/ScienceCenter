@@ -6,18 +6,20 @@ public class EditorOrReviewerDTO {
     private String firstName;
     private String lastName;
     private String scientificAreas;
+    private boolean mainEditor;
 
     public EditorOrReviewerDTO() {
 
     }
 
     public EditorOrReviewerDTO(long id, String username, String firstName, String lastName,
-                               String scientificAreas) {
+                               String scientificAreas, boolean mainEditor) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.scientificAreas = scientificAreas;
+        this.mainEditor = mainEditor;
     }
 
     public long getId() {
@@ -58,5 +60,13 @@ public class EditorOrReviewerDTO {
 
     public void setScientificAreas(String scientificAreas) {
         this.scientificAreas = scientificAreas;
+    }
+
+    public boolean getMainEditor() {
+        return mainEditor;
+    }
+
+    public void setMainEditor(boolean mainEditor) {
+        this.mainEditor = mainEditor;
     }
 }

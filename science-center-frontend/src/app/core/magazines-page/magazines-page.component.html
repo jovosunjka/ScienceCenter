@@ -4,7 +4,7 @@
     <a class="btn btn-success btn-lg" [routerLinkActive]="['active']" href="#" [routerLink]="['/create-magazine']">Create Magazine</a>
     <hr/>
 </div>
-<button type="button" class="btn btn-primary"  (click)="getAllActivatedMagazines()">Refresh</button>
+<button type="button" class="btn btn-primary"  (click)="getActivatedMagazines()">Refresh</button>
 
 <h4 *ngIf="!magazines || magazines.length===0"> &nbsp;&nbsp;There are currently no magazines.</h4>
 <div class="table-responsive" *ngIf="magazines && magazines.length > 0">
@@ -19,6 +19,7 @@
         <th>Reviewers</th>
         <th>Membership Fee</th>
         <th>Currency</th>
+        <th *ngIf="reader"></th>
         <th *ngIf="reader"></th>
     </tr>
     <tr *ngFor="let magazine of magazines; let i = index" class="table-info">
@@ -52,6 +53,9 @@
       <td *ngIf="reader">
         <button *ngIf="!magazine.paidUpTo" class="btn btn-danger" (click)="pay(magazine.id)">Pay</button>
         <p *ngIf="magazine.paidUpTo"><b>{{magazine.paidUpTo}}</b></p>
+      </td>
+      <td *ngIf="reader">
+          <button class="btn btn-success" (click)="startProcessForAddingScientificPaper(magazine.id)">Add Scientific Paper</button>
       </td>
     </tr>
   </table>

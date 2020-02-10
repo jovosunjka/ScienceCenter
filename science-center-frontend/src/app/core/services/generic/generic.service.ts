@@ -44,6 +44,27 @@ export class GenericService {
     return this.http.post(this.baseUrl + relativeUrl, t, { headers });
   }
 
+  sendPaper(relativeUrl: string, file: any, data: any) {
+    const fd = new FormData();
+    fd.append('scientific_paper_file', file);
+    fd.append('scientific_paper_data', new Blob([JSON.stringify(data)], {type: 'application/json'}));
+    return this.http.post(this.baseUrl + relativeUrl, fd);
+  }
+
+  sendPaperFile(relativeUrl: string, file: any) {
+    const fd = new FormData();
+    fd.append('scientific_paper_file', file);
+    return this.http.put(this.baseUrl + relativeUrl, fd);
+  }
+
+  getPdfContentFromServer(relativeUrl: string) {
+    const httpOptions = {
+      'responseType': 'arraybuffer' as 'json'
+     };
+
+    return this.http.get(this.baseUrl + relativeUrl, httpOptions);
+  }
+
   delete(relativeUrl: string, id: number) {
     return this.http.delete(this.baseUrl + relativeUrl + `/${id}` + '/delete');
   }
