@@ -33,7 +33,17 @@ public class SaveSelectedReviewersForScientificPaperTask implements JavaDelegate
         try {
             System.out.println("SaveSelectedReviewersForScientificPaperTask_START");
 
-            List<Long> reviewerIds = (List<Long>) delegateExecution.getVariable("reviewers");
+            String reviewers = (String) delegateExecution.getVariable("reviewers");
+            List<Long> reviewerIds;
+            if (reviewers.equals("")) {
+                reviewerIds = new ArrayList<Long>();
+            }
+            else {
+                reviewerIds = Arrays.stream(reviewers.split(","))
+                        .map(idStr -> Long.parseLong(idStr))
+                        .collect(Collectors.toList());
+            }
+
             scientificPaperService.saveSelectedReviewersForScientificPaper(delegateExecution.getProcessInstanceId(), reviewerIds);
 
             System.out.println("SaveSelectedReviewersForScientificPaperTask_END");

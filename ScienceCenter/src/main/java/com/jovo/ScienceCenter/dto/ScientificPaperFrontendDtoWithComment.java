@@ -1,7 +1,7 @@
 package com.jovo.ScienceCenter.dto;
 
 public class ScientificPaperFrontendDtoWithComment extends ScientificPaperFrontendDTO {
-    private String comment;
+    protected String commentForAuthor;
 
 
     public ScientificPaperFrontendDtoWithComment() {
@@ -9,16 +9,16 @@ public class ScientificPaperFrontendDtoWithComment extends ScientificPaperFronte
     }
 
     public ScientificPaperFrontendDtoWithComment(String taskId, String title, String keywords, String scientificPaperAbstract,
-                                                 String scientificArea, String author, String coauthors, String comment) {
+                                                 String scientificArea, String author, String coauthors, String commentForAuthor) {
         super(taskId, title, keywords, scientificPaperAbstract, scientificArea, author, coauthors);
-        this.comment = comment;
+        this.commentForAuthor = commentForAuthor;
     }
 
-    public String getComment() {
-        return comment;
+    public String getCommentForAuthor() {
+        return commentForAuthor;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setCommentForAuthor(String commentForAuthor) {
+        this.commentForAuthor = commentForAuthor;
     }
 }

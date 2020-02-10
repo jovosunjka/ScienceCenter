@@ -6,6 +6,7 @@ import com.jovo.ScienceCenter.exception.NotFoundException;
 import com.jovo.ScienceCenter.exception.TaskNotAssignedToYouException;
 import com.jovo.ScienceCenter.model.*;
 import com.jovo.ScienceCenter.repository.ScientificPaperRepository;
+import com.jovo.ScienceCenter.util.ReviewingResult;
 import org.camunda.bpm.engine.FormService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
@@ -230,11 +231,85 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
-    public List<ScientificPaperFrontendDtoWithComment> getScientificPapersForRepairing(String camundaUserId) {
+    public List<ScientificPaperFrontendDtoWithComment> getFirstRepairScientificPaper(String camundaUserId) {
         List<ScientificPaperFrontendDtoWithComment> scientificPaperFrontendDtoWithComments =
                                                                 new ArrayList<ScientificPaperFrontendDtoWithComment>();
-        List<Task> tasks = taskService.createTaskQuery().taskName("RepairScientificPaper").taskAssignee(camundaUserId)
+        List<Task> tasks = taskService.createTaskQuery().taskName("FirstRepairScientificPaper").taskAssignee(camundaUserId)
                                 .list();
+        tasks.stream()
+                .forEach(task -> {
+                    MainEditorAndScientificPaper mainEditorAndScientificPaper =
+                            (MainEditorAndScientificPaper) runtimeService.getVariable(task.getExecutionId(), "mainEditorAndScientificPaper");
+                    ScientificPaper scientificPaper = mainEditorAndScientificPaper.getScientificPaper();
+
+                    UserData author = scientificPaper.getAuthor();
+                    User authorCamundaUser = userService.getUser(author.getCamundaUserId());
+                    String authorStr = author.getCamundaUserId().concat(" (").concat(authorCamundaUser.getFirstName()).concat(" ")
+                            .concat(authorCamundaUser.getLastName()).concat(")");
+
+                    List<String> coauthors = scientificPaper.getCoauthors().stream()
+                            .map(c -> c.getFirstName().concat(" ").concat(c.getLastName()))
+                            .collect(Collectors.toList());
+
+                    String coauthorsStr = String.join(", ", coauthors);
+
+                    String commentForScientificPaper = (String) runtimeService.getVariable(task.getProcessInstanceId(), "commentForScientificPaper");
+
+                    ScientificPaperFrontendDtoWithComment scientificPaperFrontendDtoWithComment =
+                            new ScientificPaperFrontendDtoWithComment(task.getId(),  scientificPaper.getTitle(), scientificPaper.getKeywords(),
+                                    scientificPaper.getScientificPaperAbstract(), scientificPaper.getScientificArea().getName(),
+                                    authorStr, coauthorsStr, commentForScientificPaper);
+                    scientificPaperFrontendDtoWithComments.add(scientificPaperFrontendDtoWithComment);
+                });
+
+        return scientificPaperFrontendDtoWithComments;
+    }
+
+    @Override
+    public List<ScientificPaperFrontendDtoWithReviewings> getSecondRepairScientificPaper(String camundaUserId) {
+        List<ScientificPaperFrontendDtoWithReviewings> scientificPaperFrontendDTOs = new ArrayList<ScientificPaperFrontendDtoWithReviewings>();
+        List<Task> tasks = taskService.createTaskQuery().taskName("SecondRepairScientificPaper").taskAssignee(camundaUserId).list();
+        tasks.stream()
+                .forEach(task -> {
+                    MainEditorAndScientificPaper mainEditorAndScientificPaper =
+                            (MainEditorAndScientificPaper) runtimeService.getVariable(task.getExecutionId(), "mainEditorAndScientificPaper");
+                    ScientificPaper scientificPaper = mainEditorAndScientificPaper.getScientificPaper();
+
+                    UserData author = scientificPaper.getAuthor();
+                    User authorCamundaUser = userService.getUser(author.getCamundaUserId());
+                    String authorStr = author.getCamundaUserId().concat(" (").concat(authorCamundaUser.getFirstName()).concat(" ")
+                            .concat(authorCamundaUser.getLastName()).concat(")");
+
+                    List<String> coauthors = scientificPaper.getCoauthors().stream()
+                            .map(c -> c.getFirstName().concat(" ").concat(c.getLastName()))
+                            .collect(Collectors.toList());
+
+                    String coauthorsStr = String.join(", ", coauthors);
+                    List<ReviewingResult> reviewingResults =
+                            (List<ReviewingResult>) runtimeService.getVariable(task.getProcessInstanceId(),
+                                                                                        "reviewingResults");
+
+                    /*String editorOfScientificAreaDecisionStr =
+                        (String) runtimeService.getVariable(task.getProcessInstanceId(), "editorOfScientificAreaDecision");
+                    StatusOfScientificPaperAfterReviewing editorOfScientificAreaDecision = StatusOfScientificPaperAfterReviewing
+                                                                                            .valueOf(editorOfScientificAreaDecisionStr);*/
+
+                    ScientificPaperFrontendDtoWithReviewings scientificPaperFrontendDTO =
+                            new ScientificPaperFrontendDtoWithReviewings(task.getId(),  scientificPaper.getTitle(), scientificPaper.getKeywords(),
+                                    scientificPaper.getScientificPaperAbstract(), scientificPaper.getScientificArea().getName(),
+                                    authorStr, coauthorsStr, reviewingResults);
+                    scientificPaperFrontendDTOs.add(scientificPaperFrontendDTO);
+                });
+
+        return scientificPaperFrontendDTOs;
+    }
+
+    @Override
+    public List<ScientificPaperFrontendDtoWithComment> getFinalRepairScientificPaper(String camundaUserId) {
+        List<ScientificPaperFrontendDtoWithComment> scientificPaperFrontendDtoWithComments =
+                new ArrayList<ScientificPaperFrontendDtoWithComment>();
+        List<Task> tasks = taskService.createTaskQuery().taskName("FinalRepairScientificPaper").taskAssignee(camundaUserId)
+                .list();
         tasks.stream()
                 .forEach(task -> {
                     MainEditorAndScientificPaper mainEditorAndScientificPaper =
@@ -370,6 +445,140 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
+    public List<ScientificPaperFrontendDtoWithReviewings> getFirstDecision(String camundaUserId) {
+        List<ScientificPaperFrontendDtoWithReviewings> scientificPaperFrontendDTOs = new ArrayList<ScientificPaperFrontendDtoWithReviewings>();
+        List<Task> tasks = taskService.createTaskQuery().taskName("FirstDecision").taskAssignee(camundaUserId).list();
+        tasks.stream()
+                .forEach(task -> {
+                    MainEditorAndScientificPaper mainEditorAndScientificPaper =
+                            (MainEditorAndScientificPaper) runtimeService.getVariable(task.getExecutionId(), "mainEditorAndScientificPaper");
+                    ScientificPaper scientificPaper = mainEditorAndScientificPaper.getScientificPaper();
+
+                    UserData author = scientificPaper.getAuthor();
+                    User authorCamundaUser = userService.getUser(author.getCamundaUserId());
+                    String authorStr = author.getCamundaUserId().concat(" (").concat(authorCamundaUser.getFirstName()).concat(" ")
+                            .concat(authorCamundaUser.getLastName()).concat(")");
+
+                    List<String> coauthors = scientificPaper.getCoauthors().stream()
+                            .map(c -> c.getFirstName().concat(" ").concat(c.getLastName()))
+                            .collect(Collectors.toList());
+
+                    String coauthorsStr = String.join(", ", coauthors);
+                    List<ReviewingResult> reviewingResults =
+                            (List<ReviewingResult>) runtimeService.getVariable(task.getProcessInstanceId(), "reviewingResults");
+
+
+                    ScientificPaperFrontendDtoWithReviewings scientificPaperFrontendDTO =
+                            new ScientificPaperFrontendDtoWithReviewings(task.getId(),  scientificPaper.getTitle(), scientificPaper.getKeywords(),
+                                    scientificPaper.getScientificPaperAbstract(), scientificPaper.getScientificArea().getName(),
+                                    authorStr, coauthorsStr, reviewingResults);
+                    scientificPaperFrontendDTOs.add(scientificPaperFrontendDTO);
+                });
+
+        return scientificPaperFrontendDTOs;
+    }
+
+    @Override
+    public List<ScientificPaperFrontendDtoWithReviewings> getSecondDecision(String camundaUserId) {
+        List<ScientificPaperFrontendDtoWithReviewings> scientificPaperFrontendDTOs = new ArrayList<ScientificPaperFrontendDtoWithReviewings>();
+        List<Task> tasks = taskService.createTaskQuery().taskName("SecondDecision").taskAssignee(camundaUserId).list();
+        tasks.stream()
+                .forEach(task -> {
+                    MainEditorAndScientificPaper mainEditorAndScientificPaper =
+                            (MainEditorAndScientificPaper) runtimeService.getVariable(task.getExecutionId(), "mainEditorAndScientificPaper");
+                    ScientificPaper scientificPaper = mainEditorAndScientificPaper.getScientificPaper();
+
+                    UserData author = scientificPaper.getAuthor();
+                    User authorCamundaUser = userService.getUser(author.getCamundaUserId());
+                    String authorStr = author.getCamundaUserId().concat(" (").concat(authorCamundaUser.getFirstName()).concat(" ")
+                            .concat(authorCamundaUser.getLastName()).concat(")");
+
+                    List<String> coauthors = scientificPaper.getCoauthors().stream()
+                            .map(c -> c.getFirstName().concat(" ").concat(c.getLastName()))
+                            .collect(Collectors.toList());
+
+                    String coauthorsStr = String.join(", ", coauthors);
+                    List<ReviewingResult> reviewingResults =
+                            (List<ReviewingResult>) runtimeService.getVariable(task.getProcessInstanceId(), "reviewingResults");
+
+
+                    ScientificPaperFrontendDtoWithReviewings scientificPaperFrontendDTO =
+                            new ScientificPaperFrontendDtoWithReviewings(task.getId(),  scientificPaper.getTitle(), scientificPaper.getKeywords(),
+                                    scientificPaper.getScientificPaperAbstract(), scientificPaper.getScientificArea().getName(),
+                                    authorStr, coauthorsStr, reviewingResults);
+                    scientificPaperFrontendDTOs.add(scientificPaperFrontendDTO);
+                });
+
+        return scientificPaperFrontendDTOs;
+    }
+
+    @Override
+    public List<ScientificPaperFrontendDtoWithReviewings> getFinalDecision(String camundaUserId) {
+        List<ScientificPaperFrontendDtoWithReviewings> scientificPaperFrontendDTOs = new ArrayList<ScientificPaperFrontendDtoWithReviewings>();
+        List<Task> tasks = taskService.createTaskQuery().taskName("FinalDecision").taskAssignee(camundaUserId).list();
+        tasks.stream()
+                .forEach(task -> {
+                    MainEditorAndScientificPaper mainEditorAndScientificPaper =
+                            (MainEditorAndScientificPaper) runtimeService.getVariable(task.getExecutionId(), "mainEditorAndScientificPaper");
+                    ScientificPaper scientificPaper = mainEditorAndScientificPaper.getScientificPaper();
+
+                    UserData author = scientificPaper.getAuthor();
+                    User authorCamundaUser = userService.getUser(author.getCamundaUserId());
+                    String authorStr = author.getCamundaUserId().concat(" (").concat(authorCamundaUser.getFirstName()).concat(" ")
+                            .concat(authorCamundaUser.getLastName()).concat(")");
+
+                    List<String> coauthors = scientificPaper.getCoauthors().stream()
+                            .map(c -> c.getFirstName().concat(" ").concat(c.getLastName()))
+                            .collect(Collectors.toList());
+
+                    String coauthorsStr = String.join(", ", coauthors);
+                    List<ReviewingResult> reviewingResults =
+                            (List<ReviewingResult>) runtimeService.getVariable(task.getProcessInstanceId(), "reviewingResults");
+
+
+                    ScientificPaperFrontendDtoWithReviewings scientificPaperFrontendDTO =
+                            new ScientificPaperFrontendDtoWithReviewings(task.getId(),  scientificPaper.getTitle(), scientificPaper.getKeywords(),
+                                    scientificPaper.getScientificPaperAbstract(), scientificPaper.getScientificArea().getName(),
+                                    authorStr, coauthorsStr, reviewingResults);
+                    scientificPaperFrontendDTOs.add(scientificPaperFrontendDTO);
+                });
+
+        return scientificPaperFrontendDTOs;
+    }
+
+    @Override
+    public List<ScientificPaperFrontendDTO> getScientificPapersForReviewing(String camundaUserId) {
+        List<ScientificPaperFrontendDTO> scientificPaperFrontendDTOs = new ArrayList<ScientificPaperFrontendDTO>();
+        List<Task> tasks = taskService.createTaskQuery().taskName("ProcessingScientificPaper").taskAssignee(camundaUserId)
+                                                                                                                .list();
+        tasks.stream()
+                .forEach(task -> {
+                    MainEditorAndScientificPaper mainEditorAndScientificPaper =
+                            (MainEditorAndScientificPaper) runtimeService.getVariable(task.getExecutionId(), "mainEditorAndScientificPaper");
+                    ScientificPaper scientificPaper = mainEditorAndScientificPaper.getScientificPaper();
+
+                    UserData author = scientificPaper.getAuthor();
+                    User authorCamundaUser = userService.getUser(author.getCamundaUserId());
+                    String authorStr = author.getCamundaUserId().concat(" (").concat(authorCamundaUser.getFirstName()).concat(" ")
+                            .concat(authorCamundaUser.getLastName()).concat(")");
+
+                    List<String> coauthors = scientificPaper.getCoauthors().stream()
+                            .map(c -> c.getFirstName().concat(" ").concat(c.getLastName()))
+                            .collect(Collectors.toList());
+
+                    String coauthorsStr = String.join(", ", coauthors);
+
+                    ScientificPaperFrontendDTO scientificPaperFrontendDTO =
+                            new ScientificPaperFrontendDTO(task.getId(),  scientificPaper.getTitle(), scientificPaper.getKeywords(),
+                                    scientificPaper.getScientificPaperAbstract(), scientificPaper.getScientificArea().getName(),
+                                    authorStr, coauthorsStr);
+                    scientificPaperFrontendDTOs.add(scientificPaperFrontendDTO);
+                });
+
+        return scientificPaperFrontendDTOs;
+    }
+
+    @Override
     public void saveSelectedReviewersForScientificPaper(String processInstanceId, List<Long> reviewerIds) {
         List<UserData> reviewers;
         if (reviewerIds.size() == 1) {
@@ -399,5 +608,12 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
 
         runtimeService.setVariable(processInstanceId, "selectedReviewersForScientificPaper", reviewers);
 
+        runtimeService.setVariable(processInstanceId, "reviewingResults", new ArrayList<ReviewingResult>());
+    }
+
+    @Override
+    public void addReviewingResult(String mainProcessInstanceId, ReviewingResult reviewingResult) {
+        List<ReviewingResult> reviewingResults = (List<ReviewingResult>) runtimeService.getVariable(mainProcessInstanceId, "reviewingResults");
+        reviewingResults.add(reviewingResult);
     }
 }

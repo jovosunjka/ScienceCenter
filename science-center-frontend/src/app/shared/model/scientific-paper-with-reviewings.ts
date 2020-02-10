@@ -1,4 +1,6 @@
-export interface ScientificPaper {
+import { ReviewingResult } from './reviewing-result';
+
+export interface ScientificPaperWithReviewings {
     taskId: string;
     title: string;
     keywords: string;
@@ -6,6 +8,6 @@ export interface ScientificPaper {
     scientificArea: string;
     author: string;
     coauthors: string;
-    commentForAuthor?: string;
-    commentForEditor?: string; 
+    reviewings: ReviewingResult[];
+    answers?: string;
 }

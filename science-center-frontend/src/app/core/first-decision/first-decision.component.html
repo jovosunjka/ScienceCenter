@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-primary"  (click)="getScientificPapersForProcessing()">Refresh</button>
+<button type="button" class="btn btn-primary"  (click)="getScientificPapersForReviewing()">Refresh</button>
 <h4 *ngIf="!scientificPapers || scientificPapers.length===0"> &nbsp;&nbsp;There are currently no scientific papers.</h4>
 <div class="table-responsive" *ngIf="scientificPapers && scientificPapers.length > 0">
   <table class="table table-hover table-bordered">
@@ -40,16 +40,26 @@
                 <button class="btn btn-primary" (click)="getPdfContentFromServer(scientificPaper.taskId, scientificPaper.title)">Download</button>
             </td>
             <td>
-                <button type="button" class="btn btn-success"  (click)="processPaper(scientificPaper.taskId, 'EVERYTHING_IS_OK', '')">EVERYTHING IS OK</button>
+                <button type="button" class="btn btn-success"  (click)="firstDecisionForPaper(scientificPaper.taskId, 'EVERYTHING_IS_OK')">ACCEPT</button>
             </td>
         </tr>
         <tr class="table-info">
             <td colspan="7">
-                <textarea rows="4" cols="100" placeholder="Comment" [(ngModel)]="scientificPaper.commentForAuthor" name="comment"> </textarea>
+                <ol>
+                    <li *ngFor="let reviewing of reviewings">
+                        <ul>
+                            <li> Reviewer: {{reviewing.reviewer}} </li>
+                            <li> Status: {{reviewing.statusAfterReviewing}} </li>
+                            <li> Comment for author: {{reviewing.commentForAuthor}} </li>
+                            <li> Comment for editor: {{reviewing.commentForEditor}} </li>
+                        </ul>
+                    </li>
+                </ol>
             </td>
             <td>
-                <button type="button" class="btn btn-warning" (click)="processPaper(scientificPaper.taskId, 'NOT_FORMATTED_AS_REQUIRED', scientificPaper.commentForAuthor)">NOT FORMATTED AS REQUIRED</button>
-                <button type="button" class="btn btn-danger" (click)="processPaper(scientificPaper.taskId, 'NOT_THEMATICALLY_ACCEPTABLE', scientificPaper.commentForAuthor)">NOT THEMATICALLY ACCEPTABLE</button>
+                <button type="button" class="btn btn-warning" (click)="firstDecisionForPaper(scientificPaper.taskId, 'ACCEPT_WITH_MINOR_UPDATES')">ACCEPT WITH MINOR UPDATES</button>
+                <button type="button" class="btn btn-warning" (click)="firstDecisionForPaper(scientificPaper.taskId, 'CONDITIONALLY_ACCEPT_WITH_BIGGER_UPDATES')">CONDITIONALLY ACCEPT WITH BIGGER UPDATES</button>
+                <button type="button" class="btn btn-danger" (click)="firstDecisionForPaper(scientificPaper.taskId, 'DECLINE')">DECLINE</button>
             </td> 
         </tr>
     </ng-template>

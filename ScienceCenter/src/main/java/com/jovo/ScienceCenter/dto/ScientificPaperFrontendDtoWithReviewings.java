@@ -1,22 +1,23 @@
 package com.jovo.ScienceCenter.dto;
 
+import com.jovo.ScienceCenter.util.ReviewingResult;
 
-public class ScientificPaperFrontendDTO {
-    protected String taskId;
-    protected String title;
-    protected String keywords;
-    protected String scientificPaperAbstract;
-    protected String scientificArea;
-    protected String author;
-    protected String coauthors;
+import java.util.List;
+
+public class ScientificPaperFrontendDtoWithReviewings {
+    private String taskId;
+    private String title;
+    private String keywords;
+    private String scientificPaperAbstract;
+    private String scientificArea;
+    private String author;
+    private String coauthors;
+    private List<ReviewingResult> reviewings;
 
 
-    public ScientificPaperFrontendDTO() {
-
-    }
-
-    public ScientificPaperFrontendDTO(String taskId, String title, String keywords, String scientificPaperAbstract,
-                                      String scientificArea, String author, String coauthors) {
+    public ScientificPaperFrontendDtoWithReviewings(String taskId, String title, String keywords,
+                                                    String scientificPaperAbstract, String scientificArea,
+                                                    String author, String coauthors, List<ReviewingResult> reviewings) {
         this.taskId = taskId;
         this.title = title;
         this.keywords = keywords;
@@ -24,6 +25,7 @@ public class ScientificPaperFrontendDTO {
         this.scientificArea = scientificArea;
         this.author = author;
         this.coauthors = coauthors;
+        this.reviewings = reviewings;
     }
 
     public String getTaskId() {
@@ -80,5 +82,13 @@ public class ScientificPaperFrontendDTO {
 
     public void setCoauthors(String coauthors) {
         this.coauthors = coauthors;
+    }
+
+    public List<ReviewingResult> getReviewings() {
+        return reviewings;
+    }
+
+    public void setReviewings(List<ReviewingResult> reviewings) {
+        this.reviewings = reviewings;
     }
 }

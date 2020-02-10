@@ -1,10 +1,11 @@
+<button type="button" class="btn btn-primary" (click)="getScientificPapersForSelectingReviewers()">Refresh</button>
 <section id="tabs">
     <div class="row">
         <div class="col-xl-12 ">
             <nav>
                 <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                     <ng-template ngFor let-scientificPaper let-i="index" [ngForOf]="scientificPapers">
-                        <a class="nav-item nav-link {{i==0 ? 'active' : ''}}" id="nav-select-reviewers-for-scientific-papers-tab" data-toggle="tab" href="#nav-select-reviewers-for-scientific-papers" role="tab" aria-controls="nav-select-reviewers-for-scientific-papers" aria-selected="false"> {{scientificPaper.title}}</a>
+                        <a class="nav-item nav-link {{i==0 ? 'active' : ''}}" id="nav-select-reviewers-for-scientific-papers-tab" data-toggle="tab" href="#nav-select-reviewers-for-scientific-papers" role="tab" aria-controls="nav-select-reviewers-for-scientific-papers" aria-selected="{{i==0 ? 'true' : 'false'}}"> {{scientificPaper.title}}</a>
                     </ng-template>
                 </div>
             </nav>

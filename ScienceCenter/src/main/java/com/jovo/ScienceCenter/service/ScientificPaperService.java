@@ -6,6 +6,7 @@ import com.jovo.ScienceCenter.exception.TaskNotAssignedToYouException;
 import com.jovo.ScienceCenter.model.MainEditorAndScientificPaper;
 import com.jovo.ScienceCenter.model.ScientificPaper;
 import com.jovo.ScienceCenter.model.UserData;
+import com.jovo.ScienceCenter.util.ReviewingResult;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,7 +35,11 @@ public interface ScientificPaperService {
 
     MainEditorAndScientificPaper getMainEditorAndScientificPaper(String taskId);
 
-    List<ScientificPaperFrontendDtoWithComment> getScientificPapersForRepairing(String camundaUserId);
+    List<ScientificPaperFrontendDtoWithComment> getFirstRepairScientificPaper(String camundaUserId);
+
+    List<ScientificPaperFrontendDtoWithReviewings> getSecondRepairScientificPaper(String camundaUserId);
+
+    List<ScientificPaperFrontendDtoWithComment> getFinalRepairScientificPaper(String camundaUserId);
 
     void repairScientificPaper(String processInstanceId, String repairedFileName);
 
@@ -47,4 +52,14 @@ public interface ScientificPaperService {
     List<TaskIdAndTitleDTO> getScientificPapersForSelectingReviews(String camundaUserId);
 
     void saveSelectedReviewersForScientificPaper(String processInstanceId, List<Long> reviewerIds);
+
+    void addReviewingResult(String mainProcessInstanceId, ReviewingResult reviewingResult);
+
+    List<ScientificPaperFrontendDtoWithReviewings> getFirstDecision(String camundaUserId);
+
+    List<ScientificPaperFrontendDtoWithReviewings> getSecondDecision(String camundaUserId);
+
+    List<ScientificPaperFrontendDtoWithReviewings> getFinalDecision(String camundaUserId);
+
+    List<ScientificPaperFrontendDTO> getScientificPapersForReviewing(String camundaUserId);
 }

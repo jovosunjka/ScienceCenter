@@ -1,0 +1,24 @@
+<section id="tabs">
+    <div class="row">
+        <div class="col-xl-12 ">
+            <nav>
+                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-first-decision-tab" data-toggle="tab" href="#nav-first-decision" role="tab" aria-controls="nav-first-decision" aria-selected="true">FIRST DECISION</a>
+                    <a class="nav-item nav-link" id="nav-second-decision-tab" data-toggle="tab" href="#nav-second-decision" role="tab" aria-controls="nav-second-decision" aria-selected="false">SECOND DECISION</a>
+                    <a class="nav-item nav-link" id="nav-final-decision-tab" data-toggle="tab" href="#nav-final-decision" role="tab" aria-controls="nav-final-decision" aria-selected="false">FINAL DECISION</a>
+                </div>
+            </nav>
+            <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-first-decision" role="tabpanel" aria-labelledby="nav-first-decision-tab">
+                    <app-first-decision> </app-first-decision>
+                </div>
+                <div class="tab-pane fade" id="nav-second-decision" role="tabpanel" aria-labelledby="nav-second-decision-tab">
+                    <app-second-decision> </app-second-decision>
+                </div>
+                <div class="tab-pane fade" id="nav-final-decision" role="tabpanel" aria-labelledby="nav-final-decision-tab">
+                    <app-final-decision> </app-final-decision>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

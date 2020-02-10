@@ -4,15 +4,15 @@ import { ScientificPaper } from 'src/app/shared/model/scientific-paper';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-process-scientific-papers',
-  templateUrl: './process-scientific-papers.component.html',
-  styleUrls: ['./process-scientific-papers.component.css']
+  selector: 'app-review-scientific-papers',
+  templateUrl: './review-scientific-papers.component.html',
+  styleUrls: ['./review-scientific-papers.component.css']
 })
-export class ProcessScientificPapersComponent implements OnInit {
-
-  private relativeUrlForScientificPapersForProcessing = '/scientific-papers/for-processing';
-  private relativeUrlForProcessScientificPaper = '/scientific-papers/process';
+export class ReviewScientificPapersComponent implements OnInit {
   private relativeUrlForPdfContent = '/scientific-papers/pdf';
+  private relativeUrlForScientificPapersForReviewing = '/scientific-papers/for-reviewing';
+  private relativeUrlForReviewScientificPaper = '/scientific-papers/review';
+  private mainProcessInstanceId: string;
 
   scientificPapers: ScientificPaper[];
 
@@ -22,14 +22,18 @@ export class ProcessScientificPapersComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getScientificPapersForProcessing();
+    this.mainProcessInstanceId = localStorage.getItem('processInstanceId');
+    this.getScientificPapersForReviewing();
   }
 
-  getScientificPapersForProcessing() {
-    this.genericService.get<ScientificPaper[]>(this.relativeUrlForScientificPapersForProcessing).subscribe(
+  getScientificPapersForReviewing() {
+    this.genericService.get<ScientificPaper[]>(this.relativeUrlForScientificPapersForReviewing).subscribe(
       (scientificPapers: ScientificPaper[]) => {
         this.scientificPapers = scientificPapers;
-        this.scientificPapers.forEach(sp => sp.commentForAuthor = '');
+        this.scientificPapers.forEach(sp => {
+          sp.commentForAuthor = '';
+          sp.commentForEditor = '';
+        });
 
         this.toastr.success('Scientific papers loaded!');
       },
@@ -37,19 +41,6 @@ export class ProcessScientificPapersComponent implements OnInit {
         this.toastr.error('Problem with loading scientific papers!');
       }
     );
-  }
-
-  processPaper(taskId: string, status: string, comment: string) {
-    this.genericService.put<any>(this.relativeUrlForProcessScientificPaper.concat('?taskId=' + taskId), {status, comment} )
-      .subscribe(
-        () => {
-            this.getScientificPapersForProcessing();
-            this.toastr.success('Processing scientific paper is done!');
-        },
-        err => {
-            this.toastr.error('Problem with processing scientific paper!');
-        }
-      );
   }
 
   getPdfContentFromServer(taskId: string, title) {
@@ -77,6 +68,21 @@ export class ProcessScientificPapersComponent implements OnInit {
     element.click();
 
     document.body.removeChild(element);
+  }
+
+  reviewPaper(taskId: string, statusAfterReviewing: string, commentForAuthor: string, commentForEditor: string) {
+    this.genericService.put<any>(this.relativeUrlForReviewScientificPaper
+          .concat('?taskId=' + taskId).concat('&mainProcessInstanceId=' + this.mainProcessInstanceId),
+           {statusAfterReviewing, commentForAuthor, commentForEditor} )
+      .subscribe(
+        () => {
+            this.getScientificPapersForReviewing();
+            this.toastr.success('Reviewing scientific paper is done!');
+        },
+        err => {
+            this.toastr.error('Problem with Reviewing scientific paper!');
+        }
+      );
   }
 
 }

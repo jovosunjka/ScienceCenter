@@ -1,58 +1,24 @@
-<button type="button" class="btn btn-primary"  (click)="getScientificPapersForRepairing()">Refresh</button>
-<h4 *ngIf="!scientificPapers || scientificPapers.length===0"> &nbsp;&nbsp;There are currently no scientific papers.</h4>
-<div class="table-responsive" *ngIf="scientificPapers && scientificPapers.length > 0">
-  <table class="table table-hover table-bordered">
-    <tr class="table-primary">
-        <th>#</th>
-        <th>Title</th>
-        <th>Keywords</th>
-        <th>Abstract</th>
-        <th>Scientific Area</th>
-        <th>Author</th>
-        <th>Coauthors</th>
-        <th></th>
-    </tr>
-    <ng-template ngFor let-scientificPaper let-i="index" [ngForOf]="scientificPapers">
-        <tr class="table-info">
-            <td class="class_index" rowspan="2">
-                {{i+1}}.
-            </td>
-            <td>
-                {{scientificPaper.title}}
-            </td>
-            <td>
-                {{scientificPaper.keywords}}
-            </td>
-            <td>
-                {{scientificPaper.scientificPaperAbstract}}
-            </td>
-            <td>
-                {{scientificPaper.scientificArea}}
-            </td>
-            <td>
-                {{scientificPaper.author}}
-            </td>
-            <td>
-                {{scientificPaper.coauthors}}
-            </td>
-            <td rowspan="2">
-                <button type="button" class="btn btn-primary" (click)="repairScientificPaper(scientificPaper.taskId)">Repair</button>
-            </td>
-        </tr>
-        <tr class="table-info">
-            <td colspan="5">
-                <label for="id_comment">Main editor's comment:</label>
-                <p id="id_comment"> {{scientificPaper.comment}} </p>
-            </td>
-            <td>
-                <div class="input-group"><span class="input-group-addon"><i
-                    class="glyphicon glyphicon-home"></i></span><input (change)="onChange($event)" accept=".pdf"
-                    type="file" id="id_repaired_paper" name="repaired_paper"
-                    placeholder="Repaired file" class="form-control"
-                    required="true">
+<section id="tabs">
+    <div class="row">
+        <div class="col-xl-12 ">
+            <nav>
+                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-first-repair-scientific-papers-tab" data-toggle="tab" href="#nav-first-repair-scientific-papers" role="tab" aria-controls="nav-first-repair-scientific-papers" aria-selected="true">FIRST repair-scientific-papers</a>
+                    <a class="nav-item nav-link" id="nav-second-repair-scientific-papers-tab" data-toggle="tab" href="#nav-second-repair-scientific-papers" role="tab" aria-controls="nav-second-repair-scientific-papers" aria-selected="false">SECOND repair-scientific-papers</a>
+                    <a class="nav-item nav-link" id="nav-final-repair-scientific-papers-tab" data-toggle="tab" href="#nav-final-repair-scientific-papers" role="tab" aria-controls="nav-final-repair-scientific-papers" aria-selected="false">FINAL repair-scientific-papers</a>
                 </div>
-            </td>
-        </tr>
-    </ng-template>
-  </table>
-</div>
+            </nav>
+            <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-first-repair-scientific-papers" role="tabpanel" aria-labelledby="nav-first-repair-scientific-papers-tab">
+                    <app-first-repair-scientific-papers> </app-first-repair-scientific-papers>
+                </div>
+                <div class="tab-pane fade" id="nav-second-repair-scientific-papers" role="tabpanel" aria-labelledby="nav-second-repair-scientific-papers-tab">
+                    <app-second-repair-scientific-papers> </app-second-repair-scientific-papers>
+                </div>
+                <div class="tab-pane fade" id="nav-final-repair-scientific-papers" role="tabpanel" aria-labelledby="nav-final-repair-scientific-papers-tab">
+                    <app-final-repair-scientific-papers> </app-final-repair-scientific-papers>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

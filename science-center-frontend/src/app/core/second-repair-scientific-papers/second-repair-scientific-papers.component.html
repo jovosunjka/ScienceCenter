@@ -1,0 +1,74 @@
+<button type="button" class="btn btn-primary"  (click)="getScientificPapersForReviewing()">Refresh</button>
+<h4 *ngIf="!scientificPapers || scientificPapers.length===0"> &nbsp;&nbsp;There are currently no scientific papers.</h4>
+<div class="table-responsive" *ngIf="scientificPapers && scientificPapers.length > 0">
+  <table class="table table-hover table-bordered">
+    <tr class="table-primary">
+        <th>#</th>
+        <th>Title</th>
+        <th>Keywords</th>
+        <th>Abstract</th>
+        <th>Scientific Area</th>
+        <th>Author</th>
+        <th>Coauthors</th>
+        <th></th>
+        <th></th>
+    </tr>
+    <ng-template ngFor let-scientificPaper let-i="index" [ngForOf]="scientificPapers">
+        <tr class="table-info">
+            <td class="class_index" rowspan="2">
+                {{i+1}}.
+            </td>
+            <td>
+                {{scientificPaper.title}}
+            </td>
+            <td>
+                {{scientificPaper.keywords}}
+            </td>
+            <td>
+                {{scientificPaper.scientificPaperAbstract}}
+            </td>
+            <td>
+                {{scientificPaper.scientificArea}}
+            </td>
+            <td>
+                {{scientificPaper.author}}
+            </td>
+            <td>
+                {{scientificPaper.coauthors}}
+            </td>
+            <td>
+                <div class="input-group"><span class="input-group-addon"><i
+                    class="glyphicon glyphicon-home"></i></span><input (change)="onChange($event)" accept=".pdf"
+                    type="file" id="id_second_repaired_paper" name="repaired_paper"
+                    placeholder="Repaired file" class="form-control"
+                    required="true">
+                </div>
+            </td>
+            <td>
+                <button type="button" class="btn btn-success"  (click)="firstDecisionForPaper(scientificPaper.taskId, 'EVERYTHING_IS_OK')">ACCEPT</button>
+            </td>
+        </tr>
+        <tr class="table-info">
+            <td colspan="7">
+                <ol>
+                    <li *ngFor="let reviewing of reviewings">
+                        <ul>
+                            <li> Reviewer: {{reviewing.reviewer}} </li>
+                            <li> Status: {{reviewing.statusAfterReviewing}} </li>
+                            <li> Comment for author: {{reviewing.commentForAuthor}} </li>
+                        </ul>
+                    </li>
+                </ol>
+            </td>
+            <td>
+                <button type="button" class="btn btn-primary" (click)="repairScientificPaper(scientificPaper.taskId, scientificPaper.answers)">Repair</button>
+            </td> 
+        </tr>
+        <tr class="table-info">
+            <td colspan="7">
+                <textarea rows="4" cols="100" placeholder="Answers" [(ngModel)]="scientificPaper.answers" name="answers"> </textarea>
+            </td>
+        </tr>
+    </ng-template>
+  </table>
+</div>
