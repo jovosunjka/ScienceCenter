@@ -51,15 +51,15 @@ public class ScientificPaperController {
         }
 
         String processInstanceId = scientificPaperService.startProcessForAddingScientificPaper(loggedUser.getCamundaUserId(),
-                                                                                                                    magazineId);
+                magazineId);
 
         return new ResponseEntity<ProcessInstanceIdDTO>(new ProcessInstanceIdDTO(processInstanceId), HttpStatus.OK);
     }
 
     @RequestMapping(value ="/add", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity addScientificPaper(@RequestParam("processInstanceId") String processInstanceId,
-                                            @RequestPart("scientific_paper_file") MultipartFile file,
-                                            @RequestPart("scientific_paper_data") List<IdValueDTO> idValueDTOList) {
+                                             @RequestPart("scientific_paper_file") MultipartFile file,
+                                             @RequestPart("scientific_paper_data") List<IdValueDTO> idValueDTOList) {
         UserData loggedUser = null;
         try {
             loggedUser = userService.getLoggedUser();
@@ -81,8 +81,8 @@ public class ScientificPaperController {
         formFieldsMap.put("fileName", file.getName());*/
 
         IdValueDTO idValueDTO  = idValueDTOList.stream()
-                                            .filter(idValue -> idValue.getId().equals("selectedScientificAreaId"))
-                                            .findFirst().orElse(null);
+                .filter(idValue -> idValue.getId().equals("selectedScientificAreaId"))
+                .findFirst().orElse(null);
         if (idValueDTO == null) {
             return new ResponseEntity("selectedScientificAreaId not found!", HttpStatus.BAD_REQUEST);
         }
@@ -110,7 +110,7 @@ public class ScientificPaperController {
 
     @RequestMapping(value ="/first-repair", method = RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity firstRepair(@RequestParam("taskId") String taskId,
-                                             @RequestPart("scientific_paper_file") MultipartFile file) {
+                                      @RequestPart("scientific_paper_file") MultipartFile file) {
         UserData loggedUser = null;
         try {
             loggedUser = userService.getLoggedUser();
@@ -123,7 +123,7 @@ public class ScientificPaperController {
         }
 
         MainEditorAndScientificPaper mainEditorAndScientificPaper = scientificPaperService
-                                                                                .getMainEditorAndScientificPaper(taskId);
+                .getMainEditorAndScientificPaper(taskId);
 
         ScientificPaper scientificPaper = mainEditorAndScientificPaper.getScientificPaper();
 
@@ -153,8 +153,8 @@ public class ScientificPaperController {
 
     @RequestMapping(value ="/second-repair", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity secondRepair(@RequestParam("taskId") String taskId,
-                                                @RequestPart("scientific_paper_file") MultipartFile file,
-                                                @RequestPart("scientific_paper_data") AnswersDTO answersDTO) {
+                                       @RequestPart("scientific_paper_file") MultipartFile file,
+                                       @RequestPart("scientific_paper_data") AnswersDTO answersDTO) {
         UserData loggedUser = null;
         try {
             loggedUser = userService.getLoggedUser();
@@ -198,8 +198,8 @@ public class ScientificPaperController {
 
     @RequestMapping(value ="/final-repair", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity finalRepair(@RequestParam("taskId") String taskId,
-                                                @RequestPart("scientific_paper_file") MultipartFile file,
-                                                @RequestPart("scientific_paper_data") AnswersDTO answersDTO) {
+                                      @RequestPart("scientific_paper_file") MultipartFile file,
+                                      @RequestPart("scientific_paper_data") AnswersDTO answersDTO) {
         UserData loggedUser = null;
         try {
             loggedUser = userService.getLoggedUser();
@@ -253,7 +253,7 @@ public class ScientificPaperController {
 
         Map<String, Object> formFieldsMap = new HashMap<String, Object>();
         formFieldsMap.put("editorOfScientificAreaDecision", editorOfScientificAreaDecisionDTO
-                                                                .getEditorOfScientificAreaDecision().name());
+                .getEditorOfScientificAreaDecision().name());
 
         try {
             scientificPaperService.submitUserTask(loggedUser.getCamundaUserId(), taskId, formFieldsMap);
@@ -266,7 +266,7 @@ public class ScientificPaperController {
 
     @RequestMapping(value ="/second-decision", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity secondDecision(@RequestParam("taskId") String taskId,
-                                        @RequestBody SecondDecisionDTO secondDecisionDTO) {
+                                         @RequestBody SecondDecisionDTO secondDecisionDTO) {
         UserData loggedUser = null;
         try {
             loggedUser = userService.getLoggedUser();
@@ -312,7 +312,7 @@ public class ScientificPaperController {
     @RequestMapping(value = "/add-scientific-paper-form-fields", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FormFieldsDto> getAddScientificPaperFormFields(@RequestParam("processInstanceId")
-                                                                                     String processInstanceId) {
+                                                                                 String processInstanceId) {
         UserData loggedUser = null;
         try {
             loggedUser = userService.getLoggedUser();
@@ -356,7 +356,7 @@ public class ScientificPaperController {
         List<ScientificPaperFrontendDtoWithComment> scientificPaperFrontendDtoWithComments =
                 scientificPaperService.getFirstRepairScientificPaper(loggedUser.getCamundaUserId());
         return new ResponseEntity<List<ScientificPaperFrontendDtoWithComment>>(scientificPaperFrontendDtoWithComments,
-                                                                                                        HttpStatus.OK);
+                HttpStatus.OK);
     }
 
     @RequestMapping(value = "/for-second-repair", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -391,7 +391,7 @@ public class ScientificPaperController {
 
     @RequestMapping(value = "/process", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity processScientificPaper(@RequestParam("taskId") String taskId,
-                                    @RequestBody ProcessingScientificPaperDTO processingScientificPaperDTO) {
+                                                 @RequestBody ProcessingScientificPaperDTO processingScientificPaperDTO) {
         UserData loggedUser = null;
         try {
             loggedUser = userService.getLoggedUser();
@@ -438,7 +438,7 @@ public class ScientificPaperController {
     @RequestMapping(value = "/reviewers-for-scientific-paper", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<EditorOrReviewerDTO>> getReviewersForScientificPaper(@RequestParam("taskId")
-                                                                                                     String taskId) {
+                                                                                            String taskId) {
         List<EditorOrReviewerDTO> reviewerDTOs = scientificPaperService.getReviewersForScientificPaper(taskId);
         return new ResponseEntity<List<EditorOrReviewerDTO>>(reviewerDTOs, HttpStatus.OK);
     }
@@ -468,7 +468,7 @@ public class ScientificPaperController {
         }
 
         List<String> reviewersStrList = reviewersDTO.getReviewers().stream()
-                                                    .map(r -> r.toString()).collect(Collectors.toList());
+                .map(r -> r.toString()).collect(Collectors.toList());
         String reviewers = String.join(",", reviewersStrList);
 
         Map<String, Object> formFieldsMap = new HashMap<String, Object>();
@@ -497,7 +497,7 @@ public class ScientificPaperController {
 
     @RequestMapping(value = "/for-magazine", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ScientificPaperFrontendDTOWithId>> getScientificPapersForMagazine(@RequestParam("magazineId")
-                                                                                                       Long magazineId) {
+                                                                                                         Long magazineId) {
         List<ScientificPaperFrontendDTOWithId> scientificPaperFrontendDTOs =
                 scientificPaperService.getScientificPapersForMagazine(magazineId);
         return new ResponseEntity<List<ScientificPaperFrontendDTOWithId>>(scientificPaperFrontendDTOs, HttpStatus.OK);
@@ -505,8 +505,8 @@ public class ScientificPaperController {
 
     @RequestMapping(value = "/review", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity reviewScientificPaper(/*@RequestParam("mainProcessInstanceId") String mainProcessInstanceId,*/
-                                                @RequestParam("taskId") String taskId,
-                                                @RequestBody ReviewingScientificPaperDTO reviewingScientificPaperDTO) {
+            @RequestParam("taskId") String taskId,
+            @RequestBody ReviewingScientificPaperDTO reviewingScientificPaperDTO) {
         UserData loggedUser = null;
         try {
             loggedUser = userService.getLoggedUser();
@@ -521,7 +521,7 @@ public class ScientificPaperController {
 
         ReviewingResult reviewingResult = new ReviewingResult(loggedUser.getCamundaUserId(),
                 reviewingScientificPaperDTO.getStatusAfterReviewing(), reviewingScientificPaperDTO.getCommentForAuthor(),
-                                                                reviewingScientificPaperDTO.getCommentForEditor());
+                reviewingScientificPaperDTO.getCommentForEditor());
         scientificPaperService.addReviewingResult(/*mainProcessInstanceId, */taskId, reviewingResult);
 
         try {
@@ -544,7 +544,7 @@ public class ScientificPaperController {
         List<ScientificPaperFrontendDtoWithReviewings> scientificPaperFrontendDtoWithReviewings =
                 scientificPaperService.getFirstDecision(loggedUser.getCamundaUserId());
         return new ResponseEntity<List<ScientificPaperFrontendDtoWithReviewings>>(scientificPaperFrontendDtoWithReviewings,
-                                                                                                HttpStatus.OK);
+                HttpStatus.OK);
     }
 
     @RequestMapping(value = "/for-second-decision", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
