@@ -1,6 +1,6 @@
 <h3>MAGAZINES PAGE</h3>
 
-<div *ngIf="!reader && showCreateMagazineButton()">
+<div *ngIf="!reader">
     <a class="btn btn-success btn-lg" [routerLinkActive]="['active']" href="#" [routerLink]="['/create-magazine']">Create Magazine</a>
     <hr/>
 </div>
@@ -19,6 +19,7 @@
         <th>Reviewers</th>
         <th>Membership Fee</th>
         <th>Currency</th>
+        <th></th>
         <th *ngIf="reader"></th>
         <th *ngIf="reader"></th>
     </tr>
@@ -53,6 +54,10 @@
       <td *ngIf="reader">
         <button *ngIf="!magazine.paidUpTo" class="btn btn-danger" (click)="pay(magazine.id)">Pay</button>
         <p *ngIf="magazine.paidUpTo"><b>{{magazine.paidUpTo}}</b></p>
+      </td>
+      <td>
+        <a *ngIf="!reader || magazine.paidUpTo" class="btn btn-warning" [routerLinkActive]="['active']" href="#" [routerLink]="['/scientific-papers-in-magazine/' + magazine.id]">Show Scientific Papers</a>
+        <button *ngIf="reader && !magazine.paidUpTo" class="btn btn-secondary">Show Scientific Papers</button>
       </td>
       <td *ngIf="reader">
           <button class="btn btn-success" (click)="startProcessForAddingScientificPaper(magazine.id)">Add Scientific Paper</button>

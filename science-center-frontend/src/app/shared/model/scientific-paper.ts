@@ -1,5 +1,6 @@
 export interface ScientificPaper {
-    taskId: string;
+    taskId?: string;
+    id?: number;
     title: string;
     keywords: string;
     scientificPaperAbstract: string;
@@ -7,5 +8,6 @@ export interface ScientificPaper {
     author: string;
     coauthors: string;
     commentForAuthor?: string;
-    commentForEditor?: string; 
+    commentForEditor?: string;
+    answers?: string;
 }

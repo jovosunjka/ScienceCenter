@@ -1,10 +1,10 @@
 package com.jovo.ScienceCenter.dto;
 
-import com.jovo.ScienceCenter.util.ReviewingResult;
+
 
 import java.util.List;
 
-public class ScientificPaperFrontendDtoWithReviewings {
+public class ScientificPaperFrontendDtoWithReviewingDTOs {
     protected String taskId;
     protected String title;
     protected String keywords;
@@ -12,16 +12,10 @@ public class ScientificPaperFrontendDtoWithReviewings {
     protected String scientificArea;
     protected String author;
     protected String coauthors;
-    protected List<ReviewingResult> reviewings;
+    protected List<ReviewingResultDTO> reviewings;
 
-
-    public ScientificPaperFrontendDtoWithReviewings() {
-
-    }
-
-    public ScientificPaperFrontendDtoWithReviewings(String taskId, String title, String keywords,
-                                                    String scientificPaperAbstract, String scientificArea,
-                                                    String author, String coauthors, List<ReviewingResult> reviewings) {
+    public ScientificPaperFrontendDtoWithReviewingDTOs(String taskId, String title, String keywords, String scientificPaperAbstract, String scientificArea, String author, String coauthors,
+                                                       List<ReviewingResultDTO> reviewings) {
         this.taskId = taskId;
         this.title = title;
         this.keywords = keywords;
@@ -88,11 +82,11 @@ public class ScientificPaperFrontendDtoWithReviewings {
         this.coauthors = coauthors;
     }
 
-    public List<ReviewingResult> getReviewings() {
+    public List<ReviewingResultDTO> getReviewings() {
         return reviewings;
     }
 
-    public void setReviewings(List<ReviewingResult> reviewings) {
+    public void setReviewings(List<ReviewingResultDTO> reviewings) {
         this.reviewings = reviewings;
     }
 }

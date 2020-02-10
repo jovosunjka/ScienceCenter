@@ -12,7 +12,6 @@ export class ReviewScientificPapersComponent implements OnInit {
   private relativeUrlForPdfContent = '/scientific-papers/pdf';
   private relativeUrlForScientificPapersForReviewing = '/scientific-papers/for-reviewing';
   private relativeUrlForReviewScientificPaper = '/scientific-papers/review';
-  private mainProcessInstanceId: string;
 
   scientificPapers: ScientificPaper[];
 
@@ -22,7 +21,6 @@ export class ReviewScientificPapersComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.mainProcessInstanceId = localStorage.getItem('processInstanceId');
     this.getScientificPapersForReviewing();
   }
 
@@ -72,7 +70,7 @@ export class ReviewScientificPapersComponent implements OnInit {
 
   reviewPaper(taskId: string, statusAfterReviewing: string, commentForAuthor: string, commentForEditor: string) {
     this.genericService.put<any>(this.relativeUrlForReviewScientificPaper
-          .concat('?taskId=' + taskId).concat('&mainProcessInstanceId=' + this.mainProcessInstanceId),
+          .concat('?taskId=' + taskId),
            {statusAfterReviewing, commentForAuthor, commentForEditor} )
       .subscribe(
         () => {

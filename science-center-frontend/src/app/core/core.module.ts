@@ -40,6 +40,7 @@ import { DecisionsComponent } from './decisions/decisions.component';
 import { FirstRepairScientificPapersComponent } from './first-repair-scientific-papers/first-repair-scientific-papers.component';
 import { SecondRepairScientificPapersComponent } from './second-repair-scientific-papers/second-repair-scientific-papers.component';
 import { FinalRepairScientificPapersComponent } from './final-repair-scientific-papers/final-repair-scientific-papers.component';
+import { ScientificPapersInMagazineComponent } from './scientific-papers-in-magazine/scientific-papers-in-magazine.component';
 
 
 @NgModule({
@@ -73,7 +74,8 @@ import { FinalRepairScientificPapersComponent } from './final-repair-scientific-
     DecisionsComponent,
     FirstRepairScientificPapersComponent,
     SecondRepairScientificPapersComponent,
-    FinalRepairScientificPapersComponent
+    FinalRepairScientificPapersComponent,
+    ScientificPapersInMagazineComponent
   ],
   imports: [
     CommonModule,

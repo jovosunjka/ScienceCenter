@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GenericService } from '../services/generic/generic.service';
 import { ToastrService } from 'ngx-toastr';
+import { ScientificPaper } from 'src/app/shared/model/scientific-paper';
 
 @Component({
   selector: 'app-final-repair-scientific-papers',
@@ -27,6 +28,7 @@ export class FinalRepairScientificPapersComponent implements OnInit {
     this.genericService.get<ScientificPaper[]>(this.relativeUrlForScientificPapersForFinalRepair).subscribe(
       (scientificPapers: ScientificPaper[]) => {
         this.scientificPapers = scientificPapers;
+        this.scientificPapers.forEach(sp => sp.answers = '');
         this.toastr.success('Final repair for Scientific papers loaded!');
       },
       (err) => {
@@ -39,9 +41,9 @@ export class FinalRepairScientificPapersComponent implements OnInit {
     this.repairedScientificPaperFile = event.target.files.item(0);
   }
 
-  repairScientificPaper(taskId: string) {
-    this.genericService.sendPaperFile(this.relativeUrlForFinalRepair.concat('?taskId=', taskId),
-          this.repairedScientificPaperFile)
+  repairScientificPaper(taskId: string, answers: string) {
+    this.genericService.sendPaper(this.relativeUrlForFinalRepair.concat('?taskId=', taskId),
+          this.repairedScientificPaperFile, {answers})
       .subscribe(
         () => this.toastr.success('The form was successfully submitted!'),
         err => alert(JSON.stringify(err))

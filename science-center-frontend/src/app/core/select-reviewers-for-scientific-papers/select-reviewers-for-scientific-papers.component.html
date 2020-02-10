@@ -5,13 +5,13 @@
             <nav>
                 <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                     <ng-template ngFor let-scientificPaper let-i="index" [ngForOf]="scientificPapers">
-                        <a class="nav-item nav-link {{i==0 ? 'active' : ''}}" id="nav-select-reviewers-for-scientific-papers-tab" data-toggle="tab" href="#nav-select-reviewers-for-scientific-papers" role="tab" aria-controls="nav-select-reviewers-for-scientific-papers" aria-selected="{{i==0 ? 'true' : 'false'}}"> {{scientificPaper.title}}</a>
+                        <a class="nav-item nav-link {{i==0 ? 'active' : ''}}" id="nav-add-reviewers-{{i}}-tab" data-toggle="tab" href="#nav-add-reviewers-{{i}}" role="tab" attr.aria-controls="nav-add-reviewers-{{i}}" attr.aria-selected="{{i==0 ? 'true' : 'false'}}"> {{scientificPaper.title}}</a>
                     </ng-template>
                 </div>
             </nav>
             <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
                 <ng-template ngFor let-scientificPaper let-i="index" [ngForOf]="scientificPapers">    
-                    <div class="tab-pane fade {{i==0 ? 'show active' : ''}}" id="nav-add-reviewers" role="tabpanel" aria-labelledby="nav-add-reviewers-tab">
+                    <div class="tab-pane fade {{i==0 ? 'show active' : ''}}" id="nav-add-reviewers-{{i}}" role="tabpanel" attr.aria-labelledby="nav-add-reviewers-{{i}}-tab">
                         <app-add-reviewers [taskId]="scientificPaper.taskId" (refresh)="getScientificPapersForSelectingReviewers()"> </app-add-reviewers>
                     </div>
                 </ng-template>

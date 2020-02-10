@@ -37,7 +37,7 @@ public interface ScientificPaperService {
 
     List<ScientificPaperFrontendDtoWithComment> getFirstRepairScientificPaper(String camundaUserId);
 
-    List<ScientificPaperFrontendDtoWithReviewings> getSecondRepairScientificPaper(String camundaUserId);
+    List<ScientificPaperFrontendDtoWithReviewingDTOs> getSecondRepairScientificPaper(String camundaUserId);
 
     List<ScientificPaperFrontendDtoWithComment> getFinalRepairScientificPaper(String camundaUserId);
 
@@ -53,13 +53,23 @@ public interface ScientificPaperService {
 
     void saveSelectedReviewersForScientificPaper(String processInstanceId, List<Long> reviewerIds);
 
-    void addReviewingResult(String mainProcessInstanceId, ReviewingResult reviewingResult);
+    void addReviewingResult(/*String mainProcessInstanceId,*/ String taskId, ReviewingResult reviewingResult);
 
     List<ScientificPaperFrontendDtoWithReviewings> getFirstDecision(String camundaUserId);
 
-    List<ScientificPaperFrontendDtoWithReviewings> getSecondDecision(String camundaUserId);
+    List<ScientificPaperFrontendDtoWithReviewingsAndAnswers> getSecondDecision(String camundaUserId);
 
-    List<ScientificPaperFrontendDtoWithReviewings> getFinalDecision(String camundaUserId);
+    List<ScientificPaperFrontendDtoWithComment> getFinalDecision(String camundaUserId);
 
     List<ScientificPaperFrontendDTO> getScientificPapersForReviewing(String camundaUserId);
+
+    void publishScientificPaper(String processInstanceId);
+
+    void assignDoi(String processInstanceId);
+
+    void prepareForSearching(String processInstanceId);
+
+    List<ScientificPaperFrontendDTOWithId> getScientificPapersForMagazine(Long magazineId);
+
+    byte[] getPdfContent(Long scientificPaperId) throws IOException;
 }

@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-primary"  (click)="getScientificPapersForReviewing()">Refresh</button>
+<button type="button" class="btn btn-primary"  (click)="getScientificPapersForRepairing()">Refresh</button>
 <h4 *ngIf="!scientificPapers || scientificPapers.length===0"> &nbsp;&nbsp;There are currently no scientific papers.</h4>
 <div class="table-responsive" *ngIf="scientificPapers && scientificPapers.length > 0">
   <table class="table table-hover table-bordered">
@@ -15,7 +15,7 @@
     </tr>
     <ng-template ngFor let-scientificPaper let-i="index" [ngForOf]="scientificPapers">
         <tr class="table-info">
-            <td class="class_index" rowspan="2">
+            <td class="class_index" rowspan="3">
                 {{i+1}}.
             </td>
             <td>
@@ -36,7 +36,7 @@
             <td>
                 {{scientificPaper.coauthors}}
             </td>
-            <td>
+            <td colspan="2">
                 <div class="input-group"><span class="input-group-addon"><i
                     class="glyphicon glyphicon-home"></i></span><input (change)="onChange($event)" accept=".pdf"
                     type="file" id="id_second_repaired_paper" name="repaired_paper"
@@ -44,16 +44,12 @@
                     required="true">
                 </div>
             </td>
-            <td>
-                <button type="button" class="btn btn-success"  (click)="firstDecisionForPaper(scientificPaper.taskId, 'EVERYTHING_IS_OK')">ACCEPT</button>
-            </td>
         </tr>
         <tr class="table-info">
             <td colspan="7">
                 <ol>
-                    <li *ngFor="let reviewing of reviewings">
+                    <li *ngFor="let reviewing of scientificPaper.reviewings">
                         <ul>
-                            <li> Reviewer: {{reviewing.reviewer}} </li>
                             <li> Status: {{reviewing.statusAfterReviewing}} </li>
                             <li> Comment for author: {{reviewing.commentForAuthor}} </li>
                         </ul>
@@ -65,7 +61,7 @@
             </td> 
         </tr>
         <tr class="table-info">
-            <td colspan="7">
+            <td colspan="8">
                 <textarea rows="4" cols="100" placeholder="Answers" [(ngModel)]="scientificPaper.answers" name="answers"> </textarea>
             </td>
         </tr>

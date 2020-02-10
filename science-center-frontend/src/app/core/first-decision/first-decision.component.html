@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-primary"  (click)="getScientificPapersForReviewing()">Refresh</button>
+<button type="button" class="btn btn-primary"  (click)="getScientificPapersForFirstDecision()">Refresh</button>
 <h4 *ngIf="!scientificPapers || scientificPapers.length===0"> &nbsp;&nbsp;There are currently no scientific papers.</h4>
 <div class="table-responsive" *ngIf="scientificPapers && scientificPapers.length > 0">
   <table class="table table-hover table-bordered">
@@ -40,13 +40,13 @@
                 <button class="btn btn-primary" (click)="getPdfContentFromServer(scientificPaper.taskId, scientificPaper.title)">Download</button>
             </td>
             <td>
-                <button type="button" class="btn btn-success"  (click)="firstDecisionForPaper(scientificPaper.taskId, 'EVERYTHING_IS_OK')">ACCEPT</button>
+                <button type="button" class="btn btn-success"  (click)="firstDecisionForPaper(scientificPaper.taskId, 'ACCEPT')">ACCEPT</button>
             </td>
         </tr>
         <tr class="table-info">
             <td colspan="7">
                 <ol>
-                    <li *ngFor="let reviewing of reviewings">
+                    <li *ngFor="let reviewing of scientificPaper.reviewings">
                         <ul>
                             <li> Reviewer: {{reviewing.reviewer}} </li>
                             <li> Status: {{reviewing.statusAfterReviewing}} </li>

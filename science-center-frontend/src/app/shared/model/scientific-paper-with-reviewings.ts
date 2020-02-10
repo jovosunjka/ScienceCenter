@@ -9,5 +9,6 @@ export interface ScientificPaperWithReviewings {
     author: string;
     coauthors: string;
     reviewings: ReviewingResult[];
+    commentForAuthor?: string;
     answers?: string;
 }

@@ -1,1 +1,73 @@
-<p>second-decision works!</p>
+<button type="button" class="btn btn-primary"  (click)="getScientificPapersForSecondDecision()">Refresh</button>
+<h4 *ngIf="!scientificPapers || scientificPapers.length===0"> &nbsp;&nbsp;There are currently no scientific papers.</h4>
+<div class="table-responsive" *ngIf="scientificPapers && scientificPapers.length > 0">
+  <table class="table table-hover table-bordered">
+    <tr class="table-primary">
+        <th>#</th>
+        <th>Title</th>
+        <th>Keywords</th>
+        <th>Abstract</th>
+        <th>Scientific Area</th>
+        <th>Author</th>
+        <th>Coauthors</th>
+        <th></th>
+        <th></th>
+    </tr>
+    <ng-template ngFor let-scientificPaper let-i="index" [ngForOf]="scientificPapers">
+        <tr class="table-info">
+            <td class="class_index" rowspan="2">
+                {{i+1}}.
+            </td>
+            <td>
+                {{scientificPaper.title}}
+            </td>
+            <td>
+                {{scientificPaper.keywords}}
+            </td>
+            <td>
+                {{scientificPaper.scientificPaperAbstract}}
+            </td>
+            <td>
+                {{scientificPaper.scientificArea}}
+            </td>
+            <td>
+                {{scientificPaper.author}}
+            </td>
+            <td>
+                {{scientificPaper.coauthors}}
+            </td>
+            <td>
+                <button class="btn btn-primary" (click)="getPdfContentFromServer(scientificPaper.taskId, scientificPaper.title)">Download</button>
+            </td>
+            <td>
+                <button type="button" class="btn btn-success"  (click)="secondDecisionForPaper(scientificPaper.taskId, 'ACCEPT', '')">ACCEPT</button>
+            </td>
+        </tr>
+        <tr class="table-info">
+            <td colspan="7">
+                <ol>
+                    <li *ngFor="let reviewing of scientificPaper.reviewings">
+                        <ul>
+                            <li> Reviewer: {{reviewing.reviewer}} </li>
+                            <li> Status: {{reviewing.statusAfterReviewing}} </li>
+                            <li> Comment for author: {{reviewing.commentForAuthor}} </li>
+                            <li> Comment for editor: {{reviewing.commentForEditor}} </li>
+                        </ul>
+                    </li>
+                </ol>
+                <p>
+                    Author's answers: {{scientificPaper.answers}}
+                </p>
+            </td>
+            <td rowspan="2">
+                <button type="button" class="btn btn-warning" (click)="secondDecisionForPaper(scientificPaper.taskId, 'EDIT_AGAIN', scientificPaper.commentForAuthor)">EDIT AGAIN</button>
+            </td> 
+        </tr>
+        <tr>
+            <td>
+                <textarea rows="4" cols="100" placeholder="Editor's comment for author" [(ngModel)]="scientificPaper.commentForAuthor" name="commentForAuthor"> </textarea>
+            </td>
+        </tr>
+    </ng-template>
+  </table>
+</div>

@@ -64,11 +64,11 @@ public class Magazine implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     private PayerType payerType;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "magazine_scientific_papers",
             joinColumns = @JoinColumn(name = "magazine_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "scientific_paper_id", referencedColumnName = "id"))
-    private List<ScientificPaper> scientificPapers = new ArrayList<ScientificPaper>();
+    private Set<ScientificPaper> scientificPapers = new HashSet<ScientificPaper>();
 
     @Column(name = "magazine_status", unique = false, nullable = false)
     @Enumerated(EnumType.ORDINAL)
@@ -173,9 +173,9 @@ public class Magazine implements Serializable {
 
     public void setPayerType(PayerType payerType) { this.payerType = payerType; }
 
-    public List<ScientificPaper> getScientificPapers() { return scientificPapers; }
+    public Set<ScientificPaper> getScientificPapers() { return scientificPapers; }
 
-    public void setScientificPapers(List<ScientificPaper> scientificPapers) { this.scientificPapers = scientificPapers; }
+    public void setScientificPapers(Set<ScientificPaper> scientificPapers) { this.scientificPapers = scientificPapers; }
 
     public Status getMagazineStatus() { return magazineStatus; }
 

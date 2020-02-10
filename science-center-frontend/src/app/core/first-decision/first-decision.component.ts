@@ -13,13 +13,14 @@ export class FirstDecisionComponent implements OnInit {
   scientificPapers: ScientificPaperWithReviewings[];
   private relativeUrlForScientificPapersForFirstDecision = '/scientific-papers/for-first-decision';
   private relativeUrlFirstDecision = '/scientific-papers/first-decision';
+  private relativeUrlForPdfContent = '/scientific-papers/pdf';
 
-  constructor(private genericService: GenericService, private toastr: ToastrService) { 
+  constructor(private genericService: GenericService, private toastr: ToastrService) {
     this.scientificPapers = [];
   }
 
   ngOnInit() {
-    this.getScientificPapersForFirstDecision()
+    this.getScientificPapersForFirstDecision();
   }
 
   getScientificPapersForFirstDecision() {
@@ -34,10 +35,10 @@ export class FirstDecisionComponent implements OnInit {
     );
   }
 
-  firstDecisionForPaper(taskId: string, statusAfterReviewing: string) {
+  firstDecisionForPaper(taskId: string, editorOfScientificAreaDecision: string) {
     this.genericService.put<any>(this.relativeUrlFirstDecision
           .concat('?taskId=' + taskId),
-           {statusAfterReviewing} )
+           {editorOfScientificAreaDecision} )
       .subscribe(
         () => {
             this.getScientificPapersForFirstDecision();
@@ -47,6 +48,33 @@ export class FirstDecisionComponent implements OnInit {
             this.toastr.error('Problem with first decision for scientific paper!');
         }
       );
+  }
+
+  getPdfContentFromServer(taskId: string, title) {
+    this.genericService.getPdfContentFromServer(this.relativeUrlForPdfContent.concat('?taskId=' + taskId))
+          .subscribe( (pdf: any) => {
+              console.log('pdf response: ', pdf);
+              const mediaType = 'application/pdf';
+              const blob = new Blob([pdf], {type: mediaType});
+
+              this.download(title, blob);
+            },
+            err => console.log('Pdf generated err: ', JSON.stringify(err))
+          );
+  }
+
+  download(fileName, content) {
+    const element = document.createElement('a');
+    /*element.setAttribute('href', 'data:application/pdf;charset=utf-8,' + encodeURIComponent(content));*/
+    element.setAttribute('href', window.URL.createObjectURL(content));
+    element.setAttribute('download', fileName + '.pdf');
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
   }
 
 }

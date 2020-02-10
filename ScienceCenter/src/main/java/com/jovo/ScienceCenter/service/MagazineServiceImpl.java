@@ -227,6 +227,11 @@ public class MagazineServiceImpl implements MagazineService {
     }
 
     @Override
+    public void save(Magazine selectedMagazine) {
+        magazineRepository.save(selectedMagazine);
+    }
+
+    @Override
     public MembershipFee makeMembershipFee(Long authorId, Long magazineId, double price , Currency currency) {
         MembershipFee membershipFee = new MembershipFee(magazineId, authorId, price, currency);
         membershipFeeService.save(membershipFee);

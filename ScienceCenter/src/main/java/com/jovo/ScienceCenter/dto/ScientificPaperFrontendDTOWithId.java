@@ -1,43 +1,35 @@
 package com.jovo.ScienceCenter.dto;
 
-import com.jovo.ScienceCenter.util.ReviewingResult;
+public class ScientificPaperFrontendDTOWithId {
+    private long id;
+    private String title;
+    private String keywords;
+    private String scientificPaperAbstract;
+    private String scientificArea;
+    private String author;
+    private String coauthors;
 
-import java.util.List;
-
-public class ScientificPaperFrontendDtoWithReviewings {
-    protected String taskId;
-    protected String title;
-    protected String keywords;
-    protected String scientificPaperAbstract;
-    protected String scientificArea;
-    protected String author;
-    protected String coauthors;
-    protected List<ReviewingResult> reviewings;
-
-
-    public ScientificPaperFrontendDtoWithReviewings() {
+    public ScientificPaperFrontendDTOWithId() {
 
     }
 
-    public ScientificPaperFrontendDtoWithReviewings(String taskId, String title, String keywords,
-                                                    String scientificPaperAbstract, String scientificArea,
-                                                    String author, String coauthors, List<ReviewingResult> reviewings) {
-        this.taskId = taskId;
+    public ScientificPaperFrontendDTOWithId(long id, String title, String keywords, String scientificPaperAbstract,
+                                            String scientificArea, String author, String coauthors) {
+        this.id = id;
         this.title = title;
         this.keywords = keywords;
         this.scientificPaperAbstract = scientificPaperAbstract;
         this.scientificArea = scientificArea;
         this.author = author;
         this.coauthors = coauthors;
-        this.reviewings = reviewings;
     }
 
-    public String getTaskId() {
-        return taskId;
+    public long getId() {
+        return id;
     }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -86,13 +78,5 @@ public class ScientificPaperFrontendDtoWithReviewings {
 
     public void setCoauthors(String coauthors) {
         this.coauthors = coauthors;
-    }
-
-    public List<ReviewingResult> getReviewings() {
-        return reviewings;
-    }
-
-    public void setReviewings(List<ReviewingResult> reviewings) {
-        this.reviewings = reviewings;
     }
 }
