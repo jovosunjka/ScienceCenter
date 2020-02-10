@@ -17,6 +17,8 @@ import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
@@ -283,6 +285,7 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
         return fileService.getPdfContent(scientificPaper.getRelativePathToFile());
     }
 
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     @Override
     public void selectEditorOfScientificArea(String processInstanceId) {
         MainEditorAndScientificPaper mainEditorAndScientificPaper =
@@ -311,6 +314,7 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
 
     }
 
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     @Override
     public List<EditorOrReviewerDTO> getReviewersForScientificPaper(String taskId) {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
