@@ -3,10 +3,7 @@ package com.jovo.ScienceCenter.service;
 import com.jovo.ScienceCenter.dto.*;
 import com.jovo.ScienceCenter.exception.NotFoundException;
 import com.jovo.ScienceCenter.exception.TaskNotAssignedToYouException;
-import com.jovo.ScienceCenter.model.Currency;
-import com.jovo.ScienceCenter.model.Magazine;
-import com.jovo.ScienceCenter.model.MembershipFee;
-import com.jovo.ScienceCenter.model.PayerType;
+import com.jovo.ScienceCenter.model.*;
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +15,8 @@ public interface MagazineService {
     Magazine getMagazine(String name);
 
     List<Magazine> getAllActivatedMagazines();
+
+    List<MagazineWithoutPaidStatusDTO> getAllActivatedMagazinesByEditor(UserData editor);
 
     MembershipFee makeMembershipFee(Long authorId, Long magazineId, double price , Currency currency);
 
@@ -47,5 +46,5 @@ public interface MagazineService {
 
     Magazine loginMagazine(Magazine magazine);
 
-    List<MagazineDTO> getAllActivatedMagazinesWithPaidStatus();
+    List<MagazineDTO> getActivatedMagazinesWithPaidStatus(Long payerId);
 }

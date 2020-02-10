@@ -1,6 +1,7 @@
 package com.jovo.ScienceCenter.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -8,7 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "user_data")
-public class UserData {
+public class UserData implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)

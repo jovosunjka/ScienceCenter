@@ -29,6 +29,10 @@ export class ForwardingMessageService {
   @Output()
   activateMagazineEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  @Output()
+  magazinesPageCAHAMFEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  addNewScientificPaperEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor() { }
 
@@ -64,4 +68,11 @@ export class ForwardingMessageService {
     this.activateMagazineEvent.emit(hasError);
   }
 
+  sendMessageToMagazinesPageCAHAMF(hasError: boolean) {
+    this.magazinesPageCAHAMFEvent.emit(hasError);
+  }
+
+  sendMessageToAddNewScientificPaper(hasError: boolean) {
+    this.addNewScientificPaperEvent.emit(hasError);
+  }
 }

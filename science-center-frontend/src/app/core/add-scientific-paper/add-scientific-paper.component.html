@@ -1,0 +1,66 @@
+
+<h3>ADD SCIENTIFIC PAPER</h3>
+<div class="wrapper">
+  <div class="container">
+    <form class="form-add-scientific-paper">
+      <ng-template ngFor let-field [ngForOf]="formFields">
+            <label for="{{field.id}}">{{field.label === 'File name' ? 'File' : field.label}}</label>
+    
+            <div *ngIf="field.type.name == 'string' && field.id == 'coauthors'">
+                <input type="text" class="form-control" [(ngModel)]="newCoauthor.firstName" name="firstName" placeholder="First Name"/>
+                <input type="text" class="form-control" [(ngModel)]="newCoauthor.lastName" name="lastName" placeholder="Last Name"/>
+                <input type="text" class="form-control" [(ngModel)]="newCoauthor.email" name="email" placeholder="Email"/>
+                <input type="text" class="form-control" [(ngModel)]="newCoauthor.address" name="address" placeholder="Address"/>
+                <input type="text" class="form-control" [(ngModel)]="newCoauthor.city" name="city" placeholder="City"/>
+                <input type="text" class="form-control" [(ngModel)]="newCoauthor.country" name="country" placeholder="Country"/>
+                <button class="btn btn-small btn-success" (click)="addCoauthor()"> Add Coauthor </button>
+
+                <div class="scrollbar-coauthors scrollbar-primary">
+                    <table border="2" id="id_coauthors">
+                        <th><b>#</b></th>
+                        <th><b>First Name</b></th>
+                        <th><b>Last Name</b></th>
+                        <th><b>Email</b></th>
+                        <th><b>Address</b></th>
+                        <th><b>City</b></th>
+                        <th><b>Country</b></th>
+                        <th></th>
+                        <tr *ngFor="let coauthor of field.value; let i = index">
+                            <td>{{(i+1)}}.</td>
+                            <td>{{coauthor.firstName}}</td>
+                            <td>{{coauthor.lastName}}</td>
+                            <td>{{coauthor.email}}</td>
+                            <td>{{coauthor.address}}</td>
+                            <td>{{coauthor.city}}</td>
+                            <td>{{coauthor.country}}</td>
+                            <td> <button class="btn btn-small btn-danger" (click)="removeCoauthor(coauthor)"> Remove </button> </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div *ngIf="field.type.name == 'long' && field.id == 'selectedScientificAreaId'">
+                <select class="form-control" id="{{field.id}}"  [(ngModel)]="field.value" name="{{field.id}}" >
+                    <ng-template ngFor let-sArea [ngForOf]="scientificAreas">
+                        <option  [ngValue]="sArea.id">{{sArea.name}}</option>
+                    </ng-template>
+                </select>
+            </div>
+
+            <input *ngIf="field.type.name == 'string' && field.id != 'fileName' && field.id != 'coauthors'" type="text" class="form-control" id="{{field.id}}" [(ngModel)]="field.value"
+                name="{{field.id}}" />
+        
+            <div *ngIf="field.id == 'fileName'"  class="input-group"><span class="input-group-addon"><i
+                class="glyphicon glyphicon-home"></i></span><input (change)="onChange($event)" accept=".pdf"
+                type="file" id="id_paper" name="paper"
+                placeholder="File" class="form-control"
+                required="true">
+            </div>
+            
+      </ng-template>
+        
+      <br/>
+      <button class="btn btn-primary btn-block" (click)="addScientificPaper()">Add Scientific Paper</button>
+    </form>
+  </div>
+</div>

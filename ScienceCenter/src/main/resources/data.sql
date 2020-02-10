@@ -141,15 +141,15 @@ INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (11,
 INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (11,13);
 
 
-INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`magazine_status`) VALUES (1, 'Magazine1','issn1','magazine1', 'magazine1', NULL, 2500, 0, 5, 0);
-INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`magazine_status`) VALUES (2, 'Magazine2','issn2','magazine2', 'magazine2', NULL, 2800, 0, 6, 0);
-INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`magazine_status`) VALUES (3, 'Magazine3','issn3','magazine3', 'magazine3', NULL, 2700, 0, 7, 0);
-INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`magazine_status`) VALUES (4, 'Magazine4','issn4','magazine4', 'magazine4', NULL, 2600, 0, 5, 0);
-INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`magazine_status`) VALUES (5, 'Magazine5','issn5','magazine5', 'magazine5', NULL, 2900, 0, 6, 0);
-INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`magazine_status`) VALUES (6, 'Magazine6','issn6','magazine6', 'magazine6', NULL, 2800, 0, 7, 0);
-INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`magazine_status`) VALUES (7, 'Magazine7','issn7','magazine7', 'magazine7', NULL, 2700, 0, 5, 0);
-INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`magazine_status`) VALUES (8, 'Magazine8','issn8','magazine8', 'magazine8', NULL, 3000, 0, 6, 0);
-INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`magazine_status`) VALUES (9, 'Magazine9','issn9','magazine9', 'magazine9', NULL, 2900, 0, 7, 0);
+INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`payer_type`,`magazine_status`) VALUES (1, 'Magazine1','issn1','magazine1', 'magazine1', NULL, 2500, 0, 5, 0, 0);
+INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`payer_type`,`magazine_status`) VALUES (2, 'Magazine2','issn2','magazine2', 'magazine2', NULL, 2800, 0, 6, 0, 0);
+INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`payer_type`,`magazine_status`) VALUES (3, 'Magazine3','issn3','magazine3', 'magazine3', NULL, 2700, 0, 7, 0, 0);
+INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`payer_type`,`magazine_status`) VALUES (4, 'Magazine4','issn4','magazine4', 'magazine4', NULL, 2600, 0, 5, 0, 0);
+INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`payer_type`,`magazine_status`) VALUES (5, 'Magazine5','issn5','magazine5', 'magazine5', NULL, 2900, 0, 6, 0, 0);
+INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`payer_type`,`magazine_status`) VALUES (6, 'Magazine6','issn6','magazine6', 'magazine6', NULL, 2800, 0, 7, 0, 0);
+INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`payer_type`,`magazine_status`) VALUES (7, 'Magazine7','issn7','magazine7', 'magazine7', NULL, 2700, 0, 5, 0, 0);
+INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`payer_type`,`magazine_status`) VALUES (8, 'Magazine8','issn8','magazine8', 'magazine8', NULL, 3000, 0, 6, 0, 0);
+INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`payer_type`,`magazine_status`) VALUES (9, 'Magazine9','issn9','magazine9', 'magazine9', NULL, 2900, 0, 7, 0, 0);
 
 INSERT INTO `magazine_scientific_areas` (`magazine_id`,`scientific_area_id`) VALUES (1,1);
 INSERT INTO `magazine_scientific_areas` (`magazine_id`,`scientific_area_id`) VALUES (1,2);
@@ -252,3 +252,5 @@ INSERT INTO `magazine_reviewers` (`magazine_id`,`reviewer_id`) VALUES (8,4);
 INSERT INTO `magazine_reviewers` (`magazine_id`,`reviewer_id`) VALUES (9,2);
 INSERT INTO `magazine_reviewers` (`magazine_id`,`reviewer_id`) VALUES (9,3);
 INSERT INTO `magazine_reviewers` (`magazine_id`,`reviewer_id`) VALUES (9,4);
+
+INSERT INTO `membership_fee` (`id`,`magazine_id`,`payer_id`,`kp_transaction_id`,`price`,`currency`,`timestamp`,`paid`,`valid_until`) VALUES (1, 1, 2, NULL, 2900, 0, '2020-02-09 02:54:14.332', 1, '2020-03-10 02:54:14.332');

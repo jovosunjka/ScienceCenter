@@ -1,0 +1,20 @@
+<section id="tabs">
+    <div class="row">
+        <div class="col-xl-12 ">
+            <nav>
+                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                    <ng-template ngFor let-scientificPaper let-i="index" [ngForOf]="scientificPapers">
+                        <a class="nav-item nav-link {{i==0 ? 'active' : ''}}" id="nav-select-reviewers-for-scientific-papers-tab" data-toggle="tab" href="#nav-select-reviewers-for-scientific-papers" role="tab" aria-controls="nav-select-reviewers-for-scientific-papers" aria-selected="false"> {{scientificPaper.title}}</a>
+                    </ng-template>
+                </div>
+            </nav>
+            <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+                <ng-template ngFor let-scientificPaper let-i="index" [ngForOf]="scientificPapers">    
+                    <div class="tab-pane fade {{i==0 ? 'show active' : ''}}" id="nav-add-reviewers" role="tabpanel" aria-labelledby="nav-add-reviewers-tab">
+                        <app-add-reviewers [taskId]="scientificPaper.taskId" (refresh)="getScientificPapersForSelectingReviewers()"> </app-add-reviewers>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</section>

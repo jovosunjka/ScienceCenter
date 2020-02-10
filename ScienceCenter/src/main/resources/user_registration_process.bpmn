@@ -99,7 +99,7 @@
       <bpmn:incoming>SequenceFlow_17wvffo</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_18qtsja</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sendTask id="Task_0sksxy7" name="SendEmailForConfirmation" camunda:class="com.jovo.ScienceCenter.task.SendEmailTask">
+    <bpmn:sendTask id="Task_0sksxy7" name="SendEmailForConfirmation" camunda:class="com.jovo.ScienceCenter.task.SendEmailForConfirmationTask">
       <bpmn:incoming>SequenceFlow_0z7lq8n</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0aw8kna</bpmn:outgoing>
     </bpmn:sendTask>

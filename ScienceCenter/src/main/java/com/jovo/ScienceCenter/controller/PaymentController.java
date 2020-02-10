@@ -28,8 +28,8 @@ public class PaymentController {
     private UserService userService;
 
 
-    @RequestMapping(value = "/pay/{magazineId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RedirectUrlDTO> pay(@PathVariable("magazineId") Long magazineId) {
+    @RequestMapping(value = "/pay", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RedirectUrlDTO> pay(@RequestParam("magazineId") Long magazineId) {
         UserData loggedUserData = null;
         try {
             loggedUserData = userService.getLoggedUser();

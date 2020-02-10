@@ -54,10 +54,30 @@ public class MagazineController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/all-activated", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MagazineDTO>> getMagazines() {
-        List<MagazineDTO> magazineDTOs = magazineService.getAllActivatedMagazinesWithPaidStatus();
+    @RequestMapping(value = "/activated-with-paid-status", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MagazineDTO>> getActivatedMagazinesWithPaidStatus() {
+        UserData loggedUser = null;
+        try {
+            loggedUser = userService.getLoggedUser();
+        } catch (Exception e) {
+            new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
+        List<MagazineDTO> magazineDTOs = magazineService.getActivatedMagazinesWithPaidStatus(loggedUser.getId());
         return new ResponseEntity<List<MagazineDTO>>(magazineDTOs, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/activated-by-editor", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MagazineWithoutPaidStatusDTO>> getAllActivatedMagazines() {
+        UserData loggedUser = null;
+        try {
+            loggedUser = userService.getLoggedUser();
+        } catch (Exception e) {
+            new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
+        List<MagazineWithoutPaidStatusDTO> magazineDTOs = magazineService.getAllActivatedMagazinesByEditor(loggedUser);
+        return new ResponseEntity<List<MagazineWithoutPaidStatusDTO>>(magazineDTOs, HttpStatus.OK);
     }
 
     @RequestMapping(value = {"/create-magazine-form-fields", "/create-magazine-form-fields/{processInstanceId}"},

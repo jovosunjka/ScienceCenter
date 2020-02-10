@@ -1,6 +1,7 @@
 package com.jovo.ScienceCenter.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "magazine")
-public class Magazine {
+public class Magazine implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -59,6 +60,16 @@ public class Magazine {
             inverseJoinColumns = @JoinColumn(name = "reviewer_id", referencedColumnName = "id"))
     private List<UserData> reviewers = new ArrayList<UserData>();
 
+    @Column(name = "payer_type", unique = false, nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    private PayerType payerType;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "magazine_scientific_papers",
+            joinColumns = @JoinColumn(name = "magazine_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "scientific_paper_id", referencedColumnName = "id"))
+    private List<ScientificPaper> scientificPapers = new ArrayList<ScientificPaper>();
+
     @Column(name = "magazine_status", unique = false, nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private Status magazineStatus;
@@ -68,7 +79,7 @@ public class Magazine {
     }
 
     public Magazine(String name, String issn, String username, String password, double membershipFee,
-                    Currency currency, List<ScientificArea> scientificAreas, UserData mainEditor) {
+                    Currency currency, List<ScientificArea> scientificAreas, UserData mainEditor, PayerType payerType) {
         this.name = name;
         this.issn = issn;
         this.username = username;
@@ -78,6 +89,7 @@ public class Magazine {
         this.currency = currency;
         this.scientificAreas = new HashSet<ScientificArea>(scientificAreas);
         this.mainEditor = mainEditor;
+        this.payerType = payerType;
         this.magazineStatus = Status.PENDING;
     }
 
@@ -156,6 +168,14 @@ public class Magazine {
     public List<UserData> getReviewers() { return reviewers; }
 
     public void setReviewers(List<UserData> reviewers) { this.reviewers = reviewers; }
+
+    public PayerType getPayerType() { return payerType; }
+
+    public void setPayerType(PayerType payerType) { this.payerType = payerType; }
+
+    public List<ScientificPaper> getScientificPapers() { return scientificPapers; }
+
+    public void setScientificPapers(List<ScientificPaper> scientificPapers) { this.scientificPapers = scientificPapers; }
 
     public Status getMagazineStatus() { return magazineStatus; }
 

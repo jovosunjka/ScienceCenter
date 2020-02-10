@@ -112,11 +112,17 @@ public class UserServiceImpl implements UserService {
         	return null;
 		}
 
-        return getUserData(camundaUser.getId());
-    }
-    @Override
+		try {
+			return getUserData(camundaUser.getId());
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	@Override
     public UserData getUserData(String camundaUserId) {
-        return userDataRepository.findByCamundaUserId(camundaUserId).orElse(null);
+        return userDataRepository.findByCamundaUserId(camundaUserId)
+				.orElseThrow(() -> new NotFoundException("UserData (camundaUserId=" + camundaUserId + ") not found!"));
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
@@ -414,10 +420,21 @@ public class UserServiceImpl implements UserService {
 							.map(ScientificArea::getName).collect(Collectors.toList());
 					String scientificAreaNamesStr = String.join(", ", scientificAreaNames);
 					org.camunda.bpm.engine.identity.User user = getUser(e.getCamundaUserId());
-					return new EditorOrReviewerDTO(e.getId(), e.getCamundaUserId(), user.getFirstName(), user.getLastName(), scientificAreaNamesStr);
+					return new EditorOrReviewerDTO(e.getId(), e.getCamundaUserId(), user.getFirstName(), user.getLastName(), scientificAreaNamesStr, false);
 				})
 				.collect(Collectors.toList());
 		return  editorDTOs;
+	}
+
+	@Override
+	public UserData getUserDataByEmail(String email) {
+		org.camunda.bpm.engine.identity.User user = identityService.createUserQuery().userEmail(email).singleResult();
+		if (user == null) {
+			throw new NotFoundException("Camunda user (email=" + email + ") not found!");
+		}
+
+		return getUserData(user.getId());
+
 	}
 
 	@Override
@@ -436,9 +453,15 @@ public class UserServiceImpl implements UserService {
 							.map(ScientificArea::getName).collect(Collectors.toList());
 					String scientificAreaNamesStr = String.join(", ", scientificAreaNames);
 					org.camunda.bpm.engine.identity.User user = getUser(r.getCamundaUserId());
-					return new EditorOrReviewerDTO(r.getId(), r.getCamundaUserId(), user.getFirstName(), user.getLastName(), scientificAreaNamesStr);
+					return new EditorOrReviewerDTO(r.getId(), r.getCamundaUserId(), user.getFirstName(), user.getLastName(), scientificAreaNamesStr, false);
 				})
 				.collect(Collectors.toList());
 		return  reviewerDTOs;
+	}
+
+	@Override
+	public UserData getUserDataByScientificArea(ScientificArea scientificArea) {
+		return userDataRepository.findByScientificArea(scientificArea)
+				.orElseThrow(() -> new NotFoundException("UserData (scientificAreas contains " + scientificArea.getName() + ") not found!"));
 	}
 }

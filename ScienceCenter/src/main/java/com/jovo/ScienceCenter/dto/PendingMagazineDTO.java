@@ -2,11 +2,11 @@ package com.jovo.ScienceCenter.dto;
 
 import com.jovo.ScienceCenter.model.Magazine;
 
-public class PendingMagazineDTO extends MagazineDTO {
+public class PendingMagazineDTO extends MagazineWithoutPaidStatusDTO {
     private String taskId;
 
     public PendingMagazineDTO(Magazine magazine) {
-        super(magazine, "Unknowon");
+        super(magazine);
         this.taskId = null;
     }
 

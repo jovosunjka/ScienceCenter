@@ -1,0 +1,5 @@
+@import '../../../../node_modules/@swimlane/ngx-datatable/themes/dark.css';
+
+.class_index {
+    vertical-align: middle
+}

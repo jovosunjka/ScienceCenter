@@ -27,6 +27,11 @@ import { AddReviewersComponent } from './add-reviewers/add-reviewers.component';
 import { AddPaymentTypesForMagazineComponent } from './add-payment-types-for-magazine/add-payment-types-for-magazine.component';
 import { CheckDataForPendingMagazinesComponent } from './check-data-for-pending-magazines/check-data-for-pending-magazines.component';
 import { MagazinesWithInvalidDataComponent } from './magazines-with-invalid-data/magazines-with-invalid-data.component';
+import { AddScientificPaperComponent } from './add-scientific-paper/add-scientific-paper.component';
+import { ProcessScientificPapersComponent } from './process-scientific-papers/process-scientific-papers.component';
+import { RepairScientificPapersComponent } from './repair-scientific-papers/repair-scientific-papers.component';
+import { UserPageComponent } from './user-page/user-page.component';
+import { SelectReviewersForScientificPapersComponent } from './select-reviewers-for-scientific-papers/select-reviewers-for-scientific-papers.component';
 
 
 @NgModule({
@@ -47,7 +52,12 @@ import { MagazinesWithInvalidDataComponent } from './magazines-with-invalid-data
     AddReviewersComponent,
     AddPaymentTypesForMagazineComponent,
     CheckDataForPendingMagazinesComponent,
-    MagazinesWithInvalidDataComponent
+    MagazinesWithInvalidDataComponent,
+    AddScientificPaperComponent,
+    ProcessScientificPapersComponent,
+    RepairScientificPapersComponent,
+    UserPageComponent,
+    SelectReviewersForScientificPapersComponent
   ],
   imports: [
     CommonModule,

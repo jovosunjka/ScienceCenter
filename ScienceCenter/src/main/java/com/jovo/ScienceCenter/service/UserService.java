@@ -7,6 +7,7 @@ import com.jovo.ScienceCenter.dto.RequestForReviewerDTO;
 import com.jovo.ScienceCenter.dto.UserDTO;
 import com.jovo.ScienceCenter.exception.NotFoundException;
 import com.jovo.ScienceCenter.exception.TaskNotAssignedToYouException;
+import com.jovo.ScienceCenter.model.ScientificArea;
 import com.jovo.ScienceCenter.model.UserData;
 
 import java.util.List;
@@ -66,4 +67,7 @@ public interface UserService {
 
     List<EditorOrReviewerDTO> getEditorsForMagazineInCurrentProcess(String processInstanceId);
 
+    UserData getUserDataByEmail(String email);
+
+    UserData getUserDataByScientificArea(ScientificArea scientificArea);
 }

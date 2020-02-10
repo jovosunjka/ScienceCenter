@@ -60,6 +60,10 @@ export class WebSocketService {
             this.forwardingMessageService.sendMessageToAddPaymentTypes(body.hasError);
           } else if (body.type === 'activate-magazine') {
             this.forwardingMessageService.sendMessageToActivateMagazine(body.hasError);
+          } else if (body.type === 'check-author-has-activated-membership-fee') {
+            this.forwardingMessageService.sendMessageToMagazinesPageCAHAMF(body.hasError);
+          } else if (body.type === 'save-new-scientific-paper') {
+            this.forwardingMessageService.sendMessageToAddNewScientificPaper(body.hasError);
           }
 
           if (body.hasError) {
