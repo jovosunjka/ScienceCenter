@@ -32,6 +32,7 @@ import { ProcessScientificPapersComponent } from './process-scientific-papers/pr
 import { RepairScientificPapersComponent } from './repair-scientific-papers/repair-scientific-papers.component';
 import { UserPageComponent } from './user-page/user-page.component';
 import { SelectReviewersForScientificPapersComponent } from './select-reviewers-for-scientific-papers/select-reviewers-for-scientific-papers.component';
+<<<<<<< HEAD
 import { ReviewScientificPapersComponent } from './review-scientific-papers/review-scientific-papers.component';
 import { FirstDecisionComponent } from './first-decision/first-decision.component';
 import { SecondDecisionComponent } from './second-decision/second-decision.component';
@@ -41,6 +42,8 @@ import { FirstRepairScientificPapersComponent } from './first-repair-scientific-
 import { SecondRepairScientificPapersComponent } from './second-repair-scientific-papers/second-repair-scientific-papers.component';
 import { FinalRepairScientificPapersComponent } from './final-repair-scientific-papers/final-repair-scientific-papers.component';
 import { ScientificPapersInMagazineComponent } from './scientific-papers-in-magazine/scientific-papers-in-magazine.component';
+=======
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 
 
 @NgModule({
@@ -66,6 +69,7 @@ import { ScientificPapersInMagazineComponent } from './scientific-papers-in-maga
     ProcessScientificPapersComponent,
     RepairScientificPapersComponent,
     UserPageComponent,
+<<<<<<< HEAD
     SelectReviewersForScientificPapersComponent,
     ReviewScientificPapersComponent,
     FirstDecisionComponent,
@@ -76,6 +80,9 @@ import { ScientificPapersInMagazineComponent } from './scientific-papers-in-maga
     SecondRepairScientificPapersComponent,
     FinalRepairScientificPapersComponent,
     ScientificPapersInMagazineComponent
+=======
+    SelectReviewersForScientificPapersComponent
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
   ],
   imports: [
     CommonModule,

@@ -45,11 +45,19 @@
         </tr>
         <tr class="table-info">
             <td colspan="7">
+<<<<<<< HEAD
                 <textarea rows="4" cols="100" placeholder="Comment" [(ngModel)]="scientificPaper.commentForAuthor" name="comment"> </textarea>
             </td>
             <td>
                 <button type="button" class="btn btn-warning" (click)="processPaper(scientificPaper.taskId, 'NOT_FORMATTED_AS_REQUIRED', scientificPaper.commentForAuthor)">NOT FORMATTED AS REQUIRED</button>
                 <button type="button" class="btn btn-danger" (click)="processPaper(scientificPaper.taskId, 'NOT_THEMATICALLY_ACCEPTABLE', scientificPaper.commentForAuthor)">NOT THEMATICALLY ACCEPTABLE</button>
+=======
+                <textarea rows="4" cols="100" placeholder="Comment" [(ngModel)]="scientificPaper.comment" name="comment"> </textarea>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger" (click)="processPaper(scientificPaper.taskId, 'NOT_THEMATICALLY_ACCEPTABLE', scientificPaper.comment)">NOT THEMATICALLY ACCEPTABLE</button>
+                <button type="button" class="btn btn-warning" (click)="processPaper(scientificPaper.taskId, 'NOT_FORMATTED_AS_REQUIRED', scientificPaper.comment)">NOT FORMATTED AS REQUIRED</button>
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
             </td> 
         </tr>
     </ng-template>

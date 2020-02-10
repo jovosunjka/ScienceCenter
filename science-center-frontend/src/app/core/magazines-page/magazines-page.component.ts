@@ -75,6 +75,13 @@ export class MagazinesPageComponent implements OnInit {
     );
   }
 
+<<<<<<< HEAD
+=======
+  showCreateMagazineButton() {
+    return window.location.href.endsWith('magazines-page');
+  }
+
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
   pay(magazineId) {
     this.genericService.get<RedirectUrlDto>(this.relativeUrlForPayment + '?magazineId=' + magazineId).subscribe(
       (redirectUrlDto: RedirectUrlDto) => {

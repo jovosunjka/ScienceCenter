@@ -6,7 +6,10 @@ import com.jovo.ScienceCenter.exception.NotFoundException;
 import com.jovo.ScienceCenter.exception.TaskNotAssignedToYouException;
 import com.jovo.ScienceCenter.model.*;
 import com.jovo.ScienceCenter.repository.ScientificPaperRepository;
+<<<<<<< HEAD
 import com.jovo.ScienceCenter.util.ReviewingResult;
+=======
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 import org.camunda.bpm.engine.FormService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
@@ -231,10 +234,17 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
+<<<<<<< HEAD
     public List<ScientificPaperFrontendDtoWithComment> getFirstRepairScientificPaper(String camundaUserId) {
         List<ScientificPaperFrontendDtoWithComment> scientificPaperFrontendDtoWithComments =
                                                                 new ArrayList<ScientificPaperFrontendDtoWithComment>();
         List<Task> tasks = taskService.createTaskQuery().taskName("FirstRepairScientificPaper").taskAssignee(camundaUserId)
+=======
+    public List<ScientificPaperFrontendDtoWithComment> getScientificPapersForRepairing(String camundaUserId) {
+        List<ScientificPaperFrontendDtoWithComment> scientificPaperFrontendDtoWithComments =
+                                                                new ArrayList<ScientificPaperFrontendDtoWithComment>();
+        List<Task> tasks = taskService.createTaskQuery().taskName("RepairScientificPaper").taskAssignee(camundaUserId)
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
                                 .list();
         tasks.stream()
                 .forEach(task -> {
@@ -266,6 +276,7 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
+<<<<<<< HEAD
     public List<ScientificPaperFrontendDtoWithReviewingDTOs> getSecondRepairScientificPaper(String camundaUserId) {
         List<ScientificPaperFrontendDtoWithReviewingDTOs> scientificPaperFrontendDtoWithReviewingDTOs =
                 new ArrayList<ScientificPaperFrontendDtoWithReviewingDTOs>();
@@ -339,6 +350,8 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
+=======
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
     public void repairScientificPaper(String processInstanceId, String repairedFileName) {
         MainEditorAndScientificPaper mainEditorAndScientificPaper =
             (MainEditorAndScientificPaper) runtimeService.getVariable(processInstanceId, "mainEditorAndScientificPaper");
@@ -404,11 +417,16 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
 
         Magazine selectedMagazine = (Magazine) runtimeService.getVariable(processInstanceId, "selectedMagazine");
 
+<<<<<<< HEAD
         String processInitiator = (String) runtimeService.getVariable(processInstanceId, "processInitiator");
 
         List<UserData> reviewers = selectedMagazine.getReviewers().stream()
                 .filter(reviewer ->  !reviewer.getCamundaUserId().equals(processInitiator)
                         && reviewer.getUserStatus() == Status.ACTIVATED
+=======
+        List<UserData> reviewers = selectedMagazine.getReviewers().stream()
+                .filter(reviewer -> reviewer.getUserStatus() == Status.ACTIVATED
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
                         && reviewer.getScientificAreas().contains(scientificArea))
                 .collect(Collectors.toList());
 
@@ -447,6 +465,7 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
+<<<<<<< HEAD
     public List<ScientificPaperFrontendDtoWithReviewings> getFirstDecision(String camundaUserId) {
         List<ScientificPaperFrontendDtoWithReviewings> scientificPaperFrontendDTOs = new ArrayList<ScientificPaperFrontendDtoWithReviewings>();
         List<Task> tasks = taskService.createTaskQuery().taskName("FirstDecision").taskAssignee(camundaUserId).list();
@@ -633,6 +652,8 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
+=======
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
     public void saveSelectedReviewersForScientificPaper(String processInstanceId, List<Long> reviewerIds) {
         List<UserData> reviewers;
         if (reviewerIds.size() == 1) {
@@ -662,6 +683,7 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
 
         runtimeService.setVariable(processInstanceId, "selectedReviewersForScientificPaper", reviewers);
 
+<<<<<<< HEAD
         runtimeService.setVariable(processInstanceId, "reviewingResults", new ArrayList<ReviewingResult>());
     }
 
@@ -679,5 +701,7 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
         System.out.println("show reviewingResults");
         reviewingResults.add(reviewingResult);
         runtimeService.setVariable(processInstanceId, "reviewingResults", reviewingResults);
+=======
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
     }
 }

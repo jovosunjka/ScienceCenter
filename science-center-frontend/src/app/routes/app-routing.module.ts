@@ -15,7 +15,10 @@ import { AddEditorsAndReviewersComponent } from '../core/add-editors-and-reviewe
 import { AddPaymentTypesForMagazineComponent } from '../core/add-payment-types-for-magazine/add-payment-types-for-magazine.component';
 import { AddScientificPaperComponent } from '../core/add-scientific-paper/add-scientific-paper.component';
 import { UserPageComponent } from '../core/user-page/user-page.component';
+<<<<<<< HEAD
 import { ScientificPapersInMagazineComponent } from '../core/scientific-papers-in-magazine/scientific-papers-in-magazine.component';
+=======
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 
 
 const routes: Routes = [
@@ -108,6 +111,7 @@ const routes: Routes = [
       expectedRoles: ['USER']
     },
     canActivate: [CanActivateUserGuard]
+<<<<<<< HEAD
   },
   {
     path: 'scientific-papers-in-magazine/:magazineId',
@@ -118,6 +122,9 @@ const routes: Routes = [
     canActivate: [CanActivateUserGuard]
   }
 
+=======
+}
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 ];
 
 @NgModule({
