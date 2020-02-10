@@ -205,45 +205,11 @@
       <bpmn:incoming>SequenceFlow_0a9wn3y</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_03g648z</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:userTask id="Task_02g4rg8" name="SelectReviewersForScientificPaper" camunda:assignee="${urednikNaucneOblasti}">
+    <bpmn:userTask id="Task_02g4rg8" name="SelectReviewersForScientificPaper" camunda:assignee="${selectedEditorOfScientificArea.getCamundaUserId()}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="reviewers" label="Reviewers" type="string" />
         </camunda:formData>
-        <camunda:taskListener event="complete">
-          <camunda:script scriptFormat="JavaScript">task.getExecution().setVariable("brojRecenzenata", brojRecenzenata - 1)
-recenzenti.add(korisnickoImeRecenzenta);</camunda:script>
-        </camunda:taskListener>
-        <camunda:taskListener event="create">
-          <camunda:script scriptFormat="JavaScript">var taskFormData = task.getExecution().getProcessEngineServices().getFormService().getTaskFormData(task.getId());
-var formFields = taskFormData.getFormFields();
-if(formFields != null){
-	for(var fieldIndex in formFields){
-		var field = formFields[fieldIndex];
-		if(field.getId() == "korisnickoImeRecenzenta") {
-			//ovo je nase select polje
-			items = field.getType().getValues();
-			
-			for(var casopisIndex in casopisi) {
-				var casopis = casopisi[casopisIndex];
-				if (casopis.naziv == izabraniCasopis) {
-					for(var naucnaOblastIndex in casopis.naucneOblasti) {
-						var naucnaOblast = casopis.naucneOblasti[naucnaOblastIndex];
-						if (naucnaOblast.naziv == izabranaNaucnaOblast) {
-							for(var recenzentIndex in naucnaOblast.recenzenti) {
-								var recenzent = naucnaOblast.recenzenti[recenzentIndex];
-								items[recenzent] = recenzent;
-							}
-							break;
-						}
-					}
-					break;
-				}
-			}
-		}
-	}
-}</camunda:script>
-        </camunda:taskListener>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_03g648z</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_15zz9s0</bpmn:outgoing>

@@ -368,8 +368,8 @@ public class MagazineServiceImpl implements MagazineService {
         }
 
         Magazine magazine = getMagazine(magazineName);
-        magazine.setEditors(editors);
-        magazine.setReviewers(reviewers);
+        magazine.setEditors(new HashSet<>(editors));
+        magazine.setReviewers(new HashSet<>(reviewers));
         magazineRepository.save(magazine);
     }
 

@@ -10,7 +10,7 @@ import { EditorOrReviewer } from 'src/app/shared/model/editor-or-reviewer';
 })
 export class AddReviewersComponent implements OnInit {
   @Input() taskId: string;
-  @Output() refresh: EventEmitter<any>;
+  @Output() refresh: EventEmitter<any> = new EventEmitter<any>();
 
   private processInstanceId: string;
   reviewers: EditorOrReviewer[];

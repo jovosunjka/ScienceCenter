@@ -48,17 +48,17 @@ public class Magazine implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private UserData mainEditor;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "magazine_editors",
             joinColumns = @JoinColumn(name = "magazine_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "editor_id", referencedColumnName = "id"))
-    private List<UserData> editors = new ArrayList<UserData>(); // jedan editor ne moze biti u vise magazina (proveriti ovu tvrdnju)
+    private Set<UserData> editors = new HashSet<>(); // jedan editor ne moze biti u vise magazina (proveriti ovu tvrdnju)
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "magazine_reviewers",
             joinColumns = @JoinColumn(name = "magazine_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "reviewer_id", referencedColumnName = "id"))
-    private List<UserData> reviewers = new ArrayList<UserData>();
+    private Set<UserData> reviewers = new HashSet<UserData>();
 
     @Column(name = "payer_type", unique = false, nullable = false)
     @Enumerated(EnumType.ORDINAL)
@@ -161,13 +161,13 @@ public class Magazine implements Serializable {
 
     public void setMainEditor(UserData mainEditor) { this.mainEditor = mainEditor; }
 
-    public List<UserData> getEditors() { return editors; }
+    public Set<UserData> getEditors() { return editors; }
 
-    public void setEditors(List<UserData> editors) { this.editors = editors; }
+    public void setEditors(Set<UserData> editors) { this.editors = editors; }
 
-    public List<UserData> getReviewers() { return reviewers; }
+    public Set<UserData> getReviewers() { return reviewers; }
 
-    public void setReviewers(List<UserData> reviewers) { this.reviewers = reviewers; }
+    public void setReviewers(Set<UserData> reviewers) { this.reviewers = reviewers; }
 
     public PayerType getPayerType() { return payerType; }
 
