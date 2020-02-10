@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <section id="tabs">
     <div class="row">
         <div class="col-xl-12 ">
@@ -22,3 +23,63 @@
         </div>
     </div>
 </section>
+=======
+<button type="button" class="btn btn-primary"  (click)="getScientificPapersForRepairing()">Refresh</button>
+<h4 *ngIf="!scientificPapers || scientificPapers.length===0"> &nbsp;&nbsp;There are currently no scientific papers.</h4>
+<div class="table-responsive" *ngIf="scientificPapers && scientificPapers.length > 0">
+  <table class="table table-hover table-bordered">
+    <tr class="table-primary">
+        <th>#</th>
+        <th>Title</th>
+        <th>Keywords</th>
+        <th>Abstract</th>
+        <th>Scientific Area</th>
+        <th>Author</th>
+        <th>Coauthors</th>
+        <th></th>
+    </tr>
+    <ng-template ngFor let-scientificPaper let-i="index" [ngForOf]="scientificPapers">
+        <tr class="table-info">
+            <td class="class_index" rowspan="2">
+                {{i+1}}.
+            </td>
+            <td>
+                {{scientificPaper.title}}
+            </td>
+            <td>
+                {{scientificPaper.keywords}}
+            </td>
+            <td>
+                {{scientificPaper.scientificPaperAbstract}}
+            </td>
+            <td>
+                {{scientificPaper.scientificArea}}
+            </td>
+            <td>
+                {{scientificPaper.author}}
+            </td>
+            <td>
+                {{scientificPaper.coauthors}}
+            </td>
+            <td rowspan="2">
+                <button type="button" class="btn btn-primary" (click)="repairScientificPaper(scientificPaper.taskId)">Repair</button>
+            </td>
+        </tr>
+        <tr class="table-info">
+            <td colspan="5">
+                <label for="id_comment">Main editor's comment:</label>
+                <p id="id_comment"> {{scientificPaper.comment}} </p>
+            </td>
+            <td>
+                <div class="input-group"><span class="input-group-addon"><i
+                    class="glyphicon glyphicon-home"></i></span><input (change)="onChange($event)" accept=".pdf"
+                    type="file" id="id_repaired_paper" name="repaired_paper"
+                    placeholder="Repaired file" class="form-control"
+                    required="true">
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+  </table>
+</div>
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f

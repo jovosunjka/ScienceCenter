@@ -6,7 +6,10 @@ import com.jovo.ScienceCenter.exception.TaskNotAssignedToYouException;
 import com.jovo.ScienceCenter.model.MainEditorAndScientificPaper;
 import com.jovo.ScienceCenter.model.ScientificPaper;
 import com.jovo.ScienceCenter.model.UserData;
+<<<<<<< HEAD
 import com.jovo.ScienceCenter.util.ReviewingResult;
+=======
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 
 import java.io.IOException;
 import java.util.List;
@@ -35,11 +38,15 @@ public interface ScientificPaperService {
 
     MainEditorAndScientificPaper getMainEditorAndScientificPaper(String taskId);
 
+<<<<<<< HEAD
     List<ScientificPaperFrontendDtoWithComment> getFirstRepairScientificPaper(String camundaUserId);
 
     List<ScientificPaperFrontendDtoWithReviewingDTOs> getSecondRepairScientificPaper(String camundaUserId);
 
     List<ScientificPaperFrontendDtoWithComment> getFinalRepairScientificPaper(String camundaUserId);
+=======
+    List<ScientificPaperFrontendDtoWithComment> getScientificPapersForRepairing(String camundaUserId);
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 
     void repairScientificPaper(String processInstanceId, String repairedFileName);
 
@@ -52,6 +59,7 @@ public interface ScientificPaperService {
     List<TaskIdAndTitleDTO> getScientificPapersForSelectingReviews(String camundaUserId);
 
     void saveSelectedReviewersForScientificPaper(String processInstanceId, List<Long> reviewerIds);
+<<<<<<< HEAD
 
     void addReviewingResult(/*String mainProcessInstanceId,*/ String taskId, ReviewingResult reviewingResult);
 
@@ -72,4 +80,6 @@ public interface ScientificPaperService {
     List<ScientificPaperFrontendDTOWithId> getScientificPapersForMagazine(Long magazineId);
 
     byte[] getPdfContent(Long scientificPaperId) throws IOException;
+=======
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 }

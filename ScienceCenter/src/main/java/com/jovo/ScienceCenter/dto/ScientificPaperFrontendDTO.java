@@ -1,5 +1,11 @@
 package com.jovo.ScienceCenter.dto;
 
+<<<<<<< HEAD
+=======
+import com.jovo.ScienceCenter.model.ScientificPaper;
+import com.jovo.ScienceCenter.model.UserData;
+import org.camunda.bpm.engine.identity.User;
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 
 public class ScientificPaperFrontendDTO {
     protected String taskId;

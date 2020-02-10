@@ -33,10 +33,13 @@ public class ScientificPaper implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Coauthor> coauthors;
 
+<<<<<<< HEAD
     @Column(name = "scientific_paper_status", unique = false, nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private Status scientificPaperStatus;
 
+=======
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 
     public ScientificPaper() {
 
@@ -52,7 +55,10 @@ public class ScientificPaper implements Serializable {
         this.scientificArea = scientificArea;
         this.author = author;
         this.coauthors = coauthors;
+<<<<<<< HEAD
         this.scientificPaperStatus = Status.PENDING;
+=======
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
     }
 
     public Long getId() {
@@ -112,8 +118,11 @@ public class ScientificPaper implements Serializable {
     public void setCoauthors(List<Coauthor> coauthors) {
         this.coauthors = coauthors;
     }
+<<<<<<< HEAD
 
     public Status getScientificPaperStatus() { return scientificPaperStatus; }
 
     public void setScientificPaperStatus(Status scientificPaperStatus) { this.scientificPaperStatus = scientificPaperStatus; }
+=======
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 }

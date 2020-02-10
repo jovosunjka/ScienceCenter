@@ -4,8 +4,12 @@
           (change)="onChangeReviewers($event)">
         <ng-template ngFor let-reviewer let-i="index" [ngForOf]="reviewers">
             <option  [ngValue]="reviewer.id">
+<<<<<<< HEAD
                 {{i+1}}. &nbsp; {{reviewer.username}}, &nbsp; {{reviewer.firstName}} {{reviewer.lastName}} 
                 {{ reviewer.mainEditor ? '(main editor)' : '' }}
+=======
+                {{i+1}}. &nbsp; {{reviewer.username}}, &nbsp; {{reviewer.firstName}} {{reviewer.lastName}}
+>>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
                 &nbsp;&nbsp;(scientificAreas={{reviewer.scientificAreas}})
             </option>
         </ng-template>
