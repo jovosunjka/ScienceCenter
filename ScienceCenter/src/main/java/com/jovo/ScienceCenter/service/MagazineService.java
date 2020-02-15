@@ -47,9 +47,6 @@ public interface MagazineService {
     Magazine loginMagazine(Magazine magazine);
 
     List<MagazineDTO> getActivatedMagazinesWithPaidStatus(Long payerId);
-<<<<<<< HEAD
 
     void save(Magazine selectedMagazine);
-=======
->>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 }

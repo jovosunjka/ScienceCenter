@@ -1,13 +1,13 @@
 package com.jovo.ScienceCenter.dto;
 
 public class ScientificPaperFrontendDTOWithId {
-    private long id;
-    private String title;
-    private String keywords;
-    private String scientificPaperAbstract;
-    private String scientificArea;
-    private String author;
-    private String coauthors;
+    protected long id;
+    protected String title;
+    protected String keywords;
+    protected String scientificPaperAbstract;
+    protected String scientificArea;
+    protected String author;
+    protected String coauthors;
 
     public ScientificPaperFrontendDTOWithId() {
 

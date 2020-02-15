@@ -25,6 +25,7 @@ export class MagazinesPageComponent implements OnInit {
   private relativeUrlForActivatedMagazinesWithPaidStatus = '/magazines/activated-with-paid-status';
   private relativeUrlForActivatedMagazinesByEditor = '/magazines/activated-by-editor';
   private relativeUrlForStartProcessForAddingPaper = '/scientific-papers/start-process';
+  private relativeUrlForSelectMagazine = '/scientific-papers/select-magazine';
 
   constructor(private genericService: GenericService, private toastr: ToastrService, private authenticationService: AuthenticationService,
               private forwardingMessageService: ForwardingMessageService, private router: Router, private ngZone: NgZone) {
@@ -75,13 +76,6 @@ export class MagazinesPageComponent implements OnInit {
     );
   }
 
-<<<<<<< HEAD
-=======
-  showCreateMagazineButton() {
-    return window.location.href.endsWith('magazines-page');
-  }
-
->>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
   pay(magazineId) {
     this.genericService.get<RedirectUrlDto>(this.relativeUrlForPayment + '?magazineId=' + magazineId).subscribe(
       (redirectUrlDto: RedirectUrlDto) => {
@@ -106,6 +100,15 @@ export class MagazinesPageComponent implements OnInit {
           this.processInstanceId = res.processInstanceId;
           localStorage.setItem('processInstanceId', this.processInstanceId);
           this.toastr.success('startProcessForAddingScientificPaper (success)');
+
+          this.genericService.get<any>(this.relativeUrlForSelectMagazine + '?processInstanceId=' + this.processInstanceId
+                                        + '&magazineId=' + magazineId)
+            .subscribe(
+              () => {
+                this.toastr.success('The form was successfully submitted!');
+              },
+              (err) => alert(JSON.stringify(err))
+            );
         },
         (err) => {
           this.toastr.error('startProcessForAddingScientificPaper (fail)');

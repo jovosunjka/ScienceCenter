@@ -109,7 +109,6 @@ INSERT INTO `user_roles` (`user_id`,`role_id`) VALUES (11,5);
 
 INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (1,1);
 INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (1,2);
-<<<<<<< HEAD
 INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (1,3);
 INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (1,4);
 INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (1,5);
@@ -143,38 +142,6 @@ INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (7,2
 INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (7,3);
 INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (7,4);
 INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (7,5);
-=======
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (2,3);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (2,4);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (3,5);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (3,6);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (3,7);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (4,8);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (4,9);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (4,10);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (5,10);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (5,2);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (5,3);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (6,1);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (6,3);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (6,4);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (7,5);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (7,6);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (7,7);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (8,1);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (8,2);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (8,3);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (8,4);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (9,7);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (9,8);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (9,9);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (10,5);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (10,6);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (10,7);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (11,11);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (11,12);
-INSERT INTO `user_scientific_areas` (`user_id`,`scientific_area_id`) VALUES (11,13);
->>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 
 
 INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`membership_fee`,`currency`,`main_editor_id`,`payer_type`,`magazine_status`) VALUES (1, 'Magazine1','issn1','magazine1', 'magazine1', NULL, 2500, 0, 5, 0, 0);

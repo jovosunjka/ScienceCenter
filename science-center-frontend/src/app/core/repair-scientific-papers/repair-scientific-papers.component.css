@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* Tabs*/
 
 #tabs {
@@ -21,10 +20,3 @@
     color: #eee;
     font-size: 20px;
 }
-=======
-@import '../../../../node_modules/@swimlane/ngx-datatable/themes/dark.css';
-
-.class_index {
-    vertical-align: middle
-}
->>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f

@@ -10,7 +10,7 @@ import { EditorOrReviewer } from 'src/app/shared/model/editor-or-reviewer';
 })
 export class AddReviewersComponent implements OnInit {
   @Input() taskId: string;
-  @Output() refresh: EventEmitter<any> = new EventEmitter<any>();
+  @Output() refreshEvent: EventEmitter<any> = new EventEmitter<any>();
 
   private processInstanceId: string;
   reviewers: EditorOrReviewer[];
@@ -34,7 +34,7 @@ export class AddReviewersComponent implements OnInit {
   getReviewersForMagazine() {
     let relativeUrl;
     if (this.taskId) {
-      relativeUrl = this.relativeUrlForReviewersForScientificPapers.concat('?taskId=').concat(this.taskId)
+      relativeUrl = this.relativeUrlForReviewersForScientificPapers.concat('?taskId=').concat(this.taskId);
     } else {
       relativeUrl = this.relativeUrlForReviewers.concat('?processInstanceId=').concat(this.processInstanceId);
     }
@@ -59,8 +59,8 @@ export class AddReviewersComponent implements OnInit {
   select() {
     if (this.taskId) {
       if (this.selectedReviewers.length === 1) {
-        const mainEditorAsReviewerId = this.selectedReviewers[0]; 
-        if (this.reviewers.filter(r => r.id == mainEditorAsReviewerId && r.mainEditor).length === 0) {
+        const mainEditorAsReviewerId = this.selectedReviewers[0];
+        if (this.reviewers.filter(r => r.id === mainEditorAsReviewerId && r.mainEditor).length === 0) {
           this.toastr.error('Select at least two reviewers!');
           return;
         }
@@ -68,15 +68,17 @@ export class AddReviewersComponent implements OnInit {
         this.toastr.error('Select at least two reviewers!');
         return;
       }
-      
+
       this.genericService.put<any>(this.relativeUrlForReviewersForSelectReviewera.concat('?taskId=').concat(this.taskId),
                            {reviewers: this.selectedReviewers})
       .subscribe(
-        () => this.toastr.success('The form was successfully submitted!'),
+        () => {
+          this.toastr.success('The form was successfully submitted!');
+          this.refreshEvent.emit();
+        },
         err => alert(JSON.stringify(err))
       );
     }
-  
   }
 
 }

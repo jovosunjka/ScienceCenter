@@ -29,11 +29,7 @@ export class ProcessScientificPapersComponent implements OnInit {
     this.genericService.get<ScientificPaper[]>(this.relativeUrlForScientificPapersForProcessing).subscribe(
       (scientificPapers: ScientificPaper[]) => {
         this.scientificPapers = scientificPapers;
-<<<<<<< HEAD
         this.scientificPapers.forEach(sp => sp.commentForAuthor = '');
-=======
-        this.scientificPapers.forEach(sp => sp.comment = '');
->>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 
         this.toastr.success('Scientific papers loaded!');
       },
@@ -42,10 +38,6 @@ export class ProcessScientificPapersComponent implements OnInit {
       }
     );
   }
-<<<<<<< HEAD
-
-=======
->>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
   processPaper(taskId: string, status: string, comment: string) {
     this.genericService.put<any>(this.relativeUrlForProcessScientificPaper.concat('?taskId=' + taskId), {status, comment} )
       .subscribe(

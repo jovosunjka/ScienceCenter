@@ -3,6 +3,7 @@ import { GenericService } from '../services/generic/generic.service';
 import { ToastrService } from 'ngx-toastr';
 import { Dto } from 'src/app/shared/model/dto';
 import { Router } from '@angular/router';
+import { ForwardingMessageService } from '../services/forwarding-message/forwarding-message.service';
 
 @Component({
   selector: 'app-add-scientific-paper',
@@ -23,7 +24,8 @@ export class AddScientificPaperComponent implements OnInit {
   private processInstanceId: string;
 
 
-  constructor(private genericService: GenericService, private toastr: ToastrService, private router: Router) {
+  constructor(private genericService: GenericService, private toastr: ToastrService, private router: Router,
+              private forwardingMessageService: ForwardingMessageService) {
     this.scientificAreas = [];
     this.newCoauthor = {
       firstName: '',
@@ -41,6 +43,14 @@ export class AddScientificPaperComponent implements OnInit {
 
     this.getAllScientificAreas();
     this.getCreateMagazineFormFields();
+
+    this.forwardingMessageService.addNewScientificPaperEvent.subscribe(
+      (hasError: boolean) => {
+        if (!hasError) {
+          this.router.navigate(['/pending-scientific-papers']);
+        }
+      }
+    );
   }
 
   getAllScientificAreas() {
@@ -98,10 +108,7 @@ export class AddScientificPaperComponent implements OnInit {
     this.genericService.sendPaper(this.relativeUrlForAddScientificPaper.concat('?processInstanceId=', this.processInstanceId),
               this.scientificPaperFile, idValueDTOs)
       .subscribe(
-        () => {
-          this.toastr.success('The form was successfully submitted!');
-          this.router.navigate(['/user-page']);
-        },
+        () => this.toastr.success('The form was successfully submitted!'),
         err => alert(JSON.stringify(err))
       );
   }

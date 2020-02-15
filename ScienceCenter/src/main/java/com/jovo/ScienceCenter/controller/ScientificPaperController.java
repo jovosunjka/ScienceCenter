@@ -56,6 +56,27 @@ public class ScientificPaperController {
         return new ResponseEntity<ProcessInstanceIdDTO>(new ProcessInstanceIdDTO(processInstanceId), HttpStatus.OK);
     }
 
+    @RequestMapping(value ="/select-magazine", method = RequestMethod.GET)
+    public ResponseEntity selectMagazine(@RequestParam("processInstanceId") String processInstanceId,
+                                                               @RequestParam("magazineId") Long magazineId) {
+        UserData loggedUser = null;
+        try {
+            loggedUser = userService.getLoggedUser();
+        } catch (Exception e) {
+            new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
+        Map<String, Object> formFieldsMap = new HashMap<String, Object>();
+        formFieldsMap.put("magazineId", magazineId);
+
+        try {
+            scientificPaperService.submitFirstUserTask(loggedUser.getCamundaUserId(), processInstanceId, formFieldsMap);
+        } catch (NotFoundException | TaskNotAssignedToYouException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @RequestMapping(value ="/add", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity addScientificPaper(@RequestParam("processInstanceId") String processInstanceId,
                                              @RequestPart("scientific_paper_file") MultipartFile file,
@@ -501,6 +522,21 @@ public class ScientificPaperController {
         List<ScientificPaperFrontendDTOWithId> scientificPaperFrontendDTOs =
                 scientificPaperService.getScientificPapersForMagazine(magazineId);
         return new ResponseEntity<List<ScientificPaperFrontendDTOWithId>>(scientificPaperFrontendDTOs, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/pending", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ScientificPaperFrontendDTOWithMagazineName>> getScientificPapersForMagazine() {
+        UserData loggedUser = null;
+        try {
+            loggedUser = userService.getLoggedUser();
+        } catch (Exception e) {
+            new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
+        List<ScientificPaperFrontendDTOWithMagazineName> scientificPaperFrontendDTOWithMagazineNames =
+                scientificPaperService.getPendingScientificPapers(loggedUser);
+        return new ResponseEntity<List<ScientificPaperFrontendDTOWithMagazineName>>(scientificPaperFrontendDTOWithMagazineNames,
+                                                                                    HttpStatus.OK);
     }
 
     @RequestMapping(value = "/review", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)

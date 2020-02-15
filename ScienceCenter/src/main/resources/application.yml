@@ -6,24 +6,42 @@ frontend.url: https://localhost:4200
 
 registration.confirmation.url: https://localhost:4200/confirm-registration
 
+ca-url: https://localhost:8443/pki/certificate/create
+
+ftp:
+  host: localhost
+  port: 2121
+  passive-ports:
+  max-login: 0
+  max-threads: 0
+  username: science_center_ftp
+  password: science_center_ftp_pass
+  home-dir: classpath:stores
+  #home-dir: classpath:aaa
+  relative-url-to-store-directory: /store
+
 token:
   header: X-Auth-Token
   secret: myXAuthSecret
   expiration: 1800000
 
+proxy-server.url: https://localhost:8762
+
+pki-microservice:
+  create-certificate: ${proxy-server.url}/pki-microservice/certificate/create
 
 payment-microservice:
   urls:
     frontend:
-      choose-payment: https://localhost:4201/choose-payment #https://localhost:8762/payment-microservice/payment/choose-type
+      choose-payment: https://localhost:4201/choose-payment #${proxy-server.url}/payment-microservice/payment/choose-type
     backend:
-      form-fields-for-payment-types: https://localhost:8762/payment-microservice/payment/form-fields-for-payment-types
+      form-fields-for-payment-types: ${proxy-server.url}/payment-microservice/payment/form-fields-for-payment-types
       registration:
-        single: https://localhost:8762/payment-microservice/users/registration
-        all: https://localhost:8762/payment-microservice/users/registration-all
-      pay: https://localhost:8762/payment-microservice/payment/pay
-      transactions: https://localhost:8762/payment-microservice/payment/transactions
-      login: https://localhost:8762/payment-microservice/users/login
+        single: ${proxy-server.url}/payment-microservice/users/registration
+        all: ${proxy-server.url}/payment-microservice/users/registration-all
+      pay: ${proxy-server.url}/payment-microservice/payment/pay
+      transactions: ${proxy-server.url}/payment-microservice/payment/transactions
+      login: ${proxy-server.url}/payment-microservice/users/login
 #ovo je zapravo proxy server url, pa ce biti redeirektovano na payment-microservice (https://localhost:8083/payment-microservice)
 #payment-concentrator.url=https://localhost:8083/payment-microservice
 
@@ -52,10 +70,9 @@ server:
 
 
 
-
-#Spring DataSource
 spring:
   application.name: science_center_1
+  #Spring DataSource
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:myDb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE

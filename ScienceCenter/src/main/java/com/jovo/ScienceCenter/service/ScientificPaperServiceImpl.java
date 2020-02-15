@@ -6,10 +6,7 @@ import com.jovo.ScienceCenter.exception.NotFoundException;
 import com.jovo.ScienceCenter.exception.TaskNotAssignedToYouException;
 import com.jovo.ScienceCenter.model.*;
 import com.jovo.ScienceCenter.repository.ScientificPaperRepository;
-<<<<<<< HEAD
 import com.jovo.ScienceCenter.util.ReviewingResult;
-=======
->>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 import org.camunda.bpm.engine.FormService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
@@ -67,22 +64,6 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
         variablesMap.put("processInitiator", camundaUserId);
         // iz nekog razloga camunda engine ne dodeli ulogovanog korisnika varijabli processInitiator
         ProcessInstance pi = runtimeService.startProcessInstanceByKey("ProcesObradePodnetogTeksta", variablesMap);
-        String processInstanceId = pi.getId();
-
-        Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
-        if(task == null) {
-            throw new NotFoundException("UserTask for process with id=".concat(processInstanceId).concat(" not found!"));
-        }
-
-        if (!task.getAssignee().equals(camundaUserId)) {
-            throw new TaskNotAssignedToYouException("The task (processInstanceId=".concat(processInstanceId).concat(") is assigned to ")
-                    .concat(task.getAssignee()).concat(", not ").concat(camundaUserId).concat("!"));
-        }
-
-        Map<String, Object> formFieldsMap = new HashMap<String, Object>();
-        formFieldsMap.put("magazineId", magazineId);
-        formService.submitTaskForm(task.getId(), formFieldsMap);
-
         return pi.getId();
     }
 
@@ -213,11 +194,12 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
 
         String relativePathToFile = File.separator.concat(selectedScientificArea.getName()).concat(File.separator)
                                                                                             .concat(fileName);
-        ScientificPaper scientificPaper = new ScientificPaper(title, keywords, scientificPaperAbstract,
-                                 relativePathToFile, selectedScientificArea, author, coauthors);
-        scientificPaper = scientificPaperRepository.save(scientificPaper);
 
         Magazine selectedMagazine = (Magazine) runtimeService.getVariable(processInstnaceId, "selectedMagazine");
+
+        ScientificPaper scientificPaper = new ScientificPaper(title, keywords, scientificPaperAbstract,
+                                 relativePathToFile, selectedScientificArea, author, coauthors, selectedMagazine.getName());
+        scientificPaper = scientificPaperRepository.save(scientificPaper);
 
         MainEditorAndScientificPaper mainEditorAndScientificPaper =
                 new MainEditorAndScientificPaper(selectedMagazine.getMainEditor(), scientificPaper);
@@ -234,17 +216,10 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
-<<<<<<< HEAD
     public List<ScientificPaperFrontendDtoWithComment> getFirstRepairScientificPaper(String camundaUserId) {
         List<ScientificPaperFrontendDtoWithComment> scientificPaperFrontendDtoWithComments =
                                                                 new ArrayList<ScientificPaperFrontendDtoWithComment>();
         List<Task> tasks = taskService.createTaskQuery().taskName("FirstRepairScientificPaper").taskAssignee(camundaUserId)
-=======
-    public List<ScientificPaperFrontendDtoWithComment> getScientificPapersForRepairing(String camundaUserId) {
-        List<ScientificPaperFrontendDtoWithComment> scientificPaperFrontendDtoWithComments =
-                                                                new ArrayList<ScientificPaperFrontendDtoWithComment>();
-        List<Task> tasks = taskService.createTaskQuery().taskName("RepairScientificPaper").taskAssignee(camundaUserId)
->>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
                                 .list();
         tasks.stream()
                 .forEach(task -> {
@@ -276,7 +251,6 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
-<<<<<<< HEAD
     public List<ScientificPaperFrontendDtoWithReviewingDTOs> getSecondRepairScientificPaper(String camundaUserId) {
         List<ScientificPaperFrontendDtoWithReviewingDTOs> scientificPaperFrontendDtoWithReviewingDTOs =
                 new ArrayList<ScientificPaperFrontendDtoWithReviewingDTOs>();
@@ -350,8 +324,6 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
-=======
->>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
     public void repairScientificPaper(String processInstanceId, String repairedFileName) {
         MainEditorAndScientificPaper mainEditorAndScientificPaper =
             (MainEditorAndScientificPaper) runtimeService.getVariable(processInstanceId, "mainEditorAndScientificPaper");
@@ -417,16 +389,11 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
 
         Magazine selectedMagazine = (Magazine) runtimeService.getVariable(processInstanceId, "selectedMagazine");
 
-<<<<<<< HEAD
         String processInitiator = (String) runtimeService.getVariable(processInstanceId, "processInitiator");
 
         List<UserData> reviewers = selectedMagazine.getReviewers().stream()
                 .filter(reviewer ->  !reviewer.getCamundaUserId().equals(processInitiator)
                         && reviewer.getUserStatus() == Status.ACTIVATED
-=======
-        List<UserData> reviewers = selectedMagazine.getReviewers().stream()
-                .filter(reviewer -> reviewer.getUserStatus() == Status.ACTIVATED
->>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
                         && reviewer.getScientificAreas().contains(scientificArea))
                 .collect(Collectors.toList());
 
@@ -465,7 +432,6 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
-<<<<<<< HEAD
     public List<ScientificPaperFrontendDtoWithReviewings> getFirstDecision(String camundaUserId) {
         List<ScientificPaperFrontendDtoWithReviewings> scientificPaperFrontendDTOs = new ArrayList<ScientificPaperFrontendDtoWithReviewings>();
         List<Task> tasks = taskService.createTaskQuery().taskName("FirstDecision").taskAssignee(camundaUserId).list();
@@ -607,6 +573,8 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
                 (MainEditorAndScientificPaper) runtimeService.getVariable(processInstanceId, "mainEditorAndScientificPaper");
         ScientificPaper scientificPaper = mainEditorAndScientificPaper.getScientificPaper();
         scientificPaper.setScientificPaperStatus(Status.ACTIVATED);
+        scientificPaper = scientificPaperRepository.save(scientificPaper);
+
         Magazine selectedMagazine =
                 (Magazine) runtimeService.getVariable(processInstanceId, "selectedMagazine");
         selectedMagazine.getScientificPapers().add(scientificPaper);
@@ -652,8 +620,27 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
-=======
->>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
+    public List<ScientificPaperFrontendDTOWithMagazineName> getPendingScientificPapers(UserData author) {
+        return scientificPaperRepository.findByAuthorAndScientificPaperStatus(author, Status.PENDING).stream()
+                .map(scientificPaper -> {
+                    User authorCamundaUser = userService.getUser(author.getCamundaUserId());
+                    String authorStr = author.getCamundaUserId().concat(" (").concat(authorCamundaUser.getFirstName()).concat(" ")
+                            .concat(authorCamundaUser.getLastName()).concat(")");
+
+                    List<String> coauthors = scientificPaper.getCoauthors().stream()
+                            .map(c -> c.getFirstName().concat(" ").concat(c.getLastName()))
+                            .collect(Collectors.toList());
+
+                    String coauthorsStr = String.join(", ", coauthors);
+                    return new ScientificPaperFrontendDTOWithMagazineName(scientificPaper.getId(),  scientificPaper.getTitle(),
+                            scientificPaper.getKeywords(), scientificPaper.getScientificPaperAbstract(),
+                            scientificPaper.getScientificArea().getName(), authorStr, coauthorsStr,
+                            scientificPaper.getMagazineName());
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void saveSelectedReviewersForScientificPaper(String processInstanceId, List<Long> reviewerIds) {
         List<UserData> reviewers;
         if (reviewerIds.size() == 1) {
@@ -683,7 +670,6 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
 
         runtimeService.setVariable(processInstanceId, "selectedReviewersForScientificPaper", reviewers);
 
-<<<<<<< HEAD
         runtimeService.setVariable(processInstanceId, "reviewingResults", new ArrayList<ReviewingResult>());
     }
 
@@ -701,7 +687,5 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
         System.out.println("show reviewingResults");
         reviewingResults.add(reviewingResult);
         runtimeService.setVariable(processInstanceId, "reviewingResults", reviewingResults);
-=======
->>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
     }
 }

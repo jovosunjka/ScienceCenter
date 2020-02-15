@@ -33,13 +33,13 @@ public class ScientificPaper implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Coauthor> coauthors;
 
-<<<<<<< HEAD
+    @Column(name = "magazine_name", unique = false, nullable = false)
+    private String magazineName;
+
     @Column(name = "scientific_paper_status", unique = false, nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private Status scientificPaperStatus;
 
-=======
->>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 
     public ScientificPaper() {
 
@@ -47,7 +47,7 @@ public class ScientificPaper implements Serializable {
 
     public ScientificPaper(String title, String keywords, String scientificPaperAbstract,
                            String relativePathToFile, ScientificArea scientificArea, UserData author,
-                           List<Coauthor> coauthors) {
+                           List<Coauthor> coauthors, String magazineName) {
         this.title = title;
         this.keywords = keywords;
         this.scientificPaperAbstract = scientificPaperAbstract;
@@ -55,10 +55,8 @@ public class ScientificPaper implements Serializable {
         this.scientificArea = scientificArea;
         this.author = author;
         this.coauthors = coauthors;
-<<<<<<< HEAD
+        this.magazineName = magazineName;
         this.scientificPaperStatus = Status.PENDING;
-=======
->>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
     }
 
     public Long getId() {
@@ -118,11 +116,12 @@ public class ScientificPaper implements Serializable {
     public void setCoauthors(List<Coauthor> coauthors) {
         this.coauthors = coauthors;
     }
-<<<<<<< HEAD
+
+    public String getMagazineName() { return magazineName; }
+
+    public void setMagazineName(String magazineName) { this.magazineName = magazineName; }
 
     public Status getScientificPaperStatus() { return scientificPaperStatus; }
 
     public void setScientificPaperStatus(Status scientificPaperStatus) { this.scientificPaperStatus = scientificPaperStatus; }
-=======
->>>>>>> 0bf60d5178864860cbaed111bbc052c87417ba2f
 }
