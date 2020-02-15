@@ -6,7 +6,10 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.security.*;
@@ -57,7 +60,11 @@ public class CertificateServiceImpl implements CertificateService
     @Value("${ftp.password}")
     private String ftpPassword;
 
+    @Value("${pki-microservice.create-certificate}")
+    private String createCertificateUrl;
 
+    @Autowired
+    private RestTemplate restTemplate;
 
     private final String directoryClassesPath = this.getClass().getResource("../../../../").getPath(); // target/classes folder
     private String directoryStoresPath = directoryClassesPath + "stores"; // target/classes/stores folder
@@ -70,6 +77,14 @@ public class CertificateServiceImpl implements CertificateService
                 applicationName, "RS", UUID.randomUUID().toString()/*, publicKeyStr*/, myUrl, ftpHost, ftpPort,
                 ftpRelativeUrlToStoreDirectory, ftpUsername, ftpPassword);
         return csr;
+    }
+
+    @Override
+    public void sendCSRR(CertificateSigningRequest csr) {
+        ResponseEntity<Void> responseEntity = restTemplate.postForEntity(createCertificateUrl, csr, Void.class);
+        if(responseEntity.getStatusCode() != HttpStatus.CREATED) {
+            throw new RuntimeException("Certificate Signing Request sending - failed");
+        }
     }
 
 }

@@ -5,6 +5,7 @@ import com.jovo.ScienceCenter.model.Magazine;
 import com.jovo.ScienceCenter.service.MagazineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,8 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
     private String tokenHeader;
 
     @Autowired
+    @Lazy // MagazineService se injektuje u RestTemplateInterceptor, RestTemplateInterceptor se injektuje u RestTemplate,
+            // RestTemplate se injektuje u MagazineService => Circular Dependencies
     private MagazineService magazineService;
 
 
