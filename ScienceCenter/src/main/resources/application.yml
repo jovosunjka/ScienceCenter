@@ -7,6 +7,7 @@ frontend.url: https://localhost:4200
 registration.confirmation.url: https://localhost:4200/confirm-registration
 
 ca-url: https://localhost:8443/pki/certificate/create
+my-url: ${backend.url}/certificate/send-request
 
 ftp:
   host: localhost
@@ -53,9 +54,9 @@ server:
     key-store-password: pass789
     key-store-type: PKCS12
     key-alias: science_center_1
-  # trust-store: classpath:stores/truststore.p12
-  # trust-store-password: pass147
-  # trust-store-type: PKCS12
+    trust-store: classpath:stores/truststore.p12
+    trust-store-password: pass147
+    trust-store-type: PKCS12
     protocol: TLS
     enabled: true
     enabled-protocols: TLSv1.2

@@ -26,7 +26,6 @@ public class CertificateController {
     private String createCertificateUrl;
 
 
-    @PreAuthorize("hasAuthority('CERTIFICATE_SIGNING_REQUEST')")
     @RequestMapping(value = "/send-request", method = RequestMethod.GET)
     //@EventListener(ApplicationReadyEvent.class)
     public ResponseEntity sendRequestForCertificate() {
