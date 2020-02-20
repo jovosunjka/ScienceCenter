@@ -1,3 +1,5 @@
+import { Dto } from './dto';
+
 export interface ScientificPaper {
     taskId?: string;
     id?: number;
@@ -11,4 +13,6 @@ export interface ScientificPaper {
     commentForAuthor?: string;
     commentForEditor?: string;
     answers?: string;
+    paidUpTo?: string;
+    plans?: Dto[];
 }

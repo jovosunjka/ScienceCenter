@@ -35,6 +35,7 @@ payment-microservice:
     frontend:
       choose-payment: https://localhost:4201/choose-payment #${proxy-server.url}/payment-microservice/payment/choose-type
     backend:
+      scientific-paper-plans: ${proxy-server.url}/payment-microservice/payment/paper-plans
       form-fields-for-payment-types: ${proxy-server.url}/payment-microservice/payment/form-fields-for-payment-types
       registration:
         single: ${proxy-server.url}/payment-microservice/users/registration

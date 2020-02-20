@@ -50,9 +50,6 @@ public class SaveNewMagazineTask implements JavaDelegate {
             String payerTypeStr = (String) delegateExecution.getVariable("payerType");
             PayerType payerType = PayerType.valueOf(payerTypeStr.toUpperCase());
 
-            String membershipFeeStr = (String) delegateExecution.getVariable("membershipFee");
-            double membershipFee = Double.parseDouble(membershipFeeStr);
-
             String currencyStr = (String) delegateExecution.getVariable("currency");
             Currency currency = Currency.valueOf(currencyStr.toUpperCase());
 
@@ -60,7 +57,7 @@ public class SaveNewMagazineTask implements JavaDelegate {
 
             String checkedMagazineName = (String) delegateExecution.getVariable("checkedMagazineName");
 
-            magazineService.saveNewMagazine(name, issn, scientificAreaIds, payerType, membershipFee, currency, mainEditorUsername, checkedMagazineName);
+            magazineService.saveNewMagazine(name, issn, scientificAreaIds, payerType, currency, mainEditorUsername, checkedMagazineName);
 
             System.out.println("SaveNewMagazineTask_END");
         } catch (Exception e) {

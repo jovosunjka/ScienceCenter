@@ -5,6 +5,7 @@ import com.jovo.ScienceCenter.dto.*;
 import com.jovo.ScienceCenter.exception.NotFoundException;
 import com.jovo.ScienceCenter.exception.TaskNotAssignedToYouException;
 import com.jovo.ScienceCenter.model.*;
+import com.jovo.ScienceCenter.repository.PlanRepository;
 import com.jovo.ScienceCenter.repository.ScientificPaperRepository;
 import com.jovo.ScienceCenter.util.ReviewingResult;
 import org.camunda.bpm.engine.FormService;
@@ -17,12 +18,21 @@ import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,6 +40,9 @@ import java.util.stream.Collectors;
 @Service
 public class ScientificPaperServiceImpl implements ScientificPaperService {
 
+	@Value("${payment-microservice.urls.backend.scientific-paper-plans}")
+    private String pmScientificPaperPlansBackendUrl;
+	
     @Autowired
     private ScientificPaperRepository scientificPaperRepository;
 
@@ -57,6 +70,17 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     @Autowired
     private FileService fileService;
 
+    @Autowired
+    private PlanRepository planRepository;
+    
+    @Autowired
+    private RestTemplate restTemplate;
+    
+    @Autowired
+    private MembershipFeeService membershipFeeService;
+    
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm:ss");
+    
 
     @Override
     public String startProcessForAddingScientificPaper(String camundaUserId, Long magazineId) {
@@ -173,7 +197,7 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
 
     @Override
     public void saveNewScientificPaper(String processInstnaceId, UserData author, String title, List<CoauthorDTO> coauthorDTOs, String keywords,
-                                       String scientificPaperAbstract, Long selectedScientificAreaId, String fileName) {
+                                       String scientificPaperAbstract, Long selectedScientificAreaId, String fileName, List<PlanDTO> plans) {
         List<Coauthor> coauthors = coauthorDTOs.stream()
                                         .map(c -> {
                                             Long registeresUserId;
@@ -194,16 +218,28 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
 
         String relativePathToFile = File.separator.concat(selectedScientificArea.getName()).concat(File.separator)
                                                                                             .concat(fileName);
-
+        
         Magazine selectedMagazine = (Magazine) runtimeService.getVariable(processInstnaceId, "selectedMagazine");
 
+        List<Plan> allPlans = plans.stream()
+                .map(c -> {
+                    
+                    Plan plan = new Plan(c.getIntervalUnit(), c.getIntervalCount(), c.getPrice());
+                    plan = planRepository.save(plan);
+                    return plan;
+                })
+                .collect(Collectors.toList());
+        
         ScientificPaper scientificPaper = new ScientificPaper(title, keywords, scientificPaperAbstract,
-                                 relativePathToFile, selectedScientificArea, author, coauthors, selectedMagazine.getName());
+                                 relativePathToFile, selectedScientificArea, author, coauthors, selectedMagazine.getName(), allPlans);
+        
         scientificPaper = scientificPaperRepository.save(scientificPaper);
 
         MainEditorAndScientificPaper mainEditorAndScientificPaper =
                 new MainEditorAndScientificPaper(selectedMagazine.getMainEditor(), scientificPaper);
         runtimeService.setVariable(processInstnaceId, "mainEditorAndScientificPaper", mainEditorAndScientificPaper);
+        
+        sendScientificPaperPlans(selectedMagazine.getName(), scientificPaper.getTitle(), allPlans);
     }
 
     @Override
@@ -592,7 +628,7 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
-    public List<ScientificPaperFrontendDTOWithId> getScientificPapersForMagazine(Long magazineId) {
+    public List<ScientificPaperFrontendDTOWithId> getScientificPapersForMagazine(Long magazineId, Long payerId) {
         return magazineService.getMagazine(magazineId).getScientificPapers().stream()
             .map(scientificPaper -> {
                 UserData author = scientificPaper.getAuthor();
@@ -605,9 +641,20 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
                         .collect(Collectors.toList());
 
                 String coauthorsStr = String.join(", ", coauthors);
+                String paidUpTo;
+
+                try {
+                    MembershipFee membershipFee =
+                            membershipFeeService.getActivatedMembershipFeeByMagazineIdAndPayerId(scientificPaper.getId(), payerId);
+                    paidUpTo = "Paid up to " + membershipFee.getValidUntil().format(DATE_TIME_FORMATTER);
+                } catch (Exception e) {
+                    paidUpTo = null;
+                }
+
+                
                 return new ScientificPaperFrontendDTOWithId(scientificPaper.getId(),  scientificPaper.getTitle(),
                         scientificPaper.getKeywords(), scientificPaper.getScientificPaperAbstract(),
-                        scientificPaper.getScientificArea().getName(), authorStr, coauthorsStr);
+                        scientificPaper.getScientificArea().getName(), authorStr, coauthorsStr, paidUpTo, scientificPaper.getPlans());
             })
             .collect(Collectors.toList());
     }
@@ -687,5 +734,26 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
         System.out.println("show reviewingResults");
         reviewingResults.add(reviewingResult);
         runtimeService.setVariable(processInstanceId, "reviewingResults", reviewingResults);
+    }
+    
+    private void sendScientificPaperPlans(String magazineName, String name, List<Plan> plans) {
+    	List<PlanDTO> planDTOs = plans.stream()
+    		.map(plan -> new PlanDTO(plan.getIntervalUnit(), plan.getIntervalCount(), plan.getPrice()))
+    		.collect(Collectors.toList());
+    	
+        ProductDTO productDTO = new ProductDTO(planDTOs, name);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("magazineName", magazineName);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<ProductDTO> httpEntity =
+                new HttpEntity<ProductDTO>(productDTO, headers);
+
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(pmScientificPaperPlansBackendUrl,
+                HttpMethod.POST, httpEntity, Void.class);
+
+        if (responseEntity.getStatusCode() != HttpStatus.CREATED) {
+            System.out.println("Plalns sending error!");
+            throw new RuntimeException("Plalns sending error!");
+        }
     }
 }

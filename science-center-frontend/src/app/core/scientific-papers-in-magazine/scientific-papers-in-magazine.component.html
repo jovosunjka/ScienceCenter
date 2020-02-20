@@ -36,7 +36,16 @@
                 {{scientificPaper.coauthors}}
             </td>
             <td>
-                <button class="btn btn-primary" (click)="getPdfContentFromServer(scientificPaper.id, scientificPaper.title)">Download</button>
+                <select *ngIf="!magazine.paidUpTo" [(ngModel)]="planId" name="planId">
+                    <option *ngFor="let plan of scientificPapers.plans" [ngValue]="plan.id"> {{plan.name}}</option>
+                </select>
+                <button *ngIf="scientificPaper.paidUpTo" class="btn btn-primary" (click)="getPdfContentFromServer(scientificPaper.id, scientificPaper.title)">Download</button>
+                <button *ngIf="!scientificPaper.paidUpTo" class="btn btn-danger" (click)="pay(scientificPaper.id)">Pay</button>
+                <select *ngIf="!scientificPaper.paidUpTo" [(ngModel)]="plan" name="planId">
+                    <option *ngFor="let plan of scientificPaper.plans" [ngValue]="plan.id"> {{plan.name}}</option>
+                </select>
+                <button *ngIf="!scientificPaper.paidUpTo" class="btn btn-danger" (click)="pay(scientificPaper.id)">Pay</button>
+                <p *ngIf="scientificPaper.paidUpTo"><b>{{scientificPaper.paidUpTo}}</b></p>
             </td>
         </tr>
     </ng-template>

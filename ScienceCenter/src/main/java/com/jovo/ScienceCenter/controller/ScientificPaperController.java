@@ -517,10 +517,16 @@ public class ScientificPaperController {
     }
 
     @RequestMapping(value = "/for-magazine", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ScientificPaperFrontendDTOWithId>> getScientificPapersForMagazine(@RequestParam("magazineId")
-                                                                                                         Long magazineId) {
+    public ResponseEntity<List<ScientificPaperFrontendDTOWithId>> getScientificPapersForMagazine(@RequestParam("magazineId") Long magazineId) {
+    	UserData loggedUser = null;
+        try {
+            loggedUser = userService.getLoggedUser();
+        } catch (Exception e) {
+            new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+    	
         List<ScientificPaperFrontendDTOWithId> scientificPaperFrontendDTOs =
-                scientificPaperService.getScientificPapersForMagazine(magazineId);
+                scientificPaperService.getScientificPapersForMagazine(magazineId, loggedUser.getId());
         return new ResponseEntity<List<ScientificPaperFrontendDTOWithId>>(scientificPaperFrontendDTOs, HttpStatus.OK);
     }
 

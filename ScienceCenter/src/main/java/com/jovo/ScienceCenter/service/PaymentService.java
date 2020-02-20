@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface PaymentService {
 
-    String pay(Long payerId, Long magazineId) throws NotFoundException, RequestTimeoutException, PaymentConcentratorException;
+    String pay(Long payerId, Long productId, boolean magazine, Long planId) throws NotFoundException, RequestTimeoutException, PaymentConcentratorException;
 
     List<TransactionDTO> getTransactions() throws RequestTimeoutException, PaymentConcentratorException;
 

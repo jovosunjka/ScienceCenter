@@ -20,7 +20,7 @@ public interface ScientificPaperService {
             throws NotFoundException, TaskNotAssignedToYouException;
 
     void saveNewScientificPaper(String processInstnaceId, UserData author, String title, List<CoauthorDTO> coauthorDTOs, String keywords,
-                                String scientificPaperAbstract, Long selectedScientificAreaId, String fileName);
+                                String scientificPaperAbstract, Long selectedScientificAreaId, String fileName, List<PlanDTO> plans);
 
     String startProcessForAddingScientificPaper(String camundaUserId, Long magazineId);
 
@@ -69,7 +69,7 @@ public interface ScientificPaperService {
 
     void prepareForSearching(String processInstanceId);
 
-    List<ScientificPaperFrontendDTOWithId> getScientificPapersForMagazine(Long magazineId);
+    List<ScientificPaperFrontendDTOWithId> getScientificPapersForMagazine(Long magazineId, Long payerId);
 
     byte[] getPdfContent(Long scientificPaperId) throws IOException;
 

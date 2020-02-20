@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.jovo.ScienceCenter.dto.CoauthorDTO;
+import com.jovo.ScienceCenter.dto.PlanDTO;
 import com.jovo.ScienceCenter.exception.SaveNewMagazineFailedException;
 import com.jovo.ScienceCenter.exception.SaveNewScientificPaperFailedException;
 import com.jovo.ScienceCenter.model.Currency;
@@ -52,8 +53,10 @@ public class SaveNewScientificPaperTask implements JavaDelegate {
 
                 String title = (String) delegateExecution.getVariable("title");
                 String coauthors = (String) delegateExecution.getVariable("coauthors");
-
+                String plans = (String) delegateExecution.getVariable("plans");
+                
                 List<CoauthorDTO> coauthorDTOs = convertStringToListCoauthorDTOs(coauthors);
+                List<PlanDTO> planDTOs = convertStringToListPlanDTOs(plans);
 
                 String keywords = (String) delegateExecution.getVariable("keywords");
                 String scientificPaperAbstract = (String) delegateExecution.getVariable("abstract");
@@ -62,7 +65,7 @@ public class SaveNewScientificPaperTask implements JavaDelegate {
                 String fileName = (String) delegateExecution.getVariable("fileName");
 
                 scientificPaperService.saveNewScientificPaper(delegateExecution.getProcessInstanceId(), author, title,
-                        coauthorDTOs, keywords, scientificPaperAbstract, selectedScientificAreaId, fileName);
+                        coauthorDTOs, keywords, scientificPaperAbstract, selectedScientificAreaId, fileName, planDTOs);
             }
             else {
                 String repairedFileName = (String) delegateExecution.getVariable("repairedFileName");
@@ -99,6 +102,13 @@ public class SaveNewScientificPaperTask implements JavaDelegate {
             return ts;
         }
         */
+    }
+    
+    private List<PlanDTO> convertStringToListPlanDTOs(String plans) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        CollectionType listType = mapper.getTypeFactory().constructCollectionType(ArrayList.class, PlanDTO.class);
+        List<PlanDTO> planDTOs = mapper.readValue(plans, listType);
+        return planDTOs;
     }
 
 }
