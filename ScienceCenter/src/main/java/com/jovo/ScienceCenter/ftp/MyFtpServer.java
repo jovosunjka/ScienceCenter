@@ -1,26 +1,45 @@
 package com.jovo.ScienceCenter.ftp;
 
 
+import com.jovo.ScienceCenter.certificate.CertificateService;
+import com.jovo.ScienceCenter.config.SslConfig;
 import com.jovo.ScienceCenter.ftp.dto.FTPInfo;
 import com.jovo.ScienceCenter.ftp.dto.UserInfo;
+import com.jovo.ScienceCenter.util.SslProperties;
 import org.apache.ftpserver.*;
 import org.apache.ftpserver.ftplet.*;
 import org.apache.ftpserver.listener.ListenerFactory;
+import org.apache.ftpserver.ssl.SslConfiguration;
+import org.apache.ftpserver.ssl.SslConfigurationFactory;
 import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
 import org.apache.ftpserver.usermanager.UsernamePasswordAuthentication;
 import org.apache.ftpserver.usermanager.impl.*;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.net.ssl.SSLContext;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.nio.file.*;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -76,6 +95,114 @@ public class MyFtpServer {
     @Value("${server.ssl.trust-store-type}")
     private String trustStoreType;
 
+    @Autowired
+    private CertificateService certificateService;
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Autowired
+    private SslProperties sslProperties;
+
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void detectChangingOfKeyStoreOrTrustStore() {
+        Path path = null;
+        try {
+            path = homeDir.getFile().toPath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Path directoryPath;
+        Path singleFilePath;
+        if(!Files.isDirectory(path)) {
+            singleFilePath = path;
+            directoryPath = path.getParent();
+        }
+        else {
+            singleFilePath = null;
+            directoryPath = path;
+        }
+
+        try {
+            WatchService watchService = FileSystems.getDefault().newWatchService();
+
+
+            directoryPath.register(
+                    watchService,
+                    //StandardWatchEventKinds.ENTRY_CREATE,
+                    //StandardWatchEventKinds.ENTRY_DELETE,
+                    StandardWatchEventKinds.ENTRY_MODIFY
+                    );
+
+            WatchKey key;
+
+            while (true) {
+                key = watchService.take(); // take je blokirajuca metoda
+                if(key == null) continue;
+
+                key.pollEvents().stream()
+                        .map(event -> directoryPath.resolve((Path) event.context()).toFile())
+                        .forEach(file -> {
+                            String password;
+                            String alias;
+                            if ((file.getAbsolutePath().contains("keystore.jks"))) {
+                                password = keyStorePassword;
+                                alias = keyAlias;
+                            }
+                            else {
+                                password = trustStorePassword;
+                                alias = null;
+                            }
+                            boolean changed = certificateService.changePasswordOfKeyStore(file, alias,"changeme", password);
+
+                            if (changed) {
+                                try {
+                                    updateSslContext();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+
+                key.reset();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("realtimeScanLogs (END)");
+    }
+
+    private void updateSslContext() throws UnrecoverableKeyException, CertificateException, NoSuchAlgorithmException,
+                                            KeyStoreException, IOException, KeyManagementException {
+        //ConfigurableApplicationContext configContext = (ConfigurableApplicationContext) applicationContext;
+        //ConfigurableListableBeanFactory beanRegistry = configContext.getBeanFactory();
+        AutowireCapableBeanFactory beanFactory = applicationContext.getAutowireCapableBeanFactory();
+
+        SSLContext sslContext = new SSLContextBuilder()
+                .loadKeyMaterial(new File(sslProperties.getKeyStoreFilePath()),
+                        sslProperties.getKeyStorePassword(), sslProperties.getKeyStorePassword())
+                //.loadTrustMaterial(null, new TrustSelfSignedStrategy())
+                .loadTrustMaterial(new File(sslProperties.getTrustStoreFilePath()), sslProperties.getTrustStorePassword())
+                .build();
+
+        Object oldSslContext = beanFactory.getBean("sslContext");
+        if (oldSslContext != null) {
+            beanFactory.destroyBean(oldSslContext);
+        }
+
+        // prvo smo obrisali oldSslContext pa sada ponovo dodajemo novi sslContext
+        //beanRegistry.registerSingleton("sslContext", sslContext);
+        beanFactory.initializeBean(sslContext, "sslContext");
+        beanFactory.autowireBean(sslContext);
+    }
+
 
     @PostConstruct
     private void start() {
@@ -90,6 +217,8 @@ public class MyFtpServer {
         } catch (IOException e) {
             e.printStackTrace();
         }*/
+
+        // https://docs.spring.io/spring-integration/reference/html/ftp.html
 
         FtpServerFactory serverFactory = new FtpServerFactory();
 
@@ -120,27 +249,33 @@ public class MyFtpServer {
         ssl.setTruststoreType(trustStoreType);
 
         // set the SSL configuration for the listener
-        listenerFactory.setSslConfiguration(ssl.createSslConfiguration());
+        SslConfiguration sslConfiguration = ssl.createSslConfiguration();
+        listenerFactory.setSslConfiguration(sslConfiguration);
         listenerFactory.setImplicitSsl(true);
+        */
+        DataConnectionConfigurationFactory dataConnectionConfigurationFactory = new DataConnectionConfigurationFactory();
+        //dataConnectionConfigurationFactory.setImplicitSsl(true);
+        //dataConnectionConfigurationFactory.setSslConfiguration(sslConfiguration);
 
-        DataConnectionConfigurationFactory dataConfigFactory = new DataConnectionConfigurationFactory();
-        dataConfigFactory.setImplicitSsl(true);
-
-        listenerFactory.setDataConnectionConfiguration(dataConfigFactory.createDataConnectionConfiguration());*/
+        //listenerFactory.setDataConnectionConfiguration(dataConfigFactory.createDataConnectionConfiguration());
 
         if (!Objects.equals(passivePorts, "")) {
-            DataConnectionConfigurationFactory dataConnectionConfFactory = new DataConnectionConfigurationFactory();
+            //DataConnectionConfigurationFactory dataConnectionConfigurationFactory = new DataConnectionConfigurationFactory();
 
-            dataConnectionConfFactory.setPassivePorts(passivePorts);
+            dataConnectionConfigurationFactory.setPassivePorts(passivePorts);
             if (!(Objects.equals(host, "localhost") || Objects.equals(host, "127.0.0.1"))) {
 
-                dataConnectionConfFactory.setPassiveExternalAddress(host);
+                dataConnectionConfigurationFactory.setPassiveExternalAddress(host);
             }
-            listenerFactory.setDataConnectionConfiguration(
-                    dataConnectionConfFactory.createDataConnectionConfiguration());
+            //listenerFactory.setDataConnectionConfiguration(dataConnectionConfigurationFactory.createDataConnectionConfiguration());
         }
 
+        listenerFactory.setDataConnectionConfiguration(dataConnectionConfigurationFactory.createDataConnectionConfiguration());
+
+        Map listenerMap = new HashMap();
+        listenerMap.put("default", listenerFactory.createListener());
         serverFactory.addListener("default", listenerFactory.createListener());
+        //serverFactory.setListeners(listenerMap);
 
         PropertiesUserManagerFactory userManagerFactory = new PropertiesUserManagerFactory();
         //userManagerFactory.setFile(new File(usersFilePath));

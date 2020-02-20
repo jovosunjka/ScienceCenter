@@ -19,7 +19,6 @@ ftp:
   password: science_center_ftp_pass
   home-dir: classpath:stores
   #home-dir: classpath:aaa
-  relative-url-to-store-directory: /store
 
 token:
   header: X-Auth-Token
@@ -50,13 +49,13 @@ server:
   servlet.context-path: /${spring.application.name}
   port: 8081
   ssl:
-    key-store: classpath:stores/keystore.p12 # https://www.baeldung.com/properties-with-spring#7-properties-from-command-line-arguments
-    key-store-password: pass789
-    key-store-type: PKCS12
+    key-store: classpath:stores/keystore.jks # https://www.baeldung.com/properties-with-spring#7-properties-from-command-line-arguments
+    key-store-password: key_store_pass
+    key-store-type: JKS
     key-alias: science_center_1
-    trust-store: classpath:stores/truststore.p12
-    trust-store-password: pass147
-    trust-store-type: PKCS12
+    trust-store: classpath:stores/truststore.jks
+    trust-store-password: trust_store_pass
+    trust-store-type: JKS
     protocol: TLS
     enabled: true
     enabled-protocols: TLSv1.2

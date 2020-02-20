@@ -14,8 +14,6 @@ public class CertificateSigningRequest {
     private String destinationUrl; // nije obavezan
     private String ftpHost;
     private int ftpPort;
-    private String ftpRelativeUrlToStoreDirectory;
-
     private String ftpUsername;
     private String ftpPassword;
 
@@ -26,7 +24,7 @@ public class CertificateSigningRequest {
     public CertificateSigningRequest(String commonName, /*String surname, String givenName,*/ String organizationName,
                                      String organizationalUnitName, String countryCode, /*String emailAddress,*/ String userId,
                                      /*String publicKey,*/ String destinationUrl, String ftpHost, int ftpPort,
-                                     String ftpRelativeUrlToStoreDirectory, String ftpUsername, String ftpPassword) {
+                                     String ftpUsername, String ftpPassword) {
         this.commonName = commonName;
         //this.surname = surname;
         //this.givenName = givenName;
@@ -39,7 +37,6 @@ public class CertificateSigningRequest {
         this.destinationUrl = destinationUrl;
         this.ftpHost = ftpHost;
         this.ftpPort = ftpPort;
-        this.ftpRelativeUrlToStoreDirectory = ftpRelativeUrlToStoreDirectory;
         this.ftpUsername = ftpUsername;
         this.ftpPassword = ftpPassword;
     }
@@ -141,13 +138,6 @@ public class CertificateSigningRequest {
         this.ftpPort = ftpPort;
     }
 
-    public String getFtpRelativeUrlToStoreDirectory() {
-        return ftpRelativeUrlToStoreDirectory;
-    }
-
-    public void setFtpRelativeUrlToStoreDirectory(String ftpRelativeUrlToStoreDirectory) {
-        this.ftpRelativeUrlToStoreDirectory = ftpRelativeUrlToStoreDirectory;
-    }
 
     public String getFtpUsername() {
         return ftpUsername;

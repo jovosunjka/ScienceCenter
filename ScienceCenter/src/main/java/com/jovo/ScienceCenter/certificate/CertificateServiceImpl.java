@@ -1,8 +1,6 @@
 package com.jovo.ScienceCenter.certificate;
 
-import com.jovo.ScienceCenter.certificate.CertificateSigningRequest;
-import com.jovo.ScienceCenter.certificate.CertificateService;
-import org.apache.tomcat.util.codec.binary.Base64;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -13,10 +11,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.security.*;
-import java.security.cert.CertificateEncodingException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 
@@ -51,8 +47,6 @@ public class CertificateServiceImpl implements CertificateService
     @Value("${ftp.port}")
     private int ftpPort;
 
-    @Value("${ftp.relative-url-to-store-directory}")
-    private String ftpRelativeUrlToStoreDirectory;
 
     @Value("${ftp.username}")
     private String ftpUsername;
@@ -74,8 +68,7 @@ public class CertificateServiceImpl implements CertificateService
     public CertificateSigningRequest prepareCSR(/*PublicKey publicKey*/) {
         // String publicKeyStr = Base64.encodeBase64String(publicKey.getEncoded());
         CertificateSigningRequest csr = new CertificateSigningRequest("localhost", "siem_center",
-                applicationName, "RS", UUID.randomUUID().toString()/*, publicKeyStr*/, myUrl, ftpHost, ftpPort,
-                ftpRelativeUrlToStoreDirectory, ftpUsername, ftpPassword);
+                applicationName, "RS", UUID.randomUUID().toString()/*, publicKeyStr*/, myUrl, ftpHost, ftpPort, ftpUsername, ftpPassword);
         return csr;
     }
 
@@ -85,6 +78,73 @@ public class CertificateServiceImpl implements CertificateService
         if(responseEntity.getStatusCode() != HttpStatus.CREATED) {
             throw new RuntimeException("Certificate Signing Request sending - failed");
         }
+    }
+
+    @Override
+    public boolean changePasswordOfKeyStore(File keyStoreFile, String alias, String oldPasswordStr, String newPasswordStr) {
+        char[] oldPassword = oldPasswordStr.toCharArray();
+        char[] newPassword =  newPasswordStr.toCharArray();
+
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(keyStoreFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        KeyStore keyStore = null;
+        try {
+            keyStore = KeyStore.getInstance("JKS", "SUN");
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        }
+        try {
+            keyStore.load(fileInputStream, oldPassword);
+        } catch (Exception e) {
+            return false;
+        }
+
+        if (alias != null) { // ovo znaci da radimo sa keystore-om, a ne sa trustore-om
+            // moramo promeniti password i za private key
+            try {
+                Certificate[] certificates = keyStore.getCertificateChain(alias);
+                PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, oldPassword);
+                keyStore.setKeyEntry(alias, privateKey, newPassword, certificates); // menjamo password za private key
+            } catch (KeyStoreException e) {
+                e.printStackTrace();
+            } catch (UnrecoverableKeyException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(keyStoreFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            keyStore.store(fileOutputStream, newPassword);
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        }
+        try {
+            fileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return true;
     }
 
 }

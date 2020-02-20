@@ -19,11 +19,11 @@ import javax.net.ssl.SSLContext;
 @Configuration
 public class RestTemplateConfig {
 
-    @Value("${server.ssl.key-store}")
-    private Resource keyStore;
-
-    @Value("${server.ssl.key-store-password}")
-    private char[] keyStorePassword;
+//    @Value("${server.ssl.key-store}")
+//    private Resource keyStore;
+//
+//    @Value("${server.ssl.key-store-password}")
+//    private char[] keyStorePassword;
 
     // @Value("${server.ssl.trust-store}")
     // private Resource trustStore;
@@ -34,6 +34,9 @@ public class RestTemplateConfig {
     @Autowired
     private RestTemplateInterceptor restTemplateInterceptor;
 
+    @Autowired
+    private SSLContext sslContext;
+
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) throws Exception {
@@ -42,11 +45,11 @@ public class RestTemplateConfig {
         // A trust strategy that accepts self-signed certificates as trusted.
         // Verification of all other certificates is done by the trust manager configured in the SSL context.
 
-        SSLContext sslContext = SSLContextBuilder.create()
+        /*SSLContext sslContext = SSLContextBuilder.create()
                 .loadKeyMaterial(keyStore.getFile(), keyStorePassword, keyStorePassword)
                 .loadTrustMaterial(null, new TrustSelfSignedStrategy())
                 // .loadTrustMaterial(trustStore.getFile(), trustStorePassword)
-                .build();
+                .build();*/
 
         HttpClient client = HttpClients.custom().setSSLContext(sslContext).build();
 
