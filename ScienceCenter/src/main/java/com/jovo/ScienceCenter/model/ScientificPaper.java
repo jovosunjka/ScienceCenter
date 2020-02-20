@@ -1,8 +1,13 @@
 package com.jovo.ScienceCenter.model;
 
 import javax.persistence.*;
+
+import com.jovo.ScienceCenter.exception.NotFoundException;
+
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "scientific_paper")
@@ -30,9 +35,19 @@ public class ScientificPaper implements Serializable {
     @ManyToOne
     private UserData author;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<Coauthor> coauthors;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "plans", joinColumns = {
+            @JoinColumn(name = "scientific_paper_id", nullable = false, updatable = false) }, inverseJoinColumns = {
+            @JoinColumn(name = "plan_id", nullable = false, updatable = false) })
+    private Set<Coauthor> coauthors;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "plans", joinColumns = {
+            @JoinColumn(name = "scientific_paper_id", nullable = false, updatable = false) }, inverseJoinColumns = {
+            @JoinColumn(name = "plan_id", nullable = false, updatable = false) })
+    //@ManyToMany(fetch = FetchType.LAZY)
+    private List<Plan> plans;
+    
     @Column(name = "magazine_name", unique = false, nullable = false)
     private String magazineName;
 
@@ -46,17 +61,39 @@ public class ScientificPaper implements Serializable {
     }
 
     public ScientificPaper(String title, String keywords, String scientificPaperAbstract,
+            String relativePathToFile, ScientificArea scientificArea, UserData author,
+            List<Coauthor> coauthors, String magazineName) {
+		this.title = title;
+		this.keywords = keywords;
+		this.scientificPaperAbstract = scientificPaperAbstract;
+		this.relativePathToFile = relativePathToFile;
+		this.scientificArea = scientificArea;
+		this.author = author;
+		this.coauthors = new HashSet<Coauthor>(coauthors);
+		this.magazineName = magazineName;
+		this.scientificPaperStatus = Status.PENDING;
+	}
+    
+    public ScientificPaper(String title, String keywords, String scientificPaperAbstract,
                            String relativePathToFile, ScientificArea scientificArea, UserData author,
-                           List<Coauthor> coauthors, String magazineName) {
+                           List<Coauthor> coauthors, String magazineName, List<Plan> plans) {
         this.title = title;
         this.keywords = keywords;
         this.scientificPaperAbstract = scientificPaperAbstract;
         this.relativePathToFile = relativePathToFile;
         this.scientificArea = scientificArea;
         this.author = author;
-        this.coauthors = coauthors;
+        this.coauthors = new HashSet<Coauthor>(coauthors);
         this.magazineName = magazineName;
         this.scientificPaperStatus = Status.PENDING;
+        this.plans = plans;
+    }
+    
+    
+    public Plan getPlan(Long id) {
+    	return plans.stream()
+    		.filter(p -> p.getId().longValue() == id.longValue())
+    		.findFirst().orElseThrow(() -> new NotFoundException("Plan (id=" + id + ") not found!"));
     }
 
     public Long getId() {
@@ -109,15 +146,23 @@ public class ScientificPaper implements Serializable {
         this.author = author;
     }
 
-    public List<Coauthor> getCoauthors() {
+    public Set<Coauthor> getCoauthors() {
         return coauthors;
     }
 
-    public void setCoauthors(List<Coauthor> coauthors) {
+    public void setCoauthors(Set<Coauthor> coauthors) {
         this.coauthors = coauthors;
     }
 
-    public String getMagazineName() { return magazineName; }
+    public List<Plan> getPlans() {
+		return plans;
+	}
+
+	public void setPlans(List<Plan> plans) {
+		this.plans = plans;
+	}
+
+	public String getMagazineName() { return magazineName; }
 
     public void setMagazineName(String magazineName) { this.magazineName = magazineName; }
 

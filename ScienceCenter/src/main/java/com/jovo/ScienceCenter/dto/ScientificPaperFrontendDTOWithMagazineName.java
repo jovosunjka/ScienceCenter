@@ -9,7 +9,7 @@ public class ScientificPaperFrontendDTOWithMagazineName extends ScientificPaperF
 
     public ScientificPaperFrontendDTOWithMagazineName(long id, String title, String keywords, String scientificPaperAbstract,
                                                       String scientificArea, String author, String coauthors, String magazineName) {
-        super(id, title, keywords, scientificPaperAbstract, scientificArea, author, coauthors);
+        super(id, title, keywords, scientificPaperAbstract, scientificArea, author, coauthors, null, null);
         this.magazineName = magazineName;
     }
 

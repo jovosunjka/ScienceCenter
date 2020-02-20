@@ -23,6 +23,8 @@ export class AddScientificPaperComponent implements OnInit {
   private formFields: any[];
   private processInstanceId: string;
 
+  private plans = []
+  newPlan: any;
 
   constructor(private genericService: GenericService, private toastr: ToastrService, private router: Router,
               private forwardingMessageService: ForwardingMessageService) {
@@ -34,6 +36,11 @@ export class AddScientificPaperComponent implements OnInit {
       address: '',
       city: '',
       country: ''
+    };
+    this.newPlan = {
+      intervalUnit: '',
+      intervalCount: 1,
+      price: 1
     };
   }
 
@@ -78,6 +85,8 @@ export class AddScientificPaperComponent implements OnInit {
                 this.formFields.forEach(field => {
                   if (field.id === 'coauthors') {
                     field.value = [];
+                  } else if (field.id === 'plans') {
+                    field.value = [];
                   } else {
                     field.value = '';
                   }
@@ -92,6 +101,8 @@ export class AddScientificPaperComponent implements OnInit {
     this.formFields.forEach(field => {
         let fValue;
         if (field.id === 'coauthors') {
+          fValue = JSON.stringify(field.value);
+        } else if (field.id === 'plans') {
           fValue = JSON.stringify(field.value);
         } else if (field.id === 'selectedScientificAreaId') {
           fValue = '' + field.value;
@@ -146,6 +157,30 @@ export class AddScientificPaperComponent implements OnInit {
 
   onChange(event) {
     this.scientificPaperFile = event.target.files.item(0);
+  }
+
+  addPlan() {
+    this.newPlan.intervalUnit = this.newPlan.intervalUnit.trim();
+    this.newPlan.intervalCount = this.newPlan.intervalCount;
+    this.newPlan.price = this.newPlan.price;
+
+    if (this.newPlan.intervalUnit === '') {
+          this.toastr.error('You have not filled all the fields for new plan!');
+          return;
+    }
+
+    const plan: any[] = this.formFields.filter(ff => ff.id === 'plans')[0].value;
+    plan.push( {...this.newPlan});
+
+    this.newPlan.intervalUnit = '';
+    this.newPlan.intervalCount = 1;
+    this.newPlan.price = 1;
+  }
+
+  removePlan(plan: any) {
+    const plans: any[] = this.formFields.filter(ff => ff.id === 'plans')[0].value;
+    const index = plans.indexOf(plan);
+    plans.splice(index, 1);
   }
 
 }

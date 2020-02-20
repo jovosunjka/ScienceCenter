@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { ScientificPaper } from 'src/app/shared/model/scientific-paper';
 import { GenericService } from '../services/generic/generic.service';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
+import { RedirectUrlDto } from 'src/app/shared/model/redirect-url-dto';
 
 @Component({
   selector: 'app-scientific-papers-in-magazine',
@@ -11,15 +12,17 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ScientificPapersInMagazineComponent implements OnInit {
 
+  private relativeUrlForPayment = '/payment/pay';
   private relativeUrlForPdfContent = '/scientific-papers/pdf-by-id';
   private relativeUrlForScientificPapersForMagazine = '/scientific-papers/for-magazine';
   private magazineId: number;
 
   scientificPapers: ScientificPaper[];
+  private planId: number;
 
-
-  constructor(private genericService: GenericService, private toastr: ToastrService, private route: ActivatedRoute) {
+  constructor(private genericService: GenericService, private toastr: ToastrService, private route: ActivatedRoute,  private ngZone: NgZone) {
     this.scientificPapers = [];
+    this.planId = -1;
   }
 
   ngOnInit() {
@@ -70,5 +73,28 @@ export class ScientificPapersInMagazineComponent implements OnInit {
     element.click();
 
     document.body.removeChild(element);
+  }
+
+  pay(magazineId) {
+    if (this.planId === -1) {
+      this.toastr.error('You don\'t select plan!');
+      return;
+    }
+
+    this.genericService.get<RedirectUrlDto>(this.relativeUrlForPayment + '?productId=' + magazineId
+                                                     + '&magazine=true&planId=' + this.planId).subscribe(
+      (redirectUrlDto: RedirectUrlDto) => {
+        this.planId = -1;
+        this.ngZone.runOutsideAngular(() => {
+          window.location.href = redirectUrlDto.redirectUrl;
+        });
+
+        this.toastr.success('Redirection to KP!');
+      },
+      (err) => {
+        this.toastr.error('Problem with payment!');
+        alert(JSON.stringify(err));
+      }
+    );
   }
 }

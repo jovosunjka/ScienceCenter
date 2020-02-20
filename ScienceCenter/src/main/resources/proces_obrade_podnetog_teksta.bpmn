@@ -75,6 +75,7 @@
           <camunda:formField id="abstract" label="Abstract" type="string" />
           <camunda:formField id="selectedScientificAreaId" label="Selected scientific area id" type="long" />
           <camunda:formField id="fileName" label="File name" type="string" />
+          <camunda:formField id="plans" label="plans" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0nv8f8d</bpmn:incoming>

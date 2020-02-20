@@ -42,6 +42,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Autowired
     private MagazineService magazineService;
+    
+    @Autowired
+    private ScientificPaperService scientificPaperService;
 
     @Autowired
     private UserService userService;
@@ -54,19 +57,34 @@ public class PaymentServiceImpl implements PaymentService {
 
 
     @Override
-    public String pay(Long payerId, Long magazineId) throws NotFoundException, RequestTimeoutException,
+    public String pay(Long payerId, Long productId, boolean magazine, Long planId) throws NotFoundException, RequestTimeoutException,
                                                         PaymentConcentratorException {
-        Magazine magazine = magazineService.getMagazine(magazineId);
-        MembershipFee membershipFee = magazineService.makeMembershipFee(payerId, magazineId,
-                magazine.getMembershipFee(), magazine.getCurrency());
+      
+    	Magazine magazineEntity;
+    	double price = 0;
+    	
+    	if (magazine) {
+    		magazineEntity = magazineService.getMagazine(productId);
+    		price = magazineEntity.getPlan(planId).getPrice();
+    	}
+    	else {
+    		ScientificPaper scientificPaper = scientificPaperService.getScientificPaper(productId);
+    		price = scientificPaper.getPlan(planId).getPrice();
+    	 	magazineEntity = magazineService.getMagazine(scientificPaper.getMagazineName());
+    	}
+    	
+    	
+        MembershipFee membershipFee = magazineService.makeMembershipFee(payerId, productId, magazine,
+        		price, magazineEntity.getCurrency());
+        
         String redirectUrl = this.frontendUrl + "/transactions-page";
         String callbackUrl = this.backendUrl + "/payment/transaction-completed";
-        PayDTO payDTO = new PayDTO(membershipFee.getId(), membershipFee.getPrice(), membershipFee.getCurrency(),
+        PayDTO payDTO = new PayDTO(membershipFee.getId(), price, membershipFee.getCurrency(),
                 redirectUrl, callbackUrl);
 
         HttpHeaders headers = new HttpHeaders();
         //headers.set(tokenHeader, magazine.getMerchantId());
-        headers.set("magazineName", magazine.getName());
+        headers.set("magazineName", magazineEntity.getName());
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<PayDTO> httpEntity = new HttpEntity<PayDTO>(payDTO, headers);
 
@@ -78,7 +96,7 @@ public class PaymentServiceImpl implements PaymentService {
             membershipFee.setKpTransactionId(transactionId);
             membershipFeeService.save(membershipFee);
 
-            return pmChoosePaymentFrontendUrl + "/" + transactionId + "?token=" + magazine.getMerchantId();
+            return pmChoosePaymentFrontendUrl + "/" + transactionId + "?token=" + magazineEntity.getMerchantId();
         }
         else if (statusCode == HttpStatus.REQUEST_TIMEOUT) {
             throw new RequestTimeoutException();
@@ -130,7 +148,15 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void transactionCompleted(long merchantOrderId, String status) {
         MembershipFee membershipFee = membershipFeeService.getMembershipFee(merchantOrderId);
-        boolean paid = status.equalsIgnoreCase("success");
+        boolean paid = false;
+        if(status.equals("SUBSCRIBE_COMPLETE"))
+        {
+        	paid = true;
+        }
+        else 
+        {
+        	paid = status.equalsIgnoreCase("success");
+        }
         membershipFee.setPaid(paid);
         membershipFeeService.save(membershipFee);
     }

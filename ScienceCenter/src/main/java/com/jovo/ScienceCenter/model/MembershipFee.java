@@ -11,8 +11,11 @@ public class MembershipFee {
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
-    @Column(name = "magazine_id", unique = false, nullable = false)
-    private Long magazineId;
+    @Column(name = "product_id", unique = false, nullable = false)
+    private Long productId; // magazineId or scientificPaperId
+    
+    @Column(name = "magazine", unique = false, nullable = false)
+    private boolean magazine;
 
     @Column(name = "payer_id", unique = false, nullable = false)
     private Long payerId;
@@ -41,8 +44,9 @@ public class MembershipFee {
 
     }
 
-    public MembershipFee(Long magazineId, Long payerId, double price, Currency currency) {
-        this.magazineId = magazineId;
+    public MembershipFee(Long productId, boolean magazine, Long payerId, double price, Currency currency) {
+        this.productId = productId;
+        this.magazine = magazine;
         this.payerId = payerId;
         this.price = price;
         this.currency = currency;
@@ -60,15 +64,23 @@ public class MembershipFee {
         this.id = id;
     }
 
-    public Long getMagazineId() {
-        return magazineId;
-    }
+    public Long getProductId() {
+		return productId;
+	}
 
-    public void setMagazineId(Long magazineId) {
-        this.magazineId = magazineId;
-    }
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
 
-    public Long getPayerId() {
+	public boolean isMagazine() {
+		return magazine;
+	}
+
+	public void setMagazine(boolean magazine) {
+		this.magazine = magazine;
+	}
+
+	public Long getPayerId() {
         return payerId;
     }
 

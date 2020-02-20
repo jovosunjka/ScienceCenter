@@ -39,7 +39,6 @@
             <camunda:value id="authors" name="AUTHORS" />
             <camunda:value id="readers" name="READERS" />
           </camunda:formField>
-          <camunda:formField id="membershipFee" label="Membership Fee" type="string" />
           <camunda:formField id="currency" label="Currency" type="enum">
             <camunda:value id="rsd" name="RSD" />
             <camunda:value id="eur" name="EUR" />

@@ -1,6 +1,9 @@
 package com.jovo.ScienceCenter.model;
 
 import javax.persistence.*;
+
+import com.jovo.ScienceCenter.exception.NotFoundException;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
@@ -30,9 +33,6 @@ public class Magazine implements Serializable {
 
     @Column(name = "merchant_id", unique = true, nullable = true)
     private String merchantId; //jwt token
-
-    @Column(name = "membership_fee", unique = false, nullable = false)
-    private double membershipFee;
 
     @Column(name = "currency", unique = false, nullable = false)
     @Enumerated(EnumType.ORDINAL)
@@ -73,18 +73,23 @@ public class Magazine implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     private Status magazineStatus;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "magazine_plans",
+            joinColumns = @JoinColumn(name = "magazine_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "plan_id", referencedColumnName = "id"))
+    private Set<Plan> plans = new HashSet<Plan>();
+    
     public Magazine() {
 
     }
 
-    public Magazine(String name, String issn, String username, String password, double membershipFee,
+    public Magazine(String name, String issn, String username, String password,
                     Currency currency, List<ScientificArea> scientificAreas, UserData mainEditor, PayerType payerType) {
         this.name = name;
         this.issn = issn;
         this.username = username;
         this.password = password;
         this.merchantId = null;
-        this.membershipFee = membershipFee;
         this.currency = currency;
         this.scientificAreas = new HashSet<ScientificArea>(scientificAreas);
         this.mainEditor = mainEditor;
@@ -92,6 +97,14 @@ public class Magazine implements Serializable {
         this.magazineStatus = Status.PENDING;
     }
 
+    
+    public Plan getPlan(Long id) {
+    	return plans.stream()
+    		.filter(p -> p.getId().longValue() == id.longValue())
+    		.findFirst().orElseThrow(() -> new NotFoundException("Plan (id=" + id + ") not found!"));
+    }
+    
+    
     public Long getId() {
         return id;
     }
@@ -136,14 +149,6 @@ public class Magazine implements Serializable {
         this.merchantId = merchantId;
     }
 
-    public double getMembershipFee() {
-        return membershipFee;
-    }
-
-    public void setMembershipFee(double membershipFee) {
-        this.membershipFee = membershipFee;
-    }
-
     public Currency getCurrency() {
         return currency;
     }
@@ -152,7 +157,15 @@ public class Magazine implements Serializable {
         this.currency = currency;
     }
 
-    public Set<ScientificArea> getScientificAreas() { return scientificAreas; }
+    public Set<Plan> getPlans() {
+		return plans;
+	}
+
+	public void setPlans(Set<Plan> plans) {
+		this.plans = plans;
+	}
+
+	public Set<ScientificArea> getScientificAreas() { return scientificAreas; }
 
     public void setScientificAreas(Set<ScientificArea> scientificAreas) { this.scientificAreas = scientificAreas; }
 

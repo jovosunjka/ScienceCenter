@@ -29,7 +29,8 @@ public class PaymentController {
 
 
     @RequestMapping(value = "/pay", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RedirectUrlDTO> pay(@RequestParam("magazineId") Long magazineId) {
+    public ResponseEntity<RedirectUrlDTO> pay(@RequestParam("productId") Long id, @RequestParam("magazine") boolean magazine,
+    											@RequestParam("planId") Long planId) {
         UserData loggedUserData = null;
         try {
             loggedUserData = userService.getLoggedUser();
@@ -39,7 +40,7 @@ public class PaymentController {
 
         String redirectUrl = null;
         try {
-            redirectUrl = paymentService.pay(loggedUserData.getId(), magazineId);
+            redirectUrl = paymentService.pay(loggedUserData.getId(), id, magazine, planId);
         } catch (RequestTimeoutException e) {
             return new ResponseEntity(HttpStatus.REQUEST_TIMEOUT);
         } catch (Exception e) {

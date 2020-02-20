@@ -21,6 +21,8 @@ export class MagazinesPageComponent implements OnInit {
 
   private currentMagazineId: number;
 
+  private planId: number;
+
   private relativeUrlForPayment = '/payment/pay';
   private relativeUrlForActivatedMagazinesWithPaidStatus = '/magazines/activated-with-paid-status';
   private relativeUrlForActivatedMagazinesByEditor = '/magazines/activated-by-editor';
@@ -31,6 +33,7 @@ export class MagazinesPageComponent implements OnInit {
               private forwardingMessageService: ForwardingMessageService, private router: Router, private ngZone: NgZone) {
         this.reader = false;
         this.magazines = [];
+        this.planId = -1;
    }
 
   ngOnInit() {
@@ -77,8 +80,15 @@ export class MagazinesPageComponent implements OnInit {
   }
 
   pay(magazineId) {
-    this.genericService.get<RedirectUrlDto>(this.relativeUrlForPayment + '?magazineId=' + magazineId).subscribe(
+    if (this.planId === -1) {
+      this.toastr.error('You don\'t select plan!');
+      return;
+    }
+
+    this.genericService.get<RedirectUrlDto>(this.relativeUrlForPayment + '?productId=' + magazineId
+                                                     + '&magazine=true&planId=' + this.planId).subscribe(
       (redirectUrlDto: RedirectUrlDto) => {
+        this.planId = -1;
         this.ngZone.runOutsideAngular(() => {
           window.location.href = redirectUrlDto.redirectUrl;
         });

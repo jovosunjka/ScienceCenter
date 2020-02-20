@@ -47,7 +47,7 @@
                 </select>
             </div>
 
-            <input *ngIf="field.type.name == 'string' && field.id != 'fileName' && field.id != 'coauthors'" type="text" class="form-control" id="{{field.id}}" [(ngModel)]="field.value"
+            <input *ngIf="field.type.name == 'string' && field.id != 'fileName' && field.id != 'coauthors' && field.id != 'plans'" type="text" class="form-control" id="{{field.id}}" [(ngModel)]="field.value"
                 name="{{field.id}}" />
         
             <div *ngIf="field.id == 'fileName'"  class="input-group"><span class="input-group-addon"><i
@@ -56,7 +56,36 @@
                 placeholder="File" class="form-control"
                 required="true">
             </div>
-            
+
+            <div *ngIf="field.type.name == 'string' && field.id == 'plans'">
+                <label>Period</label>
+                <select class="form-control" [(ngModel)]="newPlan.intervalUnit" name="intervalUnit" placeholder="Interval unit">
+                    <option value="YEAR">Year</option>
+                    <option value="MONTH">Month</option>
+                    <option value="WEEK">Week</option>
+                    <option value="DAY">Day</option>
+                </select>
+                <label>Interval count</label>
+                <input  type="number" class="form-control" [(ngModel)]="newPlan.intervalCount" name="intervalCount" placeholder="Interval count"/>
+                <label>Price</label>
+                <input  type="number" class="form-control" [(ngModel)]="newPlan.price" name="intervalCount" placeholder="Price"/>
+                <button  class="btn btn-small btn-success" (click)="addPlan()"> Add plan </button>
+                <div class="scrollbar-coauthors scrollbar-primary">
+                    <table border="2" id="id_coauthors">
+                        <th><b>#</b></th>
+                        <th><b>interval_unit</b></th>
+                        <th><b>interval_count</b></th>
+                        <th></th>
+                        <tr *ngFor="let plan of field.value; let i = index">
+                            <td>{{(i+1)}}.</td>
+                            <td>{{plan.intervalUnit}}</td>
+                            <td>{{plan.intervalCount}}</td>
+                            <td>{{plan.price}}</td>
+                            <td> <button class="btn btn-small btn-danger" (click)="removePlan(plan)"> Remove </button> </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
       </ng-template>
         
       <br/>

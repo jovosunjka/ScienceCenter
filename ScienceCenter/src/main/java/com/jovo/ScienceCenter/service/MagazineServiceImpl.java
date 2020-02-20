@@ -232,8 +232,8 @@ public class MagazineServiceImpl implements MagazineService {
     }
 
     @Override
-    public MembershipFee makeMembershipFee(Long authorId, Long magazineId, double price , Currency currency) {
-        MembershipFee membershipFee = new MembershipFee(magazineId, authorId, price, currency);
+    public MembershipFee makeMembershipFee(Long authorId, Long productId, boolean magazine, double price , Currency currency) {
+        MembershipFee membershipFee = new MembershipFee(productId, magazine, authorId, price, currency);
         membershipFeeService.save(membershipFee);
         return  membershipFee;
     }
@@ -269,7 +269,7 @@ public class MagazineServiceImpl implements MagazineService {
     }
 
     @Override
-    public void saveNewMagazine(String name, String issn, List<Long> scientificAreaIds, PayerType payerType, double membershipFee,
+    public void saveNewMagazine(String name, String issn, List<Long> scientificAreaIds, PayerType payerType,
                                 Currency currency, String mainEditorUsername, String checkedMagazineName) {
         Objects.requireNonNull(name, "Name should not be null!");
         Objects.requireNonNull(issn, "Issn should not be null!");
@@ -279,10 +279,6 @@ public class MagazineServiceImpl implements MagazineService {
         StringUtil.requireNonEmptyString(name, "Name should not be empty!");
         StringUtil.requireNonEmptyString(issn, "Issn should not be empty!");
         StringUtil.requireNonEmptyString(mainEditorUsername, "MainEditorUsername should not be empty!");
-
-        if (membershipFee <= 0) {
-            throw new RuntimeException("MembershipFee <= 0");
-        }
 
         Magazine oldDataMgazine = null;
         if (checkedMagazineName != null) {
@@ -321,14 +317,13 @@ public class MagazineServiceImpl implements MagazineService {
         if (oldDataMgazine == null) {
             String username = "magazine_" + magazineRepository.findAll().size();
             String password = generatePassword();
-            Magazine magazine = new Magazine(name, issn, username, password, membershipFee, currency, scientificAreas,
+            Magazine magazine = new Magazine(name, issn, username, password, currency, scientificAreas,
                                                 mainEditor, payerType);
             magazineRepository.save(magazine);
         }
         else {
             oldDataMgazine.setName(name);
             oldDataMgazine.setIssn(issn);
-            oldDataMgazine.setMembershipFee(membershipFee);
             oldDataMgazine.setCurrency(currency);
             oldDataMgazine.setScientificAreas(new HashSet<ScientificArea>(scientificAreas));
             oldDataMgazine.setMainEditor(mainEditor);

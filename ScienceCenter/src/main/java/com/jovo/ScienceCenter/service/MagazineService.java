@@ -18,9 +18,9 @@ public interface MagazineService {
 
     List<MagazineWithoutPaidStatusDTO> getAllActivatedMagazinesByEditor(UserData editor);
 
-    MembershipFee makeMembershipFee(Long authorId, Long magazineId, double price , Currency currency);
+    MembershipFee makeMembershipFee(Long authorId, Long productId, boolean magazine, double price , Currency currency);
 
-    void saveNewMagazine(String name, String issn, List<Long> scientificAreaIds, PayerType payerType, double membershipFee,
+    void saveNewMagazine(String name, String issn, List<Long> scientificAreaIds, PayerType payerType,
                          Currency currency, String mainEditorUsername, String checkedMagazineName);
 
     void saveEditorsAndReviewersInMagazine(String magazineName, List<Long> editorIds, List<Long> reviewerIds);
