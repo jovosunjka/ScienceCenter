@@ -42,6 +42,7 @@ import { SecondRepairScientificPapersComponent } from './second-repair-scientifi
 import { FinalRepairScientificPapersComponent } from './final-repair-scientific-papers/final-repair-scientific-papers.component';
 import { ScientificPapersInMagazineComponent } from './scientific-papers-in-magazine/scientific-papers-in-magazine.component';
 import { PendingScientificPapersComponent } from './pending-scientific-papers/pending-scientific-papers.component';
+import { SearchComponent } from './search/search.component';
 
 
 @NgModule({
@@ -77,7 +78,8 @@ import { PendingScientificPapersComponent } from './pending-scientific-papers/pe
     SecondRepairScientificPapersComponent,
     FinalRepairScientificPapersComponent,
     ScientificPapersInMagazineComponent,
-    PendingScientificPapersComponent
+    PendingScientificPapersComponent,
+    SearchComponent
   ],
   imports: [
     CommonModule,

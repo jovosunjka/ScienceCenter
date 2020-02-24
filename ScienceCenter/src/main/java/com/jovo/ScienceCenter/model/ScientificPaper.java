@@ -23,7 +23,7 @@ public class ScientificPaper implements Serializable {
     @Column(name = "keywords", unique = false, nullable = false)
     private String keywords;
 
-    @Column(name = "scientific_paper_abstract", unique = false, nullable = false)
+    @Column(name = "abstract", unique = false, nullable = false)
     private String scientificPaperAbstract;
 
     @Column(name = "relative_path_to_file", unique = false, nullable = false)
@@ -36,13 +36,13 @@ public class ScientificPaper implements Serializable {
     private UserData author;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "plans", joinColumns = {
+    @JoinTable(name = "scientific_paper_coauthors", joinColumns = {
             @JoinColumn(name = "scientific_paper_id", nullable = false, updatable = false) }, inverseJoinColumns = {
             @JoinColumn(name = "plan_id", nullable = false, updatable = false) })
     private Set<Coauthor> coauthors;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "plans", joinColumns = {
+    @JoinTable(name = "scientific_paper_plans", joinColumns = {
             @JoinColumn(name = "scientific_paper_id", nullable = false, updatable = false) }, inverseJoinColumns = {
             @JoinColumn(name = "plan_id", nullable = false, updatable = false) })
     //@ManyToMany(fetch = FetchType.LAZY)
@@ -51,7 +51,7 @@ public class ScientificPaper implements Serializable {
     @Column(name = "magazine_name", unique = false, nullable = false)
     private String magazineName;
 
-    @Column(name = "scientific_paper_status", unique = false, nullable = false)
+    @Column(name = "status", unique = false, nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private Status scientificPaperStatus;
 

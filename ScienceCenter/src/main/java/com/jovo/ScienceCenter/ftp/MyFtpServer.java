@@ -105,8 +105,9 @@ public class MyFtpServer {
     private SslProperties sslProperties;
 
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void detectChangingOfKeyStoreOrTrustStore() {
+    private void detectChangingOfKeyStoreOrTrustStore() {
+        System.out.println("realtime scan keystore and truststore in directory store");
+
         Path path = null;
         try {
             path = homeDir.getFile().toPath();
@@ -176,7 +177,6 @@ public class MyFtpServer {
             e.printStackTrace();
         }
 
-        System.out.println("realtimeScanLogs (END)");
     }
 
     private void updateSslContext() throws UnrecoverableKeyException, CertificateException, NoSuchAlgorithmException,
@@ -298,6 +298,17 @@ public class MyFtpServer {
             throw new RuntimeException(e);
         }
         System.out.println("FTP SERVER STARTOVAN NA:  " + host + ":" + port);
+
+        Thread thread = new Thread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        detectChangingOfKeyStoreOrTrustStore();
+                    }
+                },
+                "detectChangingOfKeyStoreOrTrustStore"
+        );
+        thread.start();
     }
 
     @PreDestroy

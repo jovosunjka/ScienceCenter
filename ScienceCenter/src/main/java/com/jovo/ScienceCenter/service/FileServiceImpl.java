@@ -56,7 +56,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public byte[] getPdfContent(String relativePathToFile) throws IOException {
         Path absolutePathToFile = Paths.get(scientificPapersDirectory.getFile().getAbsolutePath(), relativePathToFile);
-        byte[] byteArray=null;
+        //byte[] byteArray=null;
 
         FileInputStream fis = new FileInputStream(absolutePathToFile.toString());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -84,6 +84,16 @@ public class FileServiceImpl implements FileService {
             System.out.println("IO Ex"+e);
         }
         return byteArray;*/
+    }
+
+    @Override
+    public File getFile(String relativePathToFile) throws IOException {
+        Path absolutePathToFile = Paths.get(scientificPapersDirectory.getFile().getAbsolutePath(), relativePathToFile);
+        if(Files.exists(absolutePathToFile)) {
+            return absolutePathToFile.toFile();
+        }
+
+        return null;
     }
 
     /*

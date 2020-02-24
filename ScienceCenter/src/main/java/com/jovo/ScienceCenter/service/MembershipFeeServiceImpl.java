@@ -28,9 +28,9 @@ public class MembershipFeeServiceImpl implements MembershipFeeService {
     }
 
     @Override
-    public MembershipFee getActivatedMembershipFeeByMagazineIdAndPayerId(Long productId, Long payerId) {
-        return membershipFeeRepository.findByProductIdAndPayerIdAndPaidAndValidUntilGreaterThan(productId, payerId,
-                true, LocalDateTime.now())
+    public MembershipFee getActivatedMembershipFeeByProductIdAndPayerId(Long productId, boolean magazine, Long payerId) {
+        return membershipFeeRepository.findByProductIdAndMagazineAndPayerIdAndPaidAndValidUntilGreaterThan(productId,
+                magazine, payerId, true, LocalDateTime.now())
                 .orElseThrow(() -> new NotFoundException("MembershipFee (productId=" + productId + ", payerId=" + payerId
                         + ", paid=true) not found!"));
     }

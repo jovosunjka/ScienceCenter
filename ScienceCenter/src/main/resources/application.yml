@@ -1,4 +1,12 @@
 
+
+elasticsearch:
+  port: 9300
+  # https://stackoverflow.com/questions/17854910/elasticsearch-0-90-2-streamcorruptedexception-on-asking-port-9300
+  #port: 9200
+  host: localhost
+  cluster-name: scientific-paper-cluster
+
 scientific-papers: classpath:scientific_papers
 
 backend.url: https://localhost:${server.port}${server.servlet.context-path}

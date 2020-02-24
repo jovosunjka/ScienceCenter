@@ -11,11 +11,11 @@ INSERT INTO `role` (`id`,`name`) VALUES (5, 'EDITOR');
 INSERT INTO `role_permissions` (`role_id`, `permission_id`) VALUES (1, 1);
 INSERT INTO `role_permissions` (`role_id`, `permission_id`) VALUES (2, 2);
 
-INSERT INTO `scientific_area` (`id`,`name`) VALUES (1, 'aerodynamics');
-INSERT INTO `scientific_area` (`id`,`name`) VALUES (2, 'aeronautics');
-INSERT INTO `scientific_area` (`id`,`name`) VALUES (3, 'anatomy');
-INSERT INTO `scientific_area` (`id`,`name`) VALUES (4, 'astronomy');
-INSERT INTO `scientific_area` (`id`,`name`) VALUES (5, 'astrophysics');
+INSERT INTO `scientific_area` (`id`,`name`) VALUES (1, 'aerodinamika');
+INSERT INTO `scientific_area` (`id`,`name`) VALUES (2, 'aeronautika');
+INSERT INTO `scientific_area` (`id`,`name`) VALUES (3, 'anatomija');
+INSERT INTO `scientific_area` (`id`,`name`) VALUES (4, 'astronomija');
+INSERT INTO `scientific_area` (`id`,`name`) VALUES (5, 'astrofizika');
 INSERT INTO `scientific_area` (`id`,`name`) VALUES (6, 'bacteriology');
 INSERT INTO `scientific_area` (`id`,`name`) VALUES (7, 'ballistics');
 INSERT INTO `scientific_area` (`id`,`name`) VALUES (8, 'big science');
@@ -154,6 +154,26 @@ INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`
 INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`currency`,`main_editor_id`,`payer_type`,`magazine_status`) VALUES (8, 'Magazine8','issn8','magazine8', 'magazine8', NULL, 0, 6, 0, 0);
 INSERT INTO `magazine` (`id`,`name`,`issn`,`username`,`password`,`merchant_id`,`currency`,`main_editor_id`,`payer_type`,`magazine_status`) VALUES (9, 'Magazine9','issn9','magazine9', 'magazine9', NULL, 0, 7, 0, 0);
 
+INSERT INTO `scientific_paper` (`id`,`title`,`keywords`,`abstract`,`relative_path_to_file`,`scientific_area_id`,`author_id`,`magazine_name`,`status`) VALUES (1, 'Koridor 10 do kraja 2010','keyword1,keyword2,keyword3','abstract1', '\aerodinamika\Koridor 10 do kraja 2010.pdf', 1, 3, 'Magazine1', 1);
+INSERT INTO `scientific_paper` (`id`,`title`,`keywords`,`abstract`,`relative_path_to_file`,`scientific_area_id`,`author_id`,`magazine_name`,`status`) VALUES (2, 'Pandemija gripa','keyword4,keyword2,keyword5','abstract2', '\anatomija\Pandemija gripa.pdf', 5, 4, 'Magazine2', 1);
+INSERT INTO `scientific_paper` (`id`,`title`,`keywords`,`abstract`,`relative_path_to_file`,`scientific_area_id`,`author_id`,`magazine_name`,`status`) VALUES (3, 'Vakcina H1N1','keyword7,keyword6,keyword4','abstract3', '\astronomija\Vakcina H1N1.pdf', 4, 2, 'Magazine3', 1);
+INSERT INTO `scientific_paper` (`id`,`title`,`keywords`,`abstract`,`relative_path_to_file`,`scientific_area_id`,`author_id`,`magazine_name`,`status`) VALUES (4, 'Otvorene dve deonicekoridora 10','keyword2,keyword7,keyword8','abstract4', '\aeronautika\Otvorene dve deonicekoridora 10.pdf', 2, 4, 'Magazine1', 1);
+INSERT INTO `scientific_paper` (`id`,`title`,`keywords`,`abstract`,`relative_path_to_file`,`scientific_area_id`,`author_id`,`magazine_name`,`status`) VALUES (5, 'Prve vakcine danas u Srbiji','keyword1,keyword3,keyword1','abstract5', '\astrofizika\Prve vakcine danas u Srbiji.pdf', 5, 2, 'Magazine2', 1);
+--INSERT INTO `scientific_paper` (`id`,`title`,`keywords`,`abstract`,`relative_path_to_file`,`scientific_area_id`,`author_id`,`magazine_name`,`status`) VALUES (6, 'Segmentna anatomija jetre na ultrazvuku','keyword10,keyword3,keyword3','abstract6', '\anatomija\segmentna_anatomija_jetre_na_ultrazvuku.pdf', 3, 3, 'Magazine4', 1);
+--INSERT INTO `scientific_paper` (`id`,`title`,`keywords`,`abstract`,`relative_path_to_file`,`scientific_area_id`,`author_id`,`magazine_name`,`status`) VALUES (7, 'TOPOGRAFSKA ANATOMIJA GLAVE I VRATA MACKE','keyword4,keyword5,keyword3','abstract7', '\aeronautika\TOPOGRAFSKA_ANATOMIJA_GLAVE_I_VRATA_MACKE.pdf', 4, 3, 'Magazine3', 1);
+--INSERT INTO `scientific_paper` (`id`,`title`,`keywords`,`abstract`,`relative_path_to_file`,`scientific_area_id`,`author_id`,`magazine_name`,`status`) VALUES (8, 'FAKULTETZA CIVILNO VAZDUHOPLOVSTVO','keyword11,keyword12,keyword8','abstract8', '\anatomija\FAKULTET_ZA_CIVILNO_VAZDUHOPLOVSTVO.pdf', 3, 4, 'Magazine5', 1);
+--INSERT INTO `scientific_paper` (`id`,`title`,`keywords`,`abstract`,`relative_path_to_file`,`scientific_area_id`,`author_id`,`magazine_name`,`status`) VALUES (9, 'Anatomija i fiziologija koze','keyword6,keyword5,keyword2','abstract9', '\anatomija\Anatomija_i_fiziologija_koze.pdf', 3, 2, 'Magazine6', 1);
+
+INSERT INTO `magazine_scientific_papers` (`magazine_id`,`scientific_paper_id`) VALUES (1,1);
+INSERT INTO `magazine_scientific_papers` (`magazine_id`,`scientific_paper_id`) VALUES (1,2);
+INSERT INTO `magazine_scientific_papers` (`magazine_id`,`scientific_paper_id`) VALUES (1,3);
+INSERT INTO `magazine_scientific_papers` (`magazine_id`,`scientific_paper_id`) VALUES (2,4);
+INSERT INTO `magazine_scientific_papers` (`magazine_id`,`scientific_paper_id`) VALUES (2,5);
+--INSERT INTO `magazine_scientific_papers` (`magazine_id`,`scientific_paper_id`) VALUES (2,6);
+--INSERT INTO `magazine_scientific_papers` (`magazine_id`,`scientific_paper_id`) VALUES (3,7);
+--INSERT INTO `magazine_scientific_papers` (`magazine_id`,`scientific_paper_id`) VALUES (3,8);
+--INSERT INTO `magazine_scientific_papers` (`magazine_id`,`scientific_paper_id`) VALUES (3,9);
+
 INSERT INTO `magazine_scientific_areas` (`magazine_id`,`scientific_area_id`) VALUES (1,1);
 INSERT INTO `magazine_scientific_areas` (`magazine_id`,`scientific_area_id`) VALUES (1,2);
 INSERT INTO `magazine_scientific_areas` (`magazine_id`,`scientific_area_id`) VALUES (1,3);
@@ -257,6 +277,9 @@ INSERT INTO `magazine_reviewers` (`magazine_id`,`reviewer_id`) VALUES (9,3);
 INSERT INTO `magazine_reviewers` (`magazine_id`,`reviewer_id`) VALUES (9,4);
 
 INSERT INTO `membership_fee` (`id`,`product_id`, `magazine`,`payer_id`,`kp_transaction_id`,`price`,`currency`,`timestamp`,`paid`,`valid_until`) VALUES (1, 1, 1,2, NULL, 2900, 0, '2020-02-09 02:54:14.332', 1, '2020-03-10 02:54:14.332');
+INSERT INTO `membership_fee` (`id`,`product_id`, `magazine`,`payer_id`,`kp_transaction_id`,`price`,`currency`,`timestamp`,`paid`,`valid_until`) VALUES (2, 2, 1,2, NULL, 2900, 0, '2020-02-15 09:17:36.402', 1, '2020-03-15 09:17:36.402');
+INSERT INTO `membership_fee` (`id`,`product_id`, `magazine`,`payer_id`,`kp_transaction_id`,`price`,`currency`,`timestamp`,`paid`,`valid_until`) VALUES (3, 1, 0,2, NULL, 2900, 0, '2020-02-16 17:46:59.279', 1, '2020-03-16 17:46:59.279');
+INSERT INTO `membership_fee` (`id`,`product_id`, `magazine`,`payer_id`,`kp_transaction_id`,`price`,`currency`,`timestamp`,`paid`,`valid_until`) VALUES (4, 2, 0,2, NULL, 2900, 0, '2020-02-17 12:34:48.182', 1, '2020-03-17 12:34:48.182');
 
 INSERT INTO `plan` (`id`,`interval_unit`, `interval_count`, `price`) VALUES (1, 'MONTH', 12, 1500);
 INSERT INTO `plan` (`id`,`interval_unit`, `interval_count`, `price`) VALUES (2, 'WEEK', 10, 1800);

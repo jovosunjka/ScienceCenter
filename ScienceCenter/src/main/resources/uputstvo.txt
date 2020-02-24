@@ -1,0 +1,24 @@
+https://www.elastic.co/guide/en/elasticsearch/plugins/7.6/plugin-management-custom-url.html
+
+Koristimo elasticsearch-plugin install file:///C:/science_center_workspace/udd06/target/release/elasticsearch-SerbianPlugin-7.6.0.zip
+komandu da deploy-ujemo SerbianPlugin u \elasticsearch-7.6.0\plugins. U zip fajlu koji se deploy-uje treba da se nalaze
+elasticsearch-SerbianPlugin-7.6.0.jar i plugin-descriptor.properties. Kada pokrenemo elasticsearch server, uputimo sledeci
+request iz postman-a:
+
+url: http://localhost:9200/index_for_scientific_paper
+body (raw):
+            {
+            	"settings": {
+            	  "index": {
+            	  	"analysis": {
+            	  		"analyzer": {
+            	  			"default": {
+            	  				"type": "serbian_analyzer"
+            	  			}
+            	  		}
+            	  	}
+            	  }
+            	}
+            }
+
+I na kraju pokrenemo ovu aplikaciju.

@@ -20,7 +20,8 @@ export class ScientificPapersInMagazineComponent implements OnInit {
   scientificPapers: ScientificPaper[];
   private planId: number;
 
-  constructor(private genericService: GenericService, private toastr: ToastrService, private route: ActivatedRoute,  private ngZone: NgZone) {
+  constructor(private genericService: GenericService, private toastr: ToastrService, private route: ActivatedRoute,
+              private ngZone: NgZone) {
     this.scientificPapers = [];
     this.planId = -1;
   }
@@ -75,13 +76,13 @@ export class ScientificPapersInMagazineComponent implements OnInit {
     document.body.removeChild(element);
   }
 
-  pay(magazineId) {
+  pay(scientificPaperId) {
     if (this.planId === -1) {
       this.toastr.error('You don\'t select plan!');
       return;
     }
 
-    this.genericService.get<RedirectUrlDto>(this.relativeUrlForPayment + '?productId=' + magazineId
+    this.genericService.get<RedirectUrlDto>(this.relativeUrlForPayment + '?productId=' + scientificPaperId
                                                      + '&magazine=true&planId=' + this.planId).subscribe(
       (redirectUrlDto: RedirectUrlDto) => {
         this.planId = -1;

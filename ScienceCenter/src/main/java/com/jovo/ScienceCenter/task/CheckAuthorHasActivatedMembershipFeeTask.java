@@ -36,7 +36,7 @@ public class CheckAuthorHasActivatedMembershipFeeTask implements JavaDelegate {
 
             UserData author = userService.getLoggedUser();
             Magazine selectedMagazine = (Magazine) delegateExecution.getVariable("selectedMagazine");
-            membershipFeeService.getActivatedMembershipFeeByMagazineIdAndPayerId(selectedMagazine.getId(), author.getId());
+            membershipFeeService.getActivatedMembershipFeeByProductIdAndPayerId(selectedMagazine.getId(), true, author.getId());
             // ako nema aktivnu clanarinu, baca exception
             System.out.println("CheckAuthorHasActivatedMembershipFeeTask_END");
         } catch (Exception e) {

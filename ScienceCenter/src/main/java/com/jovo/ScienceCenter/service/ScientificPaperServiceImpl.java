@@ -78,6 +78,9 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     
     @Autowired
     private MembershipFeeService membershipFeeService;
+
+    @Autowired
+    private IndexService indexService;
     
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm:ss");
     
@@ -238,8 +241,12 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
         MainEditorAndScientificPaper mainEditorAndScientificPaper =
                 new MainEditorAndScientificPaper(selectedMagazine.getMainEditor(), scientificPaper);
         runtimeService.setVariable(processInstnaceId, "mainEditorAndScientificPaper", mainEditorAndScientificPaper);
-        
-        sendScientificPaperPlans(selectedMagazine.getName(), scientificPaper.getTitle(), allPlans);
+
+        try {
+            sendScientificPaperPlans(selectedMagazine.getName(), scientificPaper.getTitle(), allPlans);
+        } catch (Exception e) {
+            System.out.println("*** sendScientificPaperPlans - error ***");
+        }
     }
 
     @Override
@@ -623,8 +630,14 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
-    public void prepareForSearching(String processInstanceId) {
+    public void prepareForSearching(String processInstanceId) throws IOException {
+        MainEditorAndScientificPaper mainEditorAndScientificPaper =
+                (MainEditorAndScientificPaper) runtimeService.getVariable(processInstanceId, "mainEditorAndScientificPaper");
+        ScientificPaper scientificPaper = mainEditorAndScientificPaper.getScientificPaper();
 
+        File pdfFile = fileService.getFile(scientificPaper.getRelativePathToFile());
+
+        indexService.add(pdfFile);
     }
 
     @Override
@@ -645,7 +658,8 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
 
                 try {
                     MembershipFee membershipFee =
-                            membershipFeeService.getActivatedMembershipFeeByMagazineIdAndPayerId(scientificPaper.getId(), payerId);
+                            membershipFeeService.getActivatedMembershipFeeByProductIdAndPayerId(scientificPaper.getId(),
+                                    false, payerId);
                     paidUpTo = "Paid up to " + membershipFee.getValidUntil().format(DATE_TIME_FORMATTER);
                 } catch (Exception e) {
                     paidUpTo = null;

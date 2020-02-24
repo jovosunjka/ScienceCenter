@@ -17,6 +17,7 @@ import { AddScientificPaperComponent } from '../core/add-scientific-paper/add-sc
 import { UserPageComponent } from '../core/user-page/user-page.component';
 import { ScientificPapersInMagazineComponent } from '../core/scientific-papers-in-magazine/scientific-papers-in-magazine.component';
 import { PendingScientificPapersComponent } from '../core/pending-scientific-papers/pending-scientific-papers.component';
+import { SearchComponent } from '../core/search/search.component';
 
 
 const routes: Routes = [
@@ -121,6 +122,14 @@ const routes: Routes = [
   {
     path: 'pending-scientific-papers',
     component: PendingScientificPapersComponent,
+    data: {
+      expectedRoles: ['USER']
+    },
+    canActivate: [CanActivateUserGuard]
+  },
+  {
+    path: 'search',
+    component: SearchComponent,
     data: {
       expectedRoles: ['USER']
     },

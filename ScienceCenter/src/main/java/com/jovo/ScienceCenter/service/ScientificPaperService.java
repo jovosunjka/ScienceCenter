@@ -67,7 +67,7 @@ public interface ScientificPaperService {
 
     void assignDoi(String processInstanceId);
 
-    void prepareForSearching(String processInstanceId);
+    void prepareForSearching(String processInstanceId) throws IOException;
 
     List<ScientificPaperFrontendDTOWithId> getScientificPapersForMagazine(Long magazineId, Long payerId);
 

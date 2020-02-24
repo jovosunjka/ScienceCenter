@@ -1,0 +1,54 @@
+<h3>SEARCH</h3>
+<h5>Blank fields will be ignored!!!</h5>
+<form>
+    <div class="md-form mb-3">
+        <label for="magazine_name_search">Magazine Name:</label>
+        <input class="form-control" type="search" id="magazine_name_search" [(ngModel)]="magazineName" name="magazineName" />
+    </div>
+    
+    <select  [(ngModel)]="titeleOperator" name="titeleOperator">
+        <option ngValue="AND">AND</option>
+        <option ngValue="OR">OR</option>
+        <option ngValue="AND_NOT">AND NOT</option>
+    </select>
+
+    <div class="md-form mb-3">
+        <label for="title_search">Title:</label>
+        <input class="form-control" type="search" id="title_search" [(ngModel)]="title" name="title" />
+    </div>
+    
+    <select  [(ngModel)]="authorsOperator" name="authorsOperator">
+        <option ngValue="AND">AND</option>
+        <option ngValue="OR">OR</option>
+        <option ngValue="AND_NOT">AND NOT</option>
+    </select>
+
+    <div class="md-form mb-3">
+        <label for="authors_search">Authors:</label>
+        <input class="form-control" type="search" id="authors_search" [(ngModel)]="authors" name="authors" />
+    </div>
+  
+    <select  [(ngModel)]="keywordsOperator" name="keywordsOperator">
+        <option ngValue="AND">AND</option>
+        <option ngValue="OR">OR</option>
+        <option ngValue="AND_NOT">AND NOT</option>
+    </select>
+
+    <div class="md-form mb-3">
+        <label for="keywords_search">Keywords:</label>
+        <input class="form-control" type="search" id="keywords_search" [(ngModel)]="keywords" name="keywords" />
+    </div>
+    
+    <select  [(ngModel)]="scientificAreaOperator" name="scientificAreaOperator">
+        <option ngValue="AND">AND</option>
+        <option ngValue="OR">OR</option>
+        <option ngValue="AND_NOT">AND NOT</option>
+    </select>
+
+    <div class="md-form mb-3">
+        <label for="scientific_area_search">Scientific Area:</label>
+        <input class="form-control" type="search" id="scientific_area_search" [(ngModel)]="scientificArea" name="scientificArea" />
+    </div>
+    
+    <button class="btn btn-lg btn-primary" (click)="search()">Search</button>
+  </form>

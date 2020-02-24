@@ -12,4 +12,10 @@ import java.util.List;
 public interface ScientificPaperRepository extends JpaRepository<ScientificPaper, Long>{
 
     List<ScientificPaper> findByAuthorAndScientificPaperStatus(UserData author, Status scientificPaperStatus);
+
+    // List<ScientificPaper> findByTitleContainingIgnoreCase(String title);
+
+    // List<ScientificPaper> findByKeywordsContainingIgnoreCase(String keywords);
+
+    // List<ScientificPaper> findByScientificPaperAbstractContainingIgnoreCase(String scientificPaperAbstract);
 }

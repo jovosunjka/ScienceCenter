@@ -215,7 +215,7 @@ public class MagazineServiceImpl implements MagazineService {
 
                     try {
                         MembershipFee membershipFee =
-                                membershipFeeService.getActivatedMembershipFeeByMagazineIdAndPayerId(m.getId(), payerId);
+                                membershipFeeService.getActivatedMembershipFeeByProductIdAndPayerId(m.getId(), true, payerId);
                         paidUpTo = "Paid up to " + membershipFee.getValidUntil().format(DATE_TIME_FORMATTER);
                     } catch (Exception e) {
                         paidUpTo = null;
