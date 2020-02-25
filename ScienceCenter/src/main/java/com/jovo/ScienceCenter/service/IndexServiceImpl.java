@@ -4,11 +4,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.jovo.ScienceCenter.handlers.DocumentHandler;
 import com.jovo.ScienceCenter.handlers.PDFHandler;
+import com.jovo.ScienceCenter.model.ScientificPaper;
+import com.jovo.ScienceCenter.model.UserData;
 import com.jovo.ScienceCenter.model.elasticsearch.IndexUnit;
 import com.jovo.ScienceCenter.repository.elasticsearch.ScientificPaperElasticsearchRepository;
+import org.camunda.bpm.engine.identity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -27,6 +32,12 @@ public class IndexServiceImpl implements IndexService {
 
 	@Autowired
 	private ScientificPaperElasticsearchRepository scientificPaperElasticsearchRepository;
+
+	@Autowired
+	private ScientificPaperService scientificPaperService;
+
+	@Autowired
+	private UserService userService;
 
 	private DocumentHandler handler;
 
@@ -76,12 +87,15 @@ public class IndexServiceImpl implements IndexService {
 	}
 
 	@Override
-	public boolean add(File file) {
+	public boolean add(File file, String magazineName, String authorsAndCoauthors, String scientificArea) {
 		if (!file.isFile()) {
 			return false;
 		}
 
 		IndexUnit indexUnit =  handler.getIndexUnit(file);
+		indexUnit.setMagazinename(magazineName);
+		indexUnit.setAuthors(authorsAndCoauthors);
+		indexUnit.setScientificarea(scientificArea);
 		return add(indexUnit);
 	}
 	
@@ -109,8 +123,24 @@ public class IndexServiceImpl implements IndexService {
 					if(handler == null){
 						System.out.println("Nije moguce indeksirati dokument sa nazivom: " + fileName);
 						continue;
-					}	
-					if(add(newFile))
+					}
+
+					ScientificPaper scientificPaper = scientificPaperService.getScientificPaperWhichContainsRelativPath(fileName);
+
+					UserData author = scientificPaper.getAuthor();
+					User authorCamundaUser = userService.getUser(author.getCamundaUserId());
+					String authorStr = authorCamundaUser.getFirstName().concat(" ")
+							.concat(authorCamundaUser.getLastName());
+
+					List<String> authorAndCoauthors = scientificPaper.getCoauthors().stream()
+							.map(c -> c.getFirstName().concat(" ").concat(c.getLastName()))
+							.collect(Collectors.toList());
+					authorAndCoauthors.add(authorStr);
+
+					String authorAndCoauthorsStr = String.join(", ", authorAndCoauthors);
+
+					if(add(newFile, scientificPaper.getMagazineName(), authorAndCoauthorsStr,
+							scientificPaper.getScientificArea().getName()))
 						retVal++;
 				} else if (newFile.isDirectory()){
 					retVal += index(newFile);

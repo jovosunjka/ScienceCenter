@@ -16,6 +16,10 @@ public interface ScientificPaperService {
 
     ScientificPaper getScientificPaper(Long id);
 
+    ScientificPaper getScientificPaper(String title);
+
+    ScientificPaper getScientificPaperWhichContainsRelativPath(String relativPathToFile);
+
     void submitFirstUserTask(String camundaUserId, String processInstanceId, Map<String, Object> formFieldsMap)
             throws NotFoundException, TaskNotAssignedToYouException;
 

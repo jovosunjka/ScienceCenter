@@ -27,6 +27,15 @@ public class IndexUnit {
 	@Field(type = FieldType.Text)
 	private String keywords;
 
+	@Field(type = FieldType.Text)
+	private String authors;
+
+	@Field(type = FieldType.Text)
+	private String magazinename;
+
+	@Field(type = FieldType.Text)
+	private String scientificarea;
+
 	@Id
 	@Field(type = FieldType.Text)
 	private String filename;
@@ -74,5 +83,28 @@ public class IndexUnit {
 	public void setFiledate(String filedate) {
 		this.filedate = filedate;
 	}
-	
+
+	public String getAuthors() {
+		return authors;
+	}
+
+	public void setAuthors(String authors) {
+		this.authors = authors;
+	}
+
+	public String getMagazinename() {
+		return magazinename;
+	}
+
+	public void setMagazinename(String magazinename) {
+		this.magazinename = magazinename;
+	}
+
+	public String getScientificarea() {
+		return scientificarea;
+	}
+
+	public void setScientificarea(String scientificarea) {
+		this.scientificarea = scientificarea;
+	}
 }

@@ -13,7 +13,7 @@ public interface IndexService {
 
     boolean add(IndexUnit unit);
 
-    boolean add(File file);
+    boolean add(File file, String magazineName, String authorsAndCoauthors, String scientificArea);
 
     int index(File file);
 

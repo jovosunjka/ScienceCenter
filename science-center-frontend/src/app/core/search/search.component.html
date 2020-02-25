@@ -1,54 +1,114 @@
 <h3>SEARCH</h3>
 <h5>Blank fields will be ignored!!!</h5>
-<form>
-    <div class="md-form mb-3">
-        <label for="magazine_name_search">Magazine Name:</label>
+<form  class="form-inline">
+    <div form-group mb-2>
+        <label for="result_name_search">Magazine Name:</label>
         <input class="form-control" type="search" id="magazine_name_search" [(ngModel)]="magazineName" name="magazineName" />
     </div>
     
-    <select  [(ngModel)]="titeleOperator" name="titeleOperator">
-        <option ngValue="AND">AND</option>
-        <option ngValue="OR">OR</option>
-        <option ngValue="AND_NOT">AND NOT</option>
-    </select>
+    <div form-group mb-2>
+        <select  [(ngModel)]="titeleOperator" name="titeleOperator">
+            <option ngValue="AND">AND</option>
+            <option ngValue="OR">OR</option>
+            <option ngValue="AND_NOT">AND NOT</option>
+        </select>
 
-    <div class="md-form mb-3">
         <label for="title_search">Title:</label>
         <input class="form-control" type="search" id="title_search" [(ngModel)]="title" name="title" />
     </div>
-    
-    <select  [(ngModel)]="authorsOperator" name="authorsOperator">
-        <option ngValue="AND">AND</option>
-        <option ngValue="OR">OR</option>
-        <option ngValue="AND_NOT">AND NOT</option>
-    </select>
 
-    <div class="md-form mb-3">
+    <div form-group mb-2>
+        <select  [(ngModel)]="authorsOperator" name="authorsOperator">
+            <option ngValue="AND">AND</option>
+            <option ngValue="OR">OR</option>
+            <option ngValue="AND_NOT">AND NOT</option>
+        </select>
+
         <label for="authors_search">Authors:</label>
         <input class="form-control" type="search" id="authors_search" [(ngModel)]="authors" name="authors" />
     </div>
   
-    <select  [(ngModel)]="keywordsOperator" name="keywordsOperator">
-        <option ngValue="AND">AND</option>
-        <option ngValue="OR">OR</option>
-        <option ngValue="AND_NOT">AND NOT</option>
-    </select>
+    <div form-group mb-2>
+        <select  [(ngModel)]="keywordsOperator" name="keywordsOperator">
+            <option ngValue="AND">AND</option>
+            <option ngValue="OR">OR</option>
+            <option ngValue="AND_NOT">AND NOT</option>
+        </select>
 
-    <div class="md-form mb-3">
         <label for="keywords_search">Keywords:</label>
         <input class="form-control" type="search" id="keywords_search" [(ngModel)]="keywords" name="keywords" />
     </div>
-    
-    <select  [(ngModel)]="scientificAreaOperator" name="scientificAreaOperator">
-        <option ngValue="AND">AND</option>
-        <option ngValue="OR">OR</option>
-        <option ngValue="AND_NOT">AND NOT</option>
-    </select>
 
-    <div class="md-form mb-3">
+    <div form-group mb-2>
+        <select  [(ngModel)]="scientificAreaOperator" name="scientificAreaOperator">
+            <option ngValue="AND">AND</option>
+            <option ngValue="OR">OR</option>
+            <option ngValue="AND_NOT">AND NOT</option>
+        </select>
+
         <label for="scientific_area_search">Scientific Area:</label>
         <input class="form-control" type="search" id="scientific_area_search" [(ngModel)]="scientificArea" name="scientificArea" />
     </div>
-    
     <button class="btn btn-lg btn-primary" (click)="search()">Search</button>
   </form>
+
+<h4 *ngIf="!results || results.length===0"> &nbsp;&nbsp;There are currently no results.</h4>
+<h4 *ngIf="results && results.length>0"> &nbsp;&nbsp;Results</h4>
+<div class="table-responsive" *ngIf="results && results.length > 0">
+  <table class="table table-hover table-bordered">
+    <tr class="table-primary">
+        <th>#</th>
+        <th>Title</th>
+        <th>Keywords</th>
+        <th>Abstract</th>
+        <th>Scientific Area</th>
+        <th>Author</th>
+        <th>Coauthors</th>
+        <th>Magazine Name</th>
+        <th>Location</th>
+        <th>Highlight</th>
+        <th></th>
+    </tr>
+    <tr *ngFor="let result of results; let i = index" class="table-info">
+      <td>
+          {{i+1}}.
+      </td>
+      <td>
+        {{result.title}}
+      </td>
+      <td>
+        {{result.keywords}}
+      </td>
+      <td>
+        {{result.scientificPaper.scientificPaperAbstract}}
+      </td>
+      <td>
+        {{result.scientificPaper.scientificArea}}
+      </td>
+      <td>
+        {{result.scientificPaper.author}}
+      </td>
+      <td>
+        {{result.scientificPaper.coauthors}}
+      </td>
+      <td>
+        {{result.scientificPaper.magazineName}}
+      </td>
+      <td>
+        {{result.location}}
+      </td>
+      <td>
+        {{result.highlight}}
+      </td>
+      <td>
+        <p *ngIf="result.scientificPaper.paidUpTo"><b>{{result.scientificPaper.paidUpTo}}</b></p>
+        <button *ngIf="result.scientificPaper.paidUpTo" class="btn btn-primary" (click)="getPdfContentFromServer(result.scientificPaper.id, result.title)">Download</button>
+        
+        <select *ngIf="!result.scientificPaper.paidUpTo" [(ngModel)]="plan" name="planId">
+            <option *ngFor="let plan of result.scientificPaper.plans" [ngValue]="plan.id"> {{plan.name}}</option>
+        </select>
+        <button *ngIf="!result.scientificPaper.paidUpTo" class="btn btn-danger" (click)="pay(result.scientificPaper.id)">Pay</button>
+    </td>
+    </tr>
+  </table>
+</div>

@@ -101,6 +101,18 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
+    public ScientificPaper getScientificPaper(String title) {
+        return scientificPaperRepository.findByTitle(title)
+                .orElseThrow(() -> new NotFoundException("ScientificPaper (title=".concat(title).concat(") not found!")));
+    }
+
+    @Override
+    public ScientificPaper getScientificPaperWhichContainsRelativPath(String relativPathToFile) {
+        return scientificPaperRepository.findByRelativePathToFileContainingIgnoreCase(relativPathToFile)
+                .orElseThrow(() -> new NotFoundException("ScientificPaper (relativPathToFile contains".concat(relativPathToFile).concat(") not found!")));
+    }
+
+    @Override
     public void submitFirstUserTask(String camundaUserId, String processInstanceId, Map<String, Object> formFieldsMap)
             throws NotFoundException, TaskNotAssignedToYouException {
         Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
@@ -637,7 +649,19 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
 
         File pdfFile = fileService.getFile(scientificPaper.getRelativePathToFile());
 
-        indexService.add(pdfFile);
+        UserData author = scientificPaper.getAuthor();
+        User authorCamundaUser = userService.getUser(author.getCamundaUserId());
+        String authorStr = authorCamundaUser.getFirstName().concat(" ")
+                .concat(authorCamundaUser.getLastName());
+
+        List<String> authorAndCoauthors = scientificPaper.getCoauthors().stream()
+                .map(c -> c.getFirstName().concat(" ").concat(c.getLastName()))
+                .collect(Collectors.toList());
+        authorAndCoauthors.add(authorStr);
+
+        String authorAndCoauthorsStr = String.join(", ", authorAndCoauthors);
+
+        indexService.add(pdfFile, scientificPaper.getMagazineName(), authorAndCoauthorsStr, scientificPaper.getScientificArea().getName());
     }
 
     @Override
@@ -770,4 +794,6 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
             throw new RuntimeException("Plalns sending error!");
         }
     }
+
+
 }

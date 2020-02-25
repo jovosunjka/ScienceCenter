@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -63,7 +64,8 @@ public class UserServiceImpl implements UserService {
 	private MagazineService magazineService;
 
 
-	@EventListener(ApplicationReadyEvent.class)
+	//@EventListener(ApplicationReadyEvent.class)
+	@PostConstruct
 	public void createCamundaUsers() {
 		createCamundaUser("guest", "guest", "Guest", "Guest", "guest@camunda.org");
 		createCamundaUser("admin", "admin", "Admin", "Admin", "admin@camunda.org");

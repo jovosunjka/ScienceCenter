@@ -11,6 +11,7 @@ import { ResultData } from 'src/app/shared/model/result-data';
 export class SearchComponent implements OnInit {
 
   private relativeUrlForSearch = '/search/custom';
+  private relativeUrlForPdfContent = '/scientific-papers/pdf-by-id';
 
   magazineName: string;
   title: string;
@@ -41,11 +42,38 @@ export class SearchComponent implements OnInit {
   ngOnInit() {
   }
 
+  getPdfContentFromServer(scientificPaperId: number, title) {
+    this.genericService.getPdfContentFromServer(this.relativeUrlForPdfContent.concat('?scientificPaperId=' + scientificPaperId))
+          .subscribe( (pdf: any) => {
+              console.log('pdf response: ', pdf);
+              const mediaType = 'application/pdf';
+              const blob = new Blob([pdf], {type: mediaType});
+
+              this.download(title, blob);
+            },
+            err => console.log('Pdf generated err: ', JSON.stringify(err))
+          );
+  }
+
+  download(fileName, content) {
+    const element = document.createElement('a');
+    /*element.setAttribute('href', 'data:application/pdf;charset=utf-8,' + encodeURIComponent(content));*/
+    element.setAttribute('href', window.URL.createObjectURL(content));
+    element.setAttribute('download', fileName + '.pdf');
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+  }
+
   search() {
     const queries = [
       {
         operator: 'NO_OPERATOR',
-        field: 'magazineName',
+        field: 'magazinename',
         value: this.magazineName
       },
       {
@@ -65,7 +93,7 @@ export class SearchComponent implements OnInit {
       },
       {
         operator: this.scientificAreaOperator,
-        field: 'scientificArea',
+        field: 'scientificarea',
         value: this.scientificArea
       }
     ];
@@ -74,7 +102,7 @@ export class SearchComponent implements OnInit {
       (results: ResultData[]) => {
         this.results = results;
         this.toastr.success('Searching is done!');
-        alert(JSON.stringify(results));
+        // alert(JSON.stringify(results));
       },
       err => alert(JSON.stringify(err))
     );

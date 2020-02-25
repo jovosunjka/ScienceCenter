@@ -1,22 +1,27 @@
 package com.jovo.ScienceCenter.model.elasticsearch;
 
+import com.jovo.ScienceCenter.dto.ScientificPaperForSearchResultDTO;
+
 public final class ResultData {
 	
 	private String title;
 	private String keywords;
 	private String location;
 	private String highlight;
+	private ScientificPaperForSearchResultDTO scientificPaper;
 	
 	public ResultData() {
 		super();
 	}
 
-	public ResultData(String title, String keywords, String location, String highlight) {
+	public ResultData(String title, String keywords, String location, String highlight,
+					  ScientificPaperForSearchResultDTO scientificPaper) {
 		super();
 		this.title = title;
 		this.keywords = keywords;
 		this.location = location;
 		this.highlight = highlight;
+		this.scientificPaper = scientificPaper;
 	}
 
 	public String getTitle() {
@@ -51,4 +56,11 @@ public final class ResultData {
 		this.highlight = highlight;
 	}
 
+	public ScientificPaperForSearchResultDTO getScientificPaper() {
+		return scientificPaper;
+	}
+
+	public void setScientificPaper(ScientificPaperForSearchResultDTO scientificPaper) {
+		this.scientificPaper = scientificPaper;
+	}
 }
