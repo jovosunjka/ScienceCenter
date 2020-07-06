@@ -17,11 +17,13 @@ export class SearchComponent implements OnInit {
   title: string;
   authors: string;
   keywords: string;
+  text: string;
   scientificArea: string;
 
   titeleOperator: string;
   authorsOperator: string;
   keywordsOperator: string;
+  textOperator: string;
   scientificAreaOperator: string;
 
   results: ResultData[];
@@ -31,11 +33,13 @@ export class SearchComponent implements OnInit {
     this.title = '';
     this.authors = '';
     this.keywords = '';
+    this.text = '';
     this.scientificArea = '';
 
     this.titeleOperator = 'AND';
     this.authorsOperator = 'AND';
     this.keywordsOperator = 'AND';
+    this.textOperator = 'AND';
     this.scientificAreaOperator = 'AND';
   }
 

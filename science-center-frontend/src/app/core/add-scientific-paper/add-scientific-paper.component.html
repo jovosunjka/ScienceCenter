@@ -11,7 +11,9 @@
                 <input type="text" class="form-control" [(ngModel)]="newCoauthor.lastName" name="lastName" placeholder="Last Name"/>
                 <input type="text" class="form-control" [(ngModel)]="newCoauthor.email" name="email" placeholder="Email"/>
                 <input type="text" class="form-control" [(ngModel)]="newCoauthor.address" name="address" placeholder="Address"/>
-                <input type="text" class="form-control" [(ngModel)]="newCoauthor.city" name="city" placeholder="City"/>
+                City: <select [(ngModel)]="newCoauthor.city" name="couathorCity" >
+                    <option *ngFor="let city of cities" [ngValue]="city">{{city}}</option>
+                </select>
                 <input type="text" class="form-control" [(ngModel)]="newCoauthor.country" name="country" placeholder="Country"/>
                 <button class="btn btn-small btn-success" (click)="addCoauthor()"> Add Coauthor </button>
 
@@ -39,6 +41,11 @@
                 </div>
             </div>
 
+            <div *ngIf="field.type.name == 'string' && field.id == 'city'">
+                <select id="{{field.id}}" [(ngModel)]="field.value" name="city" >
+                    <option *ngFor="let city of cities" [ngValue]="city">{{city}}</option>
+                </select>
+            </div>
             <div *ngIf="field.type.name == 'long' && field.id == 'selectedScientificAreaId'">
                 <select class="form-control" id="{{field.id}}"  [(ngModel)]="field.value" name="{{field.id}}" >
                     <ng-template ngFor let-sArea [ngForOf]="scientificAreas">
@@ -47,7 +54,7 @@
                 </select>
             </div>
 
-            <input *ngIf="field.type.name == 'string' && field.id != 'fileName' && field.id != 'coauthors' && field.id != 'plans'" type="text" class="form-control" id="{{field.id}}" [(ngModel)]="field.value"
+            <input *ngIf="field.type.name == 'string' && field.id != 'fileName' && field.id != 'coauthors' && field.id != 'city' && field.id != 'plans'" type="text" class="form-control" id="{{field.id}}" [(ngModel)]="field.value"
                 name="{{field.id}}" />
         
             <div *ngIf="field.id == 'fileName'"  class="input-group"><span class="input-group-addon"><i

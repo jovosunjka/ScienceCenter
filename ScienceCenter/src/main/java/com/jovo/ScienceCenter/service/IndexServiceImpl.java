@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 
 import com.jovo.ScienceCenter.handlers.DocumentHandler;
 import com.jovo.ScienceCenter.handlers.PDFHandler;
+import com.jovo.ScienceCenter.model.City;
 import com.jovo.ScienceCenter.model.ScientificPaper;
 import com.jovo.ScienceCenter.model.UserData;
+import com.jovo.ScienceCenter.model.elasticsearch.CityWithGeoPoint;
 import com.jovo.ScienceCenter.model.elasticsearch.IndexUnit;
 import com.jovo.ScienceCenter.repository.elasticsearch.ScientificPaperElasticsearchRepository;
 import org.camunda.bpm.engine.identity.User;
@@ -35,6 +37,9 @@ public class IndexServiceImpl implements IndexService {
 
 	@Autowired
 	private ScientificPaperService scientificPaperService;
+
+	@Autowired
+	private CityIndexService cityIndexService;
 
 	@Autowired
 	private UserService userService;
@@ -96,6 +101,10 @@ public class IndexServiceImpl implements IndexService {
 		indexUnit.setMagazinename(magazineName);
 		indexUnit.setAuthors(authorsAndCoauthors);
 		indexUnit.setScientificarea(scientificArea);
+
+		/*cityWithGeoPoints.stream()
+				.forEach(city -> cityIndexService.add(city));*/
+
 		return add(indexUnit);
 	}
 	
@@ -138,7 +147,15 @@ public class IndexServiceImpl implements IndexService {
 					authorAndCoauthors.add(authorStr);
 
 					String authorAndCoauthorsStr = String.join(", ", authorAndCoauthors);
-
+					/*
+					List<City> cities = scientificPaper.getCoauthors().stream()
+							.map(c -> c.getCity())
+							.collect(Collectors.toList());
+					cities.add(author.getCity());
+					List<CityWithGeoPoint> cityWithGeoPoints = cities.stream()
+							.map(c -> new CityWithGeoPoint(c.getName(), c.getLatitude(), c.getLongitude()))
+							.collect(Collectors.toList());
+					*/
 					if(add(newFile, scientificPaper.getMagazineName(), authorAndCoauthorsStr,
 							scientificPaper.getScientificArea().getName()))
 						retVal++;
@@ -151,6 +168,11 @@ public class IndexServiceImpl implements IndexService {
 			System.out.println("indexing NOT done");
 		}
 		return retVal;
+	}
+
+	@Override
+	public String getText(File file) {
+		return handler.getText(file);
 	}
 
 	private DocumentHandler getHandler(String fileName){

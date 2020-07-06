@@ -20,9 +20,12 @@ export class AddReviewersComponent implements OnInit {
   private relativeUrlForReviewersForScientificPapers = '/scientific-papers/reviewers-for-scientific-paper';
   private relativeUrlForReviewersForSelectReviewera = '/scientific-papers/select-reviewers';
 
+  filter: string;
+
   constructor(private genericService: GenericService, private toastr: ToastrService) {
       this.reviewers = [];
       this.selectedReviewers = [];
+      this.filter = 'ALL';
       this.selectedReviewersStr = '';
   }
 
@@ -34,7 +37,8 @@ export class AddReviewersComponent implements OnInit {
   getReviewersForMagazine() {
     let relativeUrl;
     if (this.taskId) {
-      relativeUrl = this.relativeUrlForReviewersForScientificPapers.concat('?taskId=').concat(this.taskId);
+      relativeUrl = this.relativeUrlForReviewersForScientificPapers.concat('?taskId=').concat(this.taskId)
+                                                                      .concat('&filter=').concat(this.filter);
     } else {
       relativeUrl = this.relativeUrlForReviewers.concat('?processInstanceId=').concat(this.processInstanceId);
     }

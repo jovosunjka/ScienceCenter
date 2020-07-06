@@ -1,5 +1,6 @@
 package com.jovo.ScienceCenter.model.elasticsearch;
 
+import com.jovo.ScienceCenter.model.City;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -8,9 +9,11 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.elasticsearch.annotations.Setting;
 
+import java.util.List;
+
 
 @Document(indexName = IndexUnit.INDEX_NAME, type = IndexUnit.TYPE_NAME, shards = 1, replicas = 0)
-//@Setting(settingPath = "/elasticsearch/uputstvo.txt")
+//@Setting(settingPath = "/elasticsearch/analyze.json")
 public class IndexUnit {
 
 	public static final String INDEX_NAME = "index_for_scientific_paper";
@@ -35,6 +38,9 @@ public class IndexUnit {
 
 	@Field(type = FieldType.Text)
 	private String scientificarea;
+
+	//@Field(type = FieldType.Nested, includeInParent = true)
+	//private List<CityWithGeoPoint> cities;
 
 	@Id
 	@Field(type = FieldType.Text)
@@ -107,4 +113,12 @@ public class IndexUnit {
 	public void setScientificarea(String scientificarea) {
 		this.scientificarea = scientificarea;
 	}
+
+	/*public List<CityWithGeoPoint> getCities() {
+		return cities;
+	}
+
+	public void setCities(List<CityWithGeoPoint> cities) {
+		this.cities = cities;
+	}*/
 }

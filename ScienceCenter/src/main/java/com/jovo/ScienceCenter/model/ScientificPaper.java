@@ -41,6 +41,12 @@ public class ScientificPaper implements Serializable {
             @JoinColumn(name = "plan_id", nullable = false, updatable = false) })
     private Set<Coauthor> coauthors;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "scientific_paper_reviewers", joinColumns = {
+            @JoinColumn(name = "scientific_paper_id", nullable = false, updatable = false) }, inverseJoinColumns = {
+            @JoinColumn(name = "reviewer_id", nullable = false, updatable = false) })
+    private Set<UserData> reviewers = new HashSet<UserData>();
+
     @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "scientific_paper_plans", joinColumns = {
             @JoinColumn(name = "scientific_paper_id", nullable = false, updatable = false) }, inverseJoinColumns = {
@@ -169,4 +175,12 @@ public class ScientificPaper implements Serializable {
     public Status getScientificPaperStatus() { return scientificPaperStatus; }
 
     public void setScientificPaperStatus(Status scientificPaperStatus) { this.scientificPaperStatus = scientificPaperStatus; }
+
+    public Set<UserData> getReviewers() {
+        return reviewers;
+    }
+
+    public void setReviewers(Set<UserData> reviewers) {
+        this.reviewers = reviewers;
+    }
 }

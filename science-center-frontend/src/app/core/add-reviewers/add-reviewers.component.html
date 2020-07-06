@@ -1,4 +1,12 @@
 <div>
+    <select [(ngModel)]="filter">
+        <option ngValue="ALL">ALL</option>
+        <option ngValue="SCIENTIFIC_AREA">SCIENTIFIC AREA</option>
+        <option ngValue="MORE_LIKE_THIS">MORE LIKE THIS</option>
+        <option ngValue="GEOSPATIAL">GEOSPATIAL</option>
+    </select>
+    <button class="btn btn-lg btn-primary" (click)="getReviewersForMagazine()">Filter</button>
+
     <h4>Select at least two reviewers!</h4>
     <select multiple class="form-control" id="id_select_reviewers"  [(ngModel)]="selectedReviewers" name="selected-reviewers" 
           (change)="onChangeReviewers($event)">

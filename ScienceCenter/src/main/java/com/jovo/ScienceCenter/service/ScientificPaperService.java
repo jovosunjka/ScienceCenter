@@ -4,6 +4,7 @@ import com.jovo.ScienceCenter.dto.*;
 import com.jovo.ScienceCenter.exception.NotFoundException;
 import com.jovo.ScienceCenter.exception.TaskNotAssignedToYouException;
 import com.jovo.ScienceCenter.model.MainEditorAndScientificPaper;
+import com.jovo.ScienceCenter.model.ReviewersFilter;
 import com.jovo.ScienceCenter.model.ScientificPaper;
 import com.jovo.ScienceCenter.model.UserData;
 import com.jovo.ScienceCenter.util.ReviewingResult;
@@ -51,7 +52,7 @@ public interface ScientificPaperService {
 
     void selectEditorOfScientificArea(String processInstanceId);
 
-    List<EditorOrReviewerDTO> getReviewersForScientificPaper(String taskId);
+    List<EditorOrReviewerDTO> getReviewersForScientificPaper(String taskId, ReviewersFilter filter);
 
     List<TaskIdAndTitleDTO> getScientificPapersForSelectingReviews(String camundaUserId);
 
@@ -78,4 +79,6 @@ public interface ScientificPaperService {
     byte[] getPdfContent(Long scientificPaperId) throws IOException;
 
     List<ScientificPaperFrontendDTOWithMagazineName> getPendingScientificPapers(UserData author);
+
+    List<String> getCities();
 }

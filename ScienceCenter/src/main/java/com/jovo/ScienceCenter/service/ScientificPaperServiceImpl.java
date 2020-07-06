@@ -5,9 +5,15 @@ import com.jovo.ScienceCenter.dto.*;
 import com.jovo.ScienceCenter.exception.NotFoundException;
 import com.jovo.ScienceCenter.exception.TaskNotAssignedToYouException;
 import com.jovo.ScienceCenter.model.*;
+import com.jovo.ScienceCenter.model.elasticsearch.CityWithGeoPoint;
+import com.jovo.ScienceCenter.model.elasticsearch.RequiredHighlight;
+import com.jovo.ScienceCenter.model.elasticsearch.ResultData;
+import com.jovo.ScienceCenter.model.elasticsearch.SearchType;
 import com.jovo.ScienceCenter.repository.PlanRepository;
 import com.jovo.ScienceCenter.repository.ScientificPaperRepository;
+import com.jovo.ScienceCenter.util.QueryBuilder;
 import com.jovo.ScienceCenter.util.ReviewingResult;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.camunda.bpm.engine.FormService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
@@ -80,7 +86,17 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     private MembershipFeeService membershipFeeService;
 
     @Autowired
+    private CityService cityService;
+
+    @Autowired
     private IndexService indexService;
+
+    @Autowired
+    private ResultRetrieverService resultRetrieverService;
+
+    @Autowired
+    private CityIndexService cityIndexService;
+
     
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm:ss");
     
@@ -223,8 +239,9 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
                                             } catch (Exception e) {
                                                 registeresUserId = null;
                                             }
+                                            City city = cityService.getCity(c.getCity());
                                             Coauthor coauthor = new Coauthor(c.getFirstName(), c.getLastName(), c.getEmail(),
-                                                    c.getAddress(), c.getCity(), c.getCountry(), registeresUserId);
+                                                    c.getAddress(), city, c.getCountry(), registeresUserId);
                                             coauthorService.save(coauthor);
                                             return coauthor;
                                         })
@@ -426,11 +443,21 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
 
         runtimeService.setVariable(processInstanceId, "selectedEditorOfScientificArea", selectedEditorOfScientificArea);
 
+        // pripremi indeks za autore i koautore
+        ScientificPaper scientificPaper = mainEditorAndScientificPaper.getScientificPaper();
+        List<CityWithGeoPoint> cityWithGeoPoints = scientificPaper.getCoauthors().stream()
+                .map(c -> new CityWithGeoPoint(c.getCity().getName(),
+                        c.getCity().getLatitude(), c.getCity().getLongitude()))
+                .collect(Collectors.toList());
+        cityWithGeoPoints.add(new CityWithGeoPoint(scientificPaper.getAuthor().getCity().getName(),
+                scientificPaper.getAuthor().getCity().getLatitude(), scientificPaper.getAuthor().getCity().getLongitude()));
+        cityWithGeoPoints.stream()
+                .forEach(city -> cityIndexService.add(city));
     }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     @Override
-    public List<EditorOrReviewerDTO> getReviewersForScientificPaper(String taskId) {
+    public List<EditorOrReviewerDTO> getReviewersForScientificPaper(String taskId, ReviewersFilter filter) {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (task == null) {
             throw new NotFoundException("Task (id=".concat(taskId).concat(") doesn't exist!"));
@@ -448,14 +475,33 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
 
         List<UserData> reviewers = selectedMagazine.getReviewers().stream()
                 .filter(reviewer ->  !reviewer.getCamundaUserId().equals(processInitiator)
-                        && reviewer.getUserStatus() == Status.ACTIVATED
-                        && reviewer.getScientificAreas().contains(scientificArea))
+                        && reviewer.getUserStatus() == Status.ACTIVATED)
                 .collect(Collectors.toList());
 
-        boolean mainEditorMustBeReviewer = reviewers.isEmpty();
-        if (mainEditorMustBeReviewer) {
-            reviewers.add(mainEditorAndScientificPaper.getMainEditor());
+        boolean reviewersEmpty = false;
+
+        if (filter == ReviewersFilter.MORE_LIKE_THIS) {
+            List<UserData> moreLikeThisReviewers = getMoreLikeThisReviewers(mainEditorAndScientificPaper
+                                                                            .getScientificPaper()
+                                                                            .getRelativePathToFile());
+            reviewers = reviewers.stream()
+                    .filter(moreLikeThisReviewers::contains)
+                    .filter(reviewer ->  !reviewer.getCamundaUserId().equals(processInitiator))
+                    .collect(Collectors.toList());
+        } else if (filter == ReviewersFilter.SCIENTIFIC_AREA) {
+            reviewers = reviewers.stream()
+                    .filter(reviewer -> reviewer.getScientificAreas().contains(scientificArea))
+                    .collect(Collectors.toList());
+            reviewersEmpty = reviewers.isEmpty();
+            if (reviewersEmpty) {
+                reviewers.add(mainEditorAndScientificPaper.getMainEditor());
+            }
+        } else if (filter == ReviewersFilter.GEOSPATIAL) {
+            reviewers = getGeospatialReviewers(reviewers,
+                    mainEditorAndScientificPaper.getScientificPaper().getCoauthors().size()+1);
         }
+
+        boolean mainEditorMustBeReviewer = reviewersEmpty;
 
         List<EditorOrReviewerDTO> reviewerDTOs = reviewers.stream()
                 .map(r -> {
@@ -467,6 +513,38 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
                 })
                 .collect(Collectors.toList());
         return  reviewerDTOs;
+    }
+
+    private List<UserData> getGeospatialReviewers(List<UserData> reviewers, int numOfCities) {
+        return reviewers.stream()
+                .filter(r -> {
+                    org.elasticsearch.index.query.QueryBuilder queryBuilder = null;
+                    try {
+                        String geoPointStr = r.getCity().getLatitude() + "," + r.getCity().getLongitude();
+                        queryBuilder = QueryBuilder.buildQuery(SearchType.geospatial, "location", geoPointStr);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    return resultRetrieverService.getGeoSpatialResult(queryBuilder, numOfCities);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private List<UserData> getMoreLikeThisReviewers(String relativePathToFile) {
+        File file = null;
+        try {
+            file = fileService.getFile(relativePathToFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String text = indexService.getText(file);
+        org.elasticsearch.index.query.QueryBuilder queryBuilder = null;
+        try {
+            queryBuilder = QueryBuilder.buildQuery(SearchType.moreLikeThis, "text", text);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return resultRetrieverService.getMoreLikeThisReviewers(queryBuilder);
     }
 
     @Override
@@ -643,6 +721,9 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
 
     @Override
     public void prepareForSearching(String processInstanceId) throws IOException {
+        // najpre isprazni index for city
+        cityIndexService.deleteAll();
+
         MainEditorAndScientificPaper mainEditorAndScientificPaper =
                 (MainEditorAndScientificPaper) runtimeService.getVariable(processInstanceId, "mainEditorAndScientificPaper");
         ScientificPaper scientificPaper = mainEditorAndScientificPaper.getScientificPaper();
@@ -661,7 +742,16 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
 
         String authorAndCoauthorsStr = String.join(", ", authorAndCoauthors);
 
-        indexService.add(pdfFile, scientificPaper.getMagazineName(), authorAndCoauthorsStr, scientificPaper.getScientificArea().getName());
+        /*List<City> cities = scientificPaper.getCoauthors().stream()
+                .map(c -> c.getCity())
+                .collect(Collectors.toList());
+        cities.add(author.getCity());
+        List<CityWithGeoPoint> cityWithGeoPoints = cities.stream()
+                .map(c -> new CityWithGeoPoint(c.getName(), c.getLatitude(), c.getLongitude()))
+                .collect(Collectors.toList());
+        */
+        indexService.add(pdfFile, scientificPaper.getMagazineName(), authorAndCoauthorsStr,
+                scientificPaper.getScientificArea().getName());
     }
 
     @Override
@@ -726,6 +816,11 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
     }
 
     @Override
+    public List<String> getCities() {
+        return cityService.getCities();
+    }
+
+    @Override
     public void saveSelectedReviewersForScientificPaper(String processInstanceId, List<Long> reviewerIds) {
         List<UserData> reviewers;
         if (reviewerIds.size() == 1) {
@@ -752,6 +847,12 @@ public class ScientificPaperServiceImpl implements ScientificPaperService {
                 }
             }
         }
+
+        MainEditorAndScientificPaper mainEditorAndScientificPaper =
+                (MainEditorAndScientificPaper) runtimeService.getVariable(processInstanceId, "mainEditorAndScientificPaper");
+        ScientificPaper scientificPaper = mainEditorAndScientificPaper.getScientificPaper();
+        scientificPaper.setReviewers(new HashSet<UserData>(reviewers));
+        scientificPaperRepository.save(scientificPaper);
 
         runtimeService.setVariable(processInstanceId, "selectedReviewersForScientificPaper", reviewers);
 

@@ -7,6 +7,8 @@ public enum SearchType {
 		phrase,
 		range,
 		prefix,
-		match
+		match,
+		moreLikeThis,
+		geospatial
 
 }

@@ -365,6 +365,13 @@ public class ScientificPaperController {
         return new ResponseEntity<List<ScientificPaperFrontendDTO>>(scientificPaperFrontendDTOs, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/cities", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> getCities() {
+
+        List<String> cities = scientificPaperService.getCities();
+        return new ResponseEntity<List<String>>(cities, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/for-first-repair", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ScientificPaperFrontendDtoWithComment>> getFirstRepairScientificPaper() {
         UserData loggedUser = null;
@@ -458,9 +465,10 @@ public class ScientificPaperController {
 
     @RequestMapping(value = "/reviewers-for-scientific-paper", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<EditorOrReviewerDTO>> getReviewersForScientificPaper(@RequestParam("taskId")
-                                                                                            String taskId) {
-        List<EditorOrReviewerDTO> reviewerDTOs = scientificPaperService.getReviewersForScientificPaper(taskId);
+    public ResponseEntity<List<EditorOrReviewerDTO>> getReviewersForScientificPaper(
+            @RequestParam("taskId") String taskId,
+            @RequestParam("filter") ReviewersFilter filter) {
+        List<EditorOrReviewerDTO> reviewerDTOs = scientificPaperService.getReviewersForScientificPaper(taskId, filter);
         return new ResponseEntity<List<EditorOrReviewerDTO>>(reviewerDTOs, HttpStatus.OK);
     }
 

@@ -14,8 +14,11 @@ export class AddScientificPaperComponent implements OnInit {
   private relativeUrlForAddScientificPaper = '/scientific-papers/add';
   private relativeUrlForFormFields = '/scientific-papers/add-scientific-paper-form-fields';
   private relativeUrlForScientificAreas = '/scientific-areas/all';
+  private relativeUrlForCities = '/scientific-papers/cities';
 
   private scientificAreas: Dto[];
+
+  cities: string[];
 
   newCoauthor: any;
 
@@ -23,12 +26,13 @@ export class AddScientificPaperComponent implements OnInit {
   private formFields: any[];
   private processInstanceId: string;
 
-  private plans = []
+  private plans = [];
   newPlan: any;
 
   constructor(private genericService: GenericService, private toastr: ToastrService, private router: Router,
               private forwardingMessageService: ForwardingMessageService) {
     this.scientificAreas = [];
+    this.cities = [];
     this.newCoauthor = {
       firstName: '',
       lastName: '',
@@ -48,6 +52,7 @@ export class AddScientificPaperComponent implements OnInit {
     this.processInstanceId = localStorage.getItem('processInstanceId');
     this.relativeUrlForFormFields += '?processInstanceId=' + this.processInstanceId;
 
+    this.getCities();
     this.getAllScientificAreas();
     this.getCreateMagazineFormFields();
 
@@ -66,6 +71,17 @@ export class AddScientificPaperComponent implements OnInit {
             (scientificAreas: Dto[]) => {
                 this.scientificAreas = scientificAreas;
                 this.toastr.success('Scientific areas loaded!');
+            },
+            err => alert(JSON.stringify(err))
+          );
+  }
+
+  getCities() {
+    this.genericService.get<string[]>(this.relativeUrlForCities)
+          .subscribe(
+            (cities: string[]) => {
+                this.cities = cities;
+                this.toastr.success('Cities loaded!');
             },
             err => alert(JSON.stringify(err))
           );

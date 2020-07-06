@@ -63,6 +63,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private MagazineService magazineService;
 
+	@Autowired
+	private CityService cityService;
+
 
 	//@EventListener(ApplicationReadyEvent.class)
 	@PostConstruct
@@ -158,7 +161,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void register(String delegateExecutionId, String username, String password, String repeatedPassword,
-							String firstName, String lastName, String email, String city, String country,
+							String firstName, String lastName, String email, String cityStr, String country,
 							List<Long> scientificAreaIds) {
 
 		Objects.requireNonNull(username, "Username should not be null!");
@@ -167,7 +170,7 @@ public class UserServiceImpl implements UserService {
         Objects.requireNonNull(firstName, "FirstName should not be null!");
         Objects.requireNonNull(lastName, "LastName should not be null!");
         Objects.requireNonNull(email, "Email should not be null!");
-        Objects.requireNonNull(city, "City should not be null!");
+        Objects.requireNonNull(cityStr, "City should not be null!");
         Objects.requireNonNull(country, "Country should not be null!");
         Objects.requireNonNull(scientificAreaIds, "ScientificAreaIds should not be null!");
 
@@ -177,7 +180,7 @@ public class UserServiceImpl implements UserService {
 		StringUtil.requireNonEmptyString(firstName, "FirstName should not be empty!");
 		StringUtil.requireNonEmptyString(lastName, "LastName should not be empty!");
 		StringUtil.requireNonEmptyString(email, "Email should not be empty!");
-		StringUtil.requireNonEmptyString(city, "City should not be empty!");
+		StringUtil.requireNonEmptyString(cityStr, "City should not be empty!");
 		StringUtil.requireNonEmptyString(country, "Country should not be empty!");
 
 		if (exists(username)) {
@@ -202,6 +205,7 @@ public class UserServiceImpl implements UserService {
 		org.camunda.bpm.engine.identity.User camundaUser = createCamundaUser(username, password, firstName, lastName,  email);
 
 		Role role = roleService.getRole("USER");
+		City city = cityService.getCity(cityStr);
 		UserData userData = new UserData(camundaUser.getId(), city, country, scientificAreas, role);
 		userData = userDataRepository.save(userData);
 
@@ -323,7 +327,7 @@ public class UserServiceImpl implements UserService {
 														.map(role -> new DTO(role.getId(), role.getName()))
 														.collect(Collectors.toList());
 						UserDTO userDTO = new UserDTO(userData.getId(), user.getId(), user.getFirstName(),
-								user.getLastName(), user.getEmail(), userData.getCity(),
+								user.getLastName(), user.getEmail(), userData.getCity().getName(),
 								userData.getCountry(), scientificAreaNamesStr, userData.isReviewer(),
 								userData.getUserStatus(), roleDTOs);
 						userDTOs.add(userDTO);

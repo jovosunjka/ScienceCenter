@@ -23,8 +23,8 @@ public class Coauthor implements Serializable {
     @Column(name = "address", unique = false, nullable = false)
     private String address;
 
-    @Column(name = "city", unique = false, nullable = false)
-    private String city;
+    @ManyToOne
+    private City city;
 
     @Column(name = "country", unique = false, nullable = false)
     private String country;
@@ -37,7 +37,7 @@ public class Coauthor implements Serializable {
 
     }
 
-    public Coauthor(String firstName, String lastName, String email, String address, String city, String country,
+    public Coauthor(String firstName, String lastName, String email, String address, City city, String country,
                   Long registeredUserDataId) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -88,11 +88,11 @@ public class Coauthor implements Serializable {
         this.address = address;
     }
 
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 

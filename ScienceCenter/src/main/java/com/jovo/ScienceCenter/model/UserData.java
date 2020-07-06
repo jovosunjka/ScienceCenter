@@ -22,8 +22,8 @@ public class UserData implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     private Status userStatus;
 
-    @Column(name = "city", unique = false, nullable = false)
-    private String city;
+    @ManyToOne
+    private City city;
 
     @Column(name = "country", unique = false, nullable = false)
     private String country;
@@ -44,11 +44,13 @@ public class UserData implements Serializable {
     private Set<ScientificArea> scientificAreas;
 
 
+
+
     public UserData() {
 
     }
 
-    public UserData(String camundaUserId, String city, String country, List<ScientificArea> scientificAreas, Role role) {
+    public UserData(String camundaUserId, City city, String country, List<ScientificArea> scientificAreas, Role role) {
         this.camundaUserId = camundaUserId;
         this.userStatus = Status.PENDING;
         this.city = city;
@@ -83,11 +85,11 @@ public class UserData implements Serializable {
         this.userStatus = userStatus;
     }
 
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
@@ -122,18 +124,11 @@ public class UserData implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserData userData = (UserData) o;
-        return reviewer == userData.reviewer &&
-                id.equals(userData.id) &&
-                camundaUserId.equals(userData.camundaUserId) &&
-                userStatus == userData.userStatus &&
-                city.equals(userData.city) &&
-                country.equals(userData.country) &&
-                roles.equals(userData.roles) &&
-                scientificAreas.equals(userData.scientificAreas);
+        return camundaUserId.equals(userData.camundaUserId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, camundaUserId, userStatus, city, country, reviewer, roles, scientificAreas);
+        return Objects.hash(camundaUserId);
     }
 }

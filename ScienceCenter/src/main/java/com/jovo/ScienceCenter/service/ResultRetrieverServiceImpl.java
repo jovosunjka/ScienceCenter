@@ -2,19 +2,26 @@ package com.jovo.ScienceCenter.service;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.jovo.ScienceCenter.dto.ScientificPaperForSearchResultDTO;
 import com.jovo.ScienceCenter.model.MembershipFee;
 import com.jovo.ScienceCenter.model.ScientificPaper;
 import com.jovo.ScienceCenter.model.UserData;
+import com.jovo.ScienceCenter.model.elasticsearch.CityWithGeoPoint;
 import com.jovo.ScienceCenter.model.elasticsearch.IndexUnit;
 import com.jovo.ScienceCenter.model.elasticsearch.RequiredHighlight;
 import com.jovo.ScienceCenter.model.elasticsearch.ResultData;
+import com.jovo.ScienceCenter.repository.elasticsearch.CityWithGeoPointElasticsearchRepository;
 import com.jovo.ScienceCenter.repository.elasticsearch.ScientificPaperElasticsearchRepository;
 import com.jovo.ScienceCenter.service.ResultRetrieverService;
 import org.camunda.bpm.engine.identity.User;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +31,9 @@ public class ResultRetrieverServiceImpl implements ResultRetrieverService {
 	
 	@Autowired
 	private ScientificPaperElasticsearchRepository scientificPaperElasticsearchRepository;
+
+	@Autowired
+	private CityWithGeoPointElasticsearchRepository cityWithGeoPointElasticsearchRepository;
 
 	@Autowired
 	private ScientificPaperService scientificPaperService;
@@ -91,6 +101,39 @@ public class ResultRetrieverServiceImpl implements ResultRetrieverService {
         
 		
 		return results;
+	}
+
+	@Override
+	public List<UserData> getMoreLikeThisReviewers(org.elasticsearch.index.query.QueryBuilder query) {
+		if (query == null) {
+			return null;
+		}
+
+		ScientificPaper scientificPaper;
+		Set<UserData> reviewers = new HashSet<UserData>();
+
+		for (IndexUnit indexUnit : scientificPaperElasticsearchRepository.search(query)) {
+			scientificPaper = scientificPaperService.getScientificPaper(indexUnit.getTitle());
+			reviewers.addAll(scientificPaper.getReviewers());
+		}
+
+		return reviewers.stream().collect(Collectors.toList());
+	}
+
+	@Override
+	public boolean getGeoSpatialResult(QueryBuilder queryBuilder, int numOfCities) {
+		if (queryBuilder == null) {
+			return false;
+		}
+
+		int counter = 0;
+
+		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery().mustNot(queryBuilder);
+		for (CityWithGeoPoint city : cityWithGeoPointElasticsearchRepository.search(boolQueryBuilder)) {
+			counter++;
+		}
+
+		return counter == numOfCities;
 	}
 
 }

@@ -3,7 +3,9 @@ package com.jovo.ScienceCenter.util;
 
 import com.jovo.ScienceCenter.model.elasticsearch.SearchType;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.index.query.MoreLikeThisQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
 
@@ -53,10 +55,19 @@ public class QueryBuilder {
 		}else if(queryType.equals(SearchType.range)){
 			String[] values = value.split(" ");
 			retVal = QueryBuilders.rangeQuery(field).from(values[0]).to(values[1]);
+		}else if(queryType.equals(SearchType.moreLikeThis)){
+			retVal = QueryBuilders.moreLikeThisQuery(new String[] { field }, new String[] { value }, null)
+									.minTermFreq(1)
+									.minDocFreq(1);
+		}else if(queryType.equals(SearchType.geospatial)){
+			String[] values = value.split(",");
+			retVal = QueryBuilders.geoDistanceQuery(field)
+									.point(Double.parseDouble(values[0]), Double.parseDouble(values[1]))
+									.distance(100, DistanceUnit.KILOMETERS);
 		}else{
 			retVal = QueryBuilders.matchPhraseQuery(field, value);
 		}
-		
+
 		return retVal;
 	}
 
